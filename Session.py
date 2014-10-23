@@ -14,7 +14,7 @@ class Session:
 	def addPlayer(self, pid):
 		
 		result = True;
-		if(self.gameState == WAITING_FOR_PLAYERS):
+		if(self.gameState == Session.WAITING_FOR_PLAYERS):
 			if(len(self.blue) == 0 and len(self.red) == 0):
 				self.host = pid
 			if(len(self.blue) < len(self.red)):

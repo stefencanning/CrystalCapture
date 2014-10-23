@@ -75,6 +75,13 @@ class MessageHandler:
 	def grabFlag(self,pid,team):
 		playerSession[pid].grabFlag(pid,team)
 	
+	def getWaitingGames(self,pid):
+		sessionList = list()
+		for game in sessions:
+			if(game.gameState == Session.WAITING_FOR_PLAYERS):
+				sessionList.append(game)
+		self.sendMessage(pid,"gameList",sessionList)
+	
 	def addToConnectionList(self, socket, message):
 		socket.id= message['pid']
 		playerConnections[socket.id]=socket
