@@ -12,18 +12,20 @@ import random
 
 #list of WebSocket playerConnections
 playerConnections={}
-enemy={}
+playerSession={}
 session = list()
 session.append(Session())
 
 class WSHandler(tornado.websocket.WebSocketHandler):
-	
+	def check_origin(self, origin):
+		return True
+		
 	def open(self):
 		print ("WebSocket opened")
 		print ("from %s" %self.request.remote_ip)
 		  
 	def on_message(self, message):
-		messageHandler.handleIncomingMsg(message,self,1)
+		messageHandler.handleIncomingMsg(message,self)
 		
  
 	def on_close(self):
@@ -33,7 +35,7 @@ class MessageHandler:
 	def __init__(self):
 		pass
 
-	def handleIncomingMsg(self, data, socket,pid):
+	def handleIncomingMsg(self, data, socket):
 		try:
 			print ('message received %s' %data)
 			
@@ -48,12 +50,15 @@ class MessageHandler:
 			print('except')
 					
 
-		if type == "join":
-			#add to connection list
+		if type == "connect":
 			self.addToConnectionList(socket, data)
+		elif type == "join":
+			#add to connection list
 			self.addToGame(data)
 		elif type == "updateState":
 			self.updateState(data)
+		elif type == "grabFlag":
+			self.grabFlag(data['pid'],data['team'])
 		elif type == "replay":
 			for games in session:
 				for item in games.player:
@@ -67,20 +72,24 @@ class MessageHandler:
 			message={'type':'error', "data":msg}
 			print ('Error reading game request.')
 			
-
+	def grabFlag(self,pid,team):
+		playerSession[pid].grabFlag(pid,team)
+	
 	def addToConnectionList(self, socket, message):
 		socket.id= message['pid']
 		playerConnections[socket.id]=socket
 		print(str(socket.id) + " joined")
+		print(str(socket) + " joined")
 
 	def findWins(self, pid):
-		try:
+		#try:
 			#return winlist.find_one({"username":pid})["wins"]
-		except:
+		#except:
 			#winlist.insert({'username': pid, 'wins' : 0})
 		return 0
   
 	def addWin(self, pid):
+		return 0
 		#winlist.update({'username' : pid}, {'username' : pid,'wins' : (self.findWins(pid) + 1)})
 	
 	def addToGame(self,data):
@@ -89,6 +98,7 @@ class MessageHandler:
 		success = session[len(session)-1].addPlayer(data['pid'])
 						
 		if(success):
+			playerSession[data['pid']] = session[len(session)-1]
 			self.sendMessage(data['pid'], "state", {"state":str(session[len(session)-1].getState()),"wins":self.findWins(data['pid'])}  )
 			if(session[len(session)-1].getState()==1):
 				enemy[data['pid']] = session[len(session)-1].player[0]
@@ -102,6 +112,7 @@ class MessageHandler:
 			session.append(Session())
 			success = session[len(session)-1].addPlayer(data['pid'])
 			if(success):
+				playerSession[data['pid']] = session[len(session)-1]
 				self.sendMessage(data['pid'], "state", {"state":str(session[len(session)-1].getState()),"wins":self.findWins(data['pid'])}  )
 				if(session[len(session)-1].getState()==1):
 					enemy[data['pid']] = session[len(session)-1].player[0]

@@ -3,7 +3,7 @@ var main, CLIENT;
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.6';
+	var host='149.153.102.40';
 	var port=8080;
 	this.me;
 
@@ -22,7 +22,7 @@ function Client()
 		if(document.getElementById('firstname').value!="")
 		{
 			this.style.background+='#00FF00';
-			CLIENT.join(document.getElementById('firstname').value) 
+			CLIENT.connect(document.getElementById('firstname').value) 
 			main = new Main()
 			elem = document.getElementById('label');
 			elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+"."
@@ -78,6 +78,13 @@ Client.prototype.join = function(name)
 {
 	this.me = name;
 	var messageObject = {"type":"join","pid":name};
+	var message = JSON.stringify(messageObject);
+	this.ws.send(message);
+}
+
+Client.prototype.grabFlag = function()
+{
+	var messageObject = {"type":"grabFlag","pid":this.me,"team":0};
 	var message = JSON.stringify(messageObject);
 	this.ws.send(message);
 }
