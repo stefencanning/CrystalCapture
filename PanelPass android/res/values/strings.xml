@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PanelPass</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="xmllayoutexample_text_default">input name: </string>
+    <string name="xmllayoutexample_button_default">join game</string>
+    <string name="xmllayoutexample_button_default2">new game</string>
+
+</resources>
