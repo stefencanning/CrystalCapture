@@ -68,7 +68,8 @@ Client.prototype.addFindButton = function()
 Client.prototype.connect = function(name)
 {
 	this.me = name;
-	var messageObject = {"type":"connect","pid":name};
+	this.uniqueID = name+Math.random().toString();
+	var messageObject = {"type":"connect","pid":name,"uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
 	this.ws.send(message);
 }
@@ -77,27 +78,39 @@ Client.prototype.connect = function(name)
 Client.prototype.join = function(name)
 {
 	this.me = name;
-	var messageObject = {"type":"join","pid":name};
+	var messageObject = {"type":"join","pid":name,"uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
 	this.ws.send(message);
 }
 
 Client.prototype.grabFlag = function()
 {
-	var messageObject = {"type":"grabFlag","pid":this.me,"team":0};
+	var messageObject = {"type":"grabFlag","pid":this.me,"uniqueID":this.uniqueID,"team":0};
 	var message = JSON.stringify(messageObject);
 	this.ws.send(message);
 }
 
 Client.prototype.newGame = function()
 {
-	var messageObject = {"type":"replay","pid":this.me};
+	var messageObject = {"type":"replay","pid":this.me,"uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
 	this.ws.send(message);
 }
 Client.prototype.updateWin = function()
 {
-	var messageObject = {"type":"won","pid":this.me};
+	var messageObject = {"type":"won","pid":this.me,"uniqueID":this.uniqueID};
+	var message = JSON.stringify(messageObject);
+	this.ws.send(message);
+}
+Client.prototype.getGames = function()
+{
+	var messageObject = {"type":"getGames","pid":this.me,"uniqueID":this.uniqueID};
+	var message = JSON.stringify(messageObject);
+	this.ws.send(message);
+}
+Client.prototype.createGame = function()
+{
+	var messageObject = {"type":"createGame","pid":this.me,"uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
 	this.ws.send(message);
 }
@@ -119,7 +132,7 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "updateState")
 	{
-		if(msg.pid != this.me)
+		if(msg.pid != this.uniqueID)
 		{
 			if(game.gameType == 0)
 			{
@@ -138,6 +151,26 @@ Client.prototype.handleMessage = function(evt)
 				game.player[1].setPos(msg.data.x,msg.data.y);
 			}
 		}
+	}
+	else if(msg.type == "gameList")
+	{
+		matchmaking.gameList = [];
+		for(var i = 0; i < msg.data.length;i++)
+		{
+			matchmaking.gameList[i] = msg.data[i];
+		}
+	}
+	else if(msg.type == "joinedGame")
+	{
+		matchmaking.ingame=true;
+		if(msg.data==this.me)
+		{
+			matchmaking.hosting = true;
+		}
+	}
+	else if(msg.type == "playerJoined")
+	{
+		matchmaking.redTeam[matchmaking.redTeam.length] = msg.data.uniqueID;
 	}
 	else
 	{

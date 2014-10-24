@@ -4,31 +4,35 @@ class Session:
 
 	def __init__(self):		
 		self.gameState = Session.WAITING_FOR_PLAYERS
-		self.players=[]
+		self.players=list()
 		self.blue=list()
 		self.red=list()
 		self.blueCarrier=0
 		self.redCarrier=0
+		self.hostID = 0
+		self.playerTeam={}
 
 
-	def addPlayer(self, pid):
+	def addPlayer(self, uniqueID):
 		
 		result = True;
 		if(self.gameState == Session.WAITING_FOR_PLAYERS):
 			if(len(self.blue) == 0 and len(self.red) == 0):
-				self.host = pid
+				self.hostID = uniqueID
 			if(len(self.blue) < len(self.red)):
-				print(pid)
-				self.blue.append(pid)
+				self.blue.append(uniqueID)
+				self.players.append(uniqueID)
+				self.playerTeam[uniqueID]="blue"
 			else:
-				print(pid)
-				self.red.append(pid)
+				self.red.append(uniqueID)
+				self.players.append(uniqueID)
+				self.playerTeam[uniqueID]="red"
 		else:
 			result = False;
 		return result;
 
-	def startGame(self,pid):
-		if(pid == self.host):
+	def startGame(self,uniqueID):
+		if(uniqueID == self.hostID):
 			self.gameState = Session.STARTING_GAME
 			return True
 		return False
@@ -45,13 +49,13 @@ class Session:
 	def getStateAsString(self, state):
 		pass
 
-	def grabFlag(self,pid,team):
+	def grabFlag(self,uniqueID,team):
 		if(team==0):
 			if(blueCarrier==0):
-				blueCarrier=pid
+				blueCarrier=uniqueID
 				return True
 		if(team==1):
 			if(redCarrier==0):
-				redCarrier=pid
+				redCarrier=uniqueID
 				return True
 		return False

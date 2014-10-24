@@ -1,10 +1,10 @@
-var ctx, time;
+var time;
 var keys;
 function Game ()
 {
 }
 
-Game.prototype.SetUp=function(val, gametype, mapNum)
+Game.prototype.SetUp=function()
 {
 }
 
@@ -31,22 +31,7 @@ Game.prototype.Initialise=function ()
 }
 
 Game.prototype.initCanvas=function ()
-{ 
-	canvas = document.createElement('canvas'); 
-	ctx = canvas.getContext('2d');	
-	document.body.appendChild(canvas);
-	//set canvas to size of the screen.
-	canvas.width = 960; 
-	canvas.height = 540;
-	canvas.ondragstart = function() { return false };
-	canvas.addEventListener("keydown", onKeyPress, true);
-	canvas.addEventListener("keyup", onKeyUp, true);
-	canvas.addEventListener("oncontextmenu", onContextMenu, true);
-	canvas.addEventListener("mousedown", onMouseClick,true);
-	document.body.addEventListener('touchmove', function (ev) { ev.preventDefault();});
-	document.body.addEventListener('ondblclick', function (ev) { ev.preventDefault();});
-	canvas.setAttribute('tabindex','0'); 
-	canvas.focus();
+{ ;
 }
 
 Game.prototype.gameLoop = function () 
@@ -87,18 +72,17 @@ Game.prototype.gameLoop = function ()
 		CLIENT.grabFlag();
 	}
 	game.Draw();
-	window.requestAnimFrame(game.gameLoop);
 }
 
-function onMouseClick(e)
+Game.prototype.onMouseClick = function(e)
 {
 }
 
-function onContextMenu(e)
+Game.prototype.onContextMenu = function(e)
 {
 }
 
-function onKeyPress(e)
+Game.prototype.onKeyPress = function(e)
 {
 	//W
 	if (e.keyCode == 87) 
@@ -121,7 +105,7 @@ function onKeyPress(e)
 		game.keys["d"] = true;
 	}
 }
-function onKeyUp(e)
+Game.prototype.onKeyUp = function(e)
 {
 	//W
 	if (e.keyCode == 87) 

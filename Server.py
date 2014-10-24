@@ -13,8 +13,10 @@ import random
 #list of WebSocket playerConnections
 playerConnections={}
 playerSession={}
+playerSocket={}
+playerName={}
 session = list()
-session.append(Session())
+#session.append(Session())
 
 class WSHandler(tornado.websocket.WebSocketHandler):
 	def check_origin(self, origin):
@@ -58,111 +60,81 @@ class MessageHandler:
 		elif type == "updateState":
 			self.updateState(data)
 		elif type == "grabFlag":
-			self.grabFlag(data['pid'],data['team'])
+			self.grabFlag(data['uniqueID'],data['team'])
 		elif type == "replay":
 			for games in session:
 				for item in games.player:
-					if(item == data['pid']):
+					if(item == data['uniqueID']):
 						session.remove(games)
 			self.addToGame(data)
 		elif type == "won":
-			self.addWin(data['pid'])
+			self.addWin(data['uniqueID'])
+		elif type == "getGames":
+			self.getWaitingGames(data['uniqueID'])
+		elif type == "createGame":
+			self.createGame(data['uniqueID'])
 		else:
 			msg = 'Error reading game request. Please make sure message type is either join, updateState, or...'
 			message={'type':'error', "data":msg}
 			print ('Error reading game request.')
 			
-	def grabFlag(self,pid,team):
-		playerSession[pid].grabFlag(pid,team)
+	def grabFlag(self,uniqueID,team):
+		playerSession[uniqueID].grabFlag(uniqueID,team)
 	
-	def getWaitingGames(self,pid):
+	def getWaitingGames(self,uniqueID):
 		sessionList = list()
-		for game in sessions:
+		for game in session:
 			if(game.gameState == Session.WAITING_FOR_PLAYERS):
-				sessionList.append(game)
-		self.sendMessage(pid,"gameList",sessionList)
+				sessionList.append({"hostID":game.hostID,"hostName":game.hostName,"count":game.getNumPlayers()})
+		self.sendMessage(uniqueID,"gameList",sessionList)
 	
 	def addToConnectionList(self, socket, message):
-		socket.id= message['pid']
+		socket.id = message['uniqueID']
+		playerName[message['uniqueID']]=message['pid']
 		playerConnections[socket.id]=socket
 		print(str(socket.id) + " joined")
 		print(str(socket) + " joined")
 
-	def findWins(self, pid):
+	def findWins(self, uniqueID):
 		#try:
 			#return winlist.find_one({"username":pid})["wins"]
 		#except:
 			#winlist.insert({'username': pid, 'wins' : 0})
 		return 0
   
-	def addWin(self, pid):
+	def addWin(self, uniqueID):
 		return 0
 		#winlist.update({'username' : pid}, {'username' : pid,'wins' : (self.findWins(pid) + 1)})
 	
-	def addToGame(self,data):
-		if(len(session) ==0):
-			session.append(Session())
-		success = session[len(session)-1].addPlayer(data['pid'])
-						
+	def createGame(self,uniqueID):
+		s = Session()
+		session.append(s)
+		success = s.addPlayer(uniqueID)
 		if(success):
-			playerSession[data['pid']] = session[len(session)-1]
-			self.sendMessage(data['pid'], "state", {"state":str(session[len(session)-1].getState()),"wins":self.findWins(data['pid'])}  )
-			if(session[len(session)-1].getState()==1):
-				enemy[data['pid']] = session[len(session)-1].player[0]
-				enemy[session[len(session)-1].player[0]] = data['pid']
-				mode = random.randint(0,1)
-				playerOne = random.randint(0,1)
-				map = random.randint(0,1)
-				self.sendToOtherPlayer(data['pid'],"setUpGame",{"type":"setUpGame","first":playerOne,"pid":data['pid'],"gameType":mode,"map":map,"wins":self.findWins(data['pid'])})
-				self.sendMessage(data['pid'],"setUpGame",{"type":"setUpGame","first":((playerOne+1)%2),"pid":enemy[data['pid']],"gameType":mode,"map":map,"wins":self.findWins(enemy[data['pid']])})
-		else:
-			session.append(Session())
-			success = session[len(session)-1].addPlayer(data['pid'])
-			if(success):
-				playerSession[data['pid']] = session[len(session)-1]
-				self.sendMessage(data['pid'], "state", {"state":str(session[len(session)-1].getState()),"wins":self.findWins(data['pid'])}  )
-				if(session[len(session)-1].getState()==1):
-					enemy[data['pid']] = session[len(session)-1].player[0]
-					print(enemy[data['pid']])
-					enemy[session[len(session)-1].player[0]] = data['pid']
-					print(enemy[session[len(session)-1].player[0]])
-					mode = random.randint(0,1)
-					playerOne = random.randint(0,1)
-					map = random.randint(0,1)
-					self.sendToOtherPlayer(data['pid'],"setUpGame",{"type":"setUpGame","first":playerOne,"pid":data['pid'],"gameType":mode,"map":map})
-					self.sendMessage(data['pid'],"setUpGame",{"type":"setUpGame","first":((playerOne+1)%2),"pid":enemy[data['pid']],"gameType":mode,"map":map})
+			self.sendMessage(uniqueID,"joinedGame",uniqueID)
+			playerSession[uniqueID] = s
+			self.joinedGame(uniqueID)
+		
+	def addToGame(self,data):
+		return 0
 	
 	def updateState(self, data):
-		self.sendToOtherPlayer(data['pid'],"updateState",data['data'])
+		return 0
 	
+	def joinedGame(self, uniqueID):
+		for player in playerSession[uniqueID].players:
+			self.sendMessage(player,"playerJoined",{"name":playerName[uniqueID],"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
 	
-	def sendToOtherPlayer(self,my_pid,type,data):
+	def sendMessage(self,uniqueID,type,data):
 		try:
 			msg=dict()
 			msg["type"]=type;
-			msg["pid"]=my_pid;
+			msg["uniqueID"]=uniqueID;
 			msg["data"]=data;
 			msg=json.dumps(msg)
-			playerConnections[enemy[my_pid]].write_message(msg)
+			playerConnections[uniqueID].write_message(msg)
 		except KeyError:
-			print("Player " + str(pid) + " isn't connected")
-		#for game in session:
-		#	for item in game.player:
-		#		if my_pid != item:
-		#			print(item)
-		#			playerConnections[item].write_message(data)
-		
-	#add in types 
-	def sendMessage(self,pid,type,data):
-		try:
-			msg=dict()
-			msg["type"]=type;
-			msg["pid"]=pid;
-			msg["data"]=data;
-			msg=json.dumps(msg)
-			playerConnections[pid].write_message(msg)
-		except KeyError:
-			print("Player " + str(pid) + " isn't connected")
+			print("Player " + str(uniqueID) + " isn't connected")
 	
 	def sendToAll(self, message):
 		try:
