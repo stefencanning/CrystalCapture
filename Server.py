@@ -39,7 +39,7 @@ class MessageHandler:
 
 	def handleIncomingMsg(self, data, socket):
 		try:
-			print ('message received %s' %data)
+			#print ('message received %s' %data)
 			
 			#converts the unicode data that arrives into a dict
 			data = ast.literal_eval(data)
@@ -55,8 +55,12 @@ class MessageHandler:
 		if type == "connect":
 			self.addToConnectionList(socket, data)
 		elif type == "join":
-			#add to connection list
-			self.addToGame(data)
+			self.addToGame(data['uniqueID'],data['hostID'])
+		elif type == "startGame":
+			started = playerSession[data['uniqueID']].startGame(data['uniqueID'])
+			if(started):
+				for player in playerSession[data['uniqueID']].players:
+					self.sendMessage(player,"gameStarted",0)
 		elif type == "updateState":
 			self.updateState(data)
 		elif type == "grabFlag":
@@ -73,19 +77,34 @@ class MessageHandler:
 			self.getWaitingGames(data['uniqueID'])
 		elif type == "createGame":
 			self.createGame(data['uniqueID'])
+		elif type == "updatePlayer":
+			self.updatePlayerData(data)
 		else:
 			msg = 'Error reading game request. Please make sure message type is either join, updateState, or...'
 			message={'type':'error', "data":msg}
 			print ('Error reading game request.')
-			
+
+	def updatePlayerData(self,data):
+		for player in playerSession[data['uniqueID']].players:
+			self.sendMessage(player,data['type'],{"name":playerName[data['uniqueID']],"uniqueID":data['uniqueID'],"update":data['update']})
+
 	def grabFlag(self,uniqueID,team):
-		playerSession[uniqueID].grabFlag(uniqueID,team)
-	
+		success = playerSession[uniqueID].grabFlag(uniqueID,team)
+		print(success)
+		if(success):
+			for player in playerSession[uniqueID].players:
+				self.sendMessage(player,"flagCapture",{"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
+			
 	def getWaitingGames(self,uniqueID):
 		sessionList = list()
+		print(len(session))
 		for game in session:
+			print(game.gameState)
+			print(game.hostID)
+			print(game.getNumPlayers())
 			if(game.gameState == Session.WAITING_FOR_PLAYERS):
-				sessionList.append({"hostID":game.hostID,"hostName":game.hostName,"count":game.getNumPlayers()})
+				sessionList.append({"hostID":game.hostID,"hostName":playerName[game.hostID],"count":game.getNumPlayers()})
+				print(game.hostID)
 		self.sendMessage(uniqueID,"gameList",sessionList)
 	
 	def addToConnectionList(self, socket, message):
@@ -109,14 +128,32 @@ class MessageHandler:
 	def createGame(self,uniqueID):
 		s = Session()
 		session.append(s)
+		#= session[len(session)-1]
 		success = s.addPlayer(uniqueID)
+		print(success)
 		if(success):
 			self.sendMessage(uniqueID,"joinedGame",uniqueID)
 			playerSession[uniqueID] = s
 			self.joinedGame(uniqueID)
+			self.getGamePlayers(uniqueID)
 		
-	def addToGame(self,data):
-		return 0
+	def addToGame(self,uniqueID,gameHostId):
+		s = playerSession[gameHostId]
+		success = s.addPlayer(uniqueID)
+		if(success):
+			self.sendMessage(uniqueID,"joinedGame",gameHostId)
+			playerSession[uniqueID] = s
+			self.joinedGame(uniqueID)
+			self.getGamePlayers(uniqueID)
+	
+	def getGamePlayers(self, uniqueID):
+		playerList = list()
+		for player in playerSession[uniqueID].players:
+			playerList.append({"name":playerName[player],"uniqueID":player,"team":playerSession[uniqueID].playerTeam[player]})
+			print(playerName[player])
+			print(player)
+			print(playerSession[uniqueID].playerTeam[player])
+		self.sendMessage(uniqueID,"playerList",playerList)
 	
 	def updateState(self, data):
 		return 0

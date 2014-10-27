@@ -26,8 +26,11 @@ Game.prototype.Initialise=function ()
 	"s":false,
 	"d":false};
 	game.player = new Player(64,64);
-	game.blueFlag=new Flag(128,128,0);
-	game.redFlag=new Flag(160,128,1);
+	game.blueFlagCapture=false;
+	game.redFlagCapture=false;
+	game.blueFlag=new Flag(128,128,"blue");
+	game.redFlag=new Flag(160,128,"red");
+	game.players=[];
 }
 
 Game.prototype.initCanvas=function ()
@@ -56,22 +59,37 @@ Game.prototype.gameLoop = function ()
 	game.player.x = newPos[0];
 	game.player.y = newPos[1];
 	var flag;
-	if(game.player.team == 0)
+	if(game.player.team == "blue")
 	{
 		flag = game.redFlag;
+		if(game.player.x+game.player.w>flag.x
+		&&game.player.x<flag.x+flag.w
+		&&game.player.y+game.player.h>flag.y
+		&&game.player.y<flag.y+flag.h)
+		if(!game.redFlagCaptured)
+		{
+			CLIENT.grabFlag();
+		}
 	}
 	else
 	{
 		flag = game.blueFlag;
+		if(game.player.x+game.player.w>flag.x
+		&&game.player.x<flag.x+flag.w
+		&&game.player.y+game.player.h>flag.y
+		&&game.player.y<flag.y+flag.h)
+		if(!game.blueFlagCaptured)
+		{
+			CLIENT.grabFlag();
+		}
 	}
-	if(game.player.x+game.player.w>flag.x
-	&&game.player.x<flag.x+flag.w
-	&&game.player.y+game.player.h>flag.y
-	&&game.player.y<flag.y+flag.h)
-	{
-		CLIENT.grabFlag();
-	}
+	var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag};
+	CLIENT.updatePlayer(msg);
 	game.Draw();
+}
+
+Game.prototype.onDoubleClick = function(e)
+{
 }
 
 Game.prototype.onMouseClick = function(e)
@@ -132,13 +150,63 @@ Game.prototype.onKeyUp = function(e)
 Game.prototype.Draw = function()
 {
 	ctx.clearRect(0,0,canvas.width, canvas.height);
+	
+	for(var i = 0; i < blueTeam.length;i++)
+	{
+		if(blueTeam[i]!=CLIENT.uniqueID)
+		{
+			if(playerGameData[blueTeam[i]]!=0)
+			{
+				ctx.fillStyle=rgb(0,0,0);
+				ctx.fillRect(playerGameData[blueTeam[i]].x-1,playerGameData[blueTeam[i]].y-11,game.player.w+2,7);
+				ctx.fillStyle=rgb(0,0,255);	
+				ctx.fillRect(playerGameData[blueTeam[i]].x,playerGameData[blueTeam[i]].y-10,game.player.w*(playerGameData[blueTeam[i]].health/100),5);
+				ctx.fillRect(playerGameData[blueTeam[i]].x,playerGameData[blueTeam[i]].y,game.player.w,game.player.h);
+				if(playerGameData[blueTeam[i]].flag==1)
+				{
+					ctx.fillStyle=rgb(255,0,0);
+					ctx.fillRect(playerGameData[blueTeam[i]].x,playerGameData[blueTeam[i]].y,game.player.w,5);	
+					ctx.fillRect(playerGameData[blueTeam[i]].x,playerGameData[blueTeam[i]].y,2,game.player.h);	
+				}
+			}
+		}
+	}
+	
+	for(var i = 0; i < redTeam.length;i++)
+	{
+		if(redTeam[i]!=CLIENT.uniqueID)
+		{
+			if(playerGameData[redTeam[i]]!=0)
+			{
+				ctx.fillStyle=rgb(0,0,0);
+				ctx.fillRect(playerGameData[redTeam[i]].x-1,playerGameData[redTeam[i]].y-11,game.player.w+2,7);
+				ctx.fillStyle = rgb(255, 0, 0);
+				ctx.fillRect(playerGameData[redTeam[i]].x,playerGameData[redTeam[i]].y-10,game.player.w*(playerGameData[redTeam[i]].health/100),5);
+				ctx.fillRect(playerGameData[redTeam[i]].x,playerGameData[redTeam[i]].y,game.player.w,game.player.h);
+				if(playerGameData[redTeam[i]].flag==1)
+				{
+					ctx.fillStyle=rgb(0,0,255);
+					ctx.fillRect(playerGameData[redTeam[i]].x,playerGameData[redTeam[i]].y,game.player.w,5);	
+					ctx.fillRect(playerGameData[redTeam[i]].x,playerGameData[redTeam[i]].y,2,game.player.h);	
+				}
+			}
+		}
+	}
+	
 	game.player.draw();
+	//game.rooms[game.player.room].draw();
 	for(var i = 0; i < game.rooms.length;i++)
 	{
 		game.rooms[i].draw();
 	}
-	game.blueFlag.draw();
-	game.redFlag.draw();
+	if(!game.blueFlagCaptured)
+	{
+		game.blueFlag.draw();
+	}
+	if(!game.redFlagCaptured)
+	{
+		game.redFlag.draw();
+	}
 		//ctx.drawImage(dancerImg[game.waitingImage],40,40);
 		//ctx.fillStyle = rgb(0, 0, 0);
 		//ctx.font="20px Georgia";

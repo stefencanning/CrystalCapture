@@ -14,7 +14,6 @@ class Session:
 
 
 	def addPlayer(self, uniqueID):
-		
 		result = True;
 		if(self.gameState == Session.WAITING_FOR_PLAYERS):
 			if(len(self.blue) == 0 and len(self.red) == 0):
@@ -50,12 +49,12 @@ class Session:
 		pass
 
 	def grabFlag(self,uniqueID,team):
-		if(team==0):
-			if(blueCarrier==0):
-				blueCarrier=uniqueID
+		if(team=="blue"):
+			if(self.blueCarrier==0):
+				self.blueCarrier=uniqueID
 				return True
-		if(team==1):
-			if(redCarrier==0):
-				redCarrier=uniqueID
+		if(team=="red"):
+			if(self.redCarrier==0):
+				self.redCarrier=uniqueID
 				return True
 		return False

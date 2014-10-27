@@ -10,11 +10,11 @@ function Flag(x,y,team)
 
 Flag.prototype.draw = function()
 {
-	if(this.team==0)
+	if(this.team=="blue")
 	{
 		ctx.fillStyle=rgb(0,0,255);
 	}
-	else
+	if(this.team=="red")
 	{
 		ctx.fillStyle=rgb(255,0,0);
 	}

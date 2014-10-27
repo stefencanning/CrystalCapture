@@ -3,7 +3,8 @@ var main, CLIENT;
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.40';
+	//var host='149.153.102.40';
+	var host='192.168.0.18';
 	var port=8080;
 	this.me;
 
@@ -65,59 +66,89 @@ Client.prototype.addFindButton = function()
 }
 
 
+Client.prototype.SendMessage = function(message)
+{
+	try
+	{
+		this.ws.send(message);
+	}
+	catch(err)
+	{
+	}
+}
+
+
+
 Client.prototype.connect = function(name)
 {
 	this.me = name;
 	this.uniqueID = name+Math.random().toString();
 	var messageObject = {"type":"connect","pid":name,"uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
-	this.ws.send(message);
+	this.SendMessage(message);
 }
 
 
-Client.prototype.join = function(name)
+Client.prototype.join = function(hostID)
 {
-	this.me = name;
-	var messageObject = {"type":"join","pid":name,"uniqueID":this.uniqueID};
+	var messageObject = {"type":"join","uniqueID":this.uniqueID,"hostID":hostID};
 	var message = JSON.stringify(messageObject);
-	this.ws.send(message);
+	this.SendMessage(message);
 }
 
 Client.prototype.grabFlag = function()
 {
-	var messageObject = {"type":"grabFlag","pid":this.me,"uniqueID":this.uniqueID,"team":0};
+	var messageObject = {"type":"grabFlag","uniqueID":this.uniqueID,"team":main.playerTeam};
 	var message = JSON.stringify(messageObject);
-	this.ws.send(message);
+	this.SendMessage(message);
 }
 
 Client.prototype.newGame = function()
 {
-	var messageObject = {"type":"replay","pid":this.me,"uniqueID":this.uniqueID};
+	var messageObject = {"type":"replay","uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
-	this.ws.send(message);
+	this.SendMessage(message);
 }
+
 Client.prototype.updateWin = function()
 {
-	var messageObject = {"type":"won","pid":this.me,"uniqueID":this.uniqueID};
+	var messageObject = {"type":"won","uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
-	this.ws.send(message);
+	this.SendMessage(message);
 }
+
 Client.prototype.getGames = function()
 {
-	var messageObject = {"type":"getGames","pid":this.me,"uniqueID":this.uniqueID};
+	var messageObject = {"type":"getGames","uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
-	this.ws.send(message);
+	this.SendMessage(message);
 }
+
 Client.prototype.createGame = function()
 {
-	var messageObject = {"type":"createGame","pid":this.me,"uniqueID":this.uniqueID};
+	var messageObject = {"type":"createGame","uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
-	this.ws.send(message);
+	this.SendMessage(message);
+}
+
+Client.prototype.startGame = function()
+{
+	var messageObject = {"type":"startGame","uniqueID":this.uniqueID};
+	var message = JSON.stringify(messageObject);
+	this.SendMessage(message);
+}
+
+Client.prototype.updatePlayer = function(data)
+{
+	var messageObject = {"type":"updatePlayer","uniqueID":this.uniqueID,"update":data};
+	var message = JSON.stringify(messageObject);
+	this.SendMessage(message);
 }
 
 Client.prototype.handleMessage = function(evt)
 {
 	var msg = JSON.parse(evt.data);
+	
 	if(msg.type == "state")
 	{
 		game.gameState = 0;
@@ -132,25 +163,6 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "updateState")
 	{
-		if(msg.pid != this.uniqueID)
-		{
-			if(game.gameType == 0)
-			{
-				game.player[1].setPos(msg.data.x,msg.data.y);
-				if(msg.data.moved == 1)
-				{
-					game.turn = true;
-					game.movePlatform(msg.data.lastX,msg.data.lastY,msg.data.x,msg.data.y);
-				}
-			}
-			else if(game.gameType == 1)
-			{
-				game.enemyDirection = msg.data.direction;
-				game.player[1].targetX = msg.data.x;
-				game.player[1].targetY = msg.data.y;
-				game.player[1].setPos(msg.data.x,msg.data.y);
-			}
-		}
 	}
 	else if(msg.type == "gameList")
 	{
@@ -163,14 +175,90 @@ Client.prototype.handleMessage = function(evt)
 	else if(msg.type == "joinedGame")
 	{
 		matchmaking.ingame=true;
-		if(msg.data==this.me)
+		if(msg.data==this.uniqueID)
 		{
 			matchmaking.hosting = true;
 		}
 	}
 	else if(msg.type == "playerJoined")
 	{
-		matchmaking.redTeam[matchmaking.redTeam.length] = msg.data.uniqueID;
+		if(msg.data.uniqueID!=this.uniqueID)
+		{
+			if(msg.data.team == "red")
+			{
+				redTeam[redTeam.length] = msg.data.uniqueID;
+				currentSession[msg.data.uniqueID] = msg.data.name
+				playerGameData[msg.data.uniqueID]=0;
+			}
+			else if(msg.data.team == "blue")
+			{
+				blueTeam[blueTeam.length] = msg.data.uniqueID;
+				currentSession[msg.data.uniqueID] = msg.data.name
+				playerGameData[msg.data.uniqueID]=0;
+			}
+		}
+	}
+	else if(msg.type == "playerList")
+	{
+		for(var i = 0; i < msg.data.length;i++)
+		{
+			console.log("team: "+ msg.data[i].team);
+			console.log("uniqueID: "+ msg.data[i].uniqueID);
+			console.log("name: "+ msg.data[i].name);
+			if(msg.data[i].team == "red")
+			{
+				if(msg.data[i].uniqueID == this.uniqueID)
+				{
+					main.playerTeam="red";
+				}
+				redTeam[redTeam.length] = msg.data[i].uniqueID;
+				currentSession[msg.data[i].uniqueID] = msg.data[i].name
+				playerGameData[msg.data[i].uniqueID]=0;
+			}
+			else if(msg.data[i].team == "blue")
+			{
+				if(msg.data[i].uniqueID == this.uniqueID)
+				{
+					main.playerTeam="blue";
+				}
+				blueTeam[blueTeam.length] = msg.data[i].uniqueID;
+				currentSession[msg.data[i].uniqueID] = msg.data[i].name
+				playerGameData[msg.data[i].uniqueID]=0;
+			}
+		}
+	}
+	else if(msg.type == "gameStarted")
+	{
+		if(main.mode==GAMESELECT)
+		{
+			game= new Game();
+			game.Initialise();
+			main.mode=INGAME;
+		}
+	}
+	else if(msg.type == "updatePlayer")
+	{
+		if(msg.data.uniqueID!=this.uniqueID)
+		{
+			playerGameData[msg.data.uniqueID] = msg.data.update;
+		}
+	}
+	else if(msg.type == "flagCapture")
+	{
+		console.log("type: "+ msg.type);
+		console.log("data: "+ msg.data);
+		if(msg.data.uniqueID==this.uniqueID)
+		{
+			game.player.gotFlag = 1;
+		}
+		if(msg.data.team == "red")
+		{
+			game.blueFlagCaptured = true;
+		}
+		if(msg.data.team == "blue")
+		{
+			game.redFlagCaptured = true;
+		}
 	}
 	else
 	{
