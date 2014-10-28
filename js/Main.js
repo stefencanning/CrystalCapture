@@ -69,8 +69,8 @@ Main.prototype.mainLoop = function ()
 function onDoubleClick(e)
 {
 	var clickPos=[];
-	clickPos["x"]=e.clientX-canvas.offsetLeft;
-	clickPos["y"]=e.clientY-canvas.offsetTop;
+	clickPos["x"]=e.pageX-canvas.offsetLeft;
+	clickPos["y"]=e.pageY-canvas.offsetTop;
 	if(main.mode == GAMESELECT)
 	{
 		matchmaking.onDoubleClick(clickPos);
@@ -88,8 +88,8 @@ function onDoubleClick(e)
 function onMouseClick(e)
 {
 	var clickPos=[];
-	clickPos["x"]=e.clientX-canvas.offsetLeft;
-	clickPos["y"]=e.clientY-canvas.offsetTop;
+	clickPos["x"]=e.pageX-canvas.offsetLeft;
+	clickPos["y"]=e.pageY-canvas.offsetTop;
 	if(main.mode == GAMESELECT)
 	{
 		matchmaking.onDoubleClick(clickPos);
@@ -108,8 +108,8 @@ function onContextMenu(e)
 {
 	e.preventDefault();
 	var clickPos=[];
-	clickPos["x"]=e.clientX-canvas.offsetLeft;
-	clickPos["y"]=e.clientY-canvas.offsetTop;
+	clickPos["x"]=e.pageX-canvas.offsetLeft;
+	clickPos["y"]=e.pageY-canvas.offsetTop;
 	if(main.mode == GAMESELECT)
 	{
 		matchmaking.onContextMenu(clickPos);

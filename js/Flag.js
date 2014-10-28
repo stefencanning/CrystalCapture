@@ -5,10 +5,11 @@ function Flag(x,y,team)
 	this.w = 32;
 	this.h = 32;
 	this.team=team;
+	this.room=0;
 }
 
 
-Flag.prototype.draw = function()
+Flag.prototype.draw = function(offSetX,offSetY)
 {
 	if(this.team=="blue")
 	{
@@ -18,5 +19,5 @@ Flag.prototype.draw = function()
 	{
 		ctx.fillStyle=rgb(255,0,0);
 	}
-	ctx.fillRect(this.x,this.y,this.w,this.h);	
+	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);	
 }

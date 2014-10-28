@@ -4,11 +4,17 @@ function Wall(x,y)
 	this.y = y;
 	this.w = 32;
 	this.h = 32;
+	this.door="false";
+	this.connectsTo=[];
 }
 
 
-Wall.prototype.draw = function()
+Wall.prototype.draw = function(offSetX,offSetY)
 {
 	ctx.fillStyle=rgb(0,0,0);
-	ctx.fillRect(this.x,this.y,this.w,this.h);	
+	if(this.door=="true")
+	{
+		ctx.fillStyle=rgb(139,69,19);
+	}
+	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);	
 }

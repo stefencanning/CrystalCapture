@@ -39,14 +39,18 @@ class MessageHandler:
 
 	def handleIncomingMsg(self, data, socket):
 		try:
-			#print ('message received %s' %data)
 			
 			#converts the unicode data that arrives into a dict
 			data = ast.literal_eval(data)
+			if(data['type']!="updatePlayer"):
+				print ('message received %s' %data)
+			#	a=0
+			#else:
 			
 			type = data['type']
 
 		except :
+			print ('error data: %s' %data)
 			print ("Unexpected error:" +  sys.exc_info()[0])
 			type = 'error'
 			print('except')
@@ -79,11 +83,28 @@ class MessageHandler:
 			self.createGame(data['uniqueID'])
 		elif type == "updatePlayer":
 			self.updatePlayerData(data)
+		elif type == "createDoor":
+			self.createDoor(data)
 		else:
 			msg = 'Error reading game request. Please make sure message type is either join, updateState, or...'
 			message={'type':'error', "data":msg}
 			print ('Error reading game request.')
 
+			
+			
+			
+			
+			
+	def createDoor(self,data):
+		roomData = playerSession[data['uniqueID']].createDoor(data)
+		print ('door created %s' %roomData)
+		if(roomData['success']):
+			print ('door created %s' %roomData)
+			for player in playerSession[data['uniqueID']].players:
+				self.sendMessage(player,"doorCreated",roomData)
+			
+			
+			
 	def updatePlayerData(self,data):
 		for player in playerSession[data['uniqueID']].players:
 			self.sendMessage(player,data['type'],{"name":playerName[data['uniqueID']],"uniqueID":data['uniqueID'],"update":data['update']})

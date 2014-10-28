@@ -1,3 +1,4 @@
+from Rooms import Room
 class Session:	
 	WAITING_FOR_PLAYERS=0;
 	STARTING_GAME=1;
@@ -11,6 +12,7 @@ class Session:
 		self.redCarrier=0
 		self.hostID = 0
 		self.playerTeam={}
+		self.rooms={}
 
 
 	def addPlayer(self, uniqueID):
@@ -33,6 +35,10 @@ class Session:
 	def startGame(self,uniqueID):
 		if(uniqueID == self.hostID):
 			self.gameState = Session.STARTING_GAME
+			self.rooms[0] = Room()
+			self.rooms[0].createBaseRooms()
+			self.rooms[1] = Room()
+			self.rooms[1].createBaseRooms()
 			return True
 		return False
 
@@ -47,6 +53,17 @@ class Session:
 
 	def getStateAsString(self, state):
 		pass
+	
+	
+	def createDoor(self,data):
+		success = self.rooms[data['room']].createDoor(data['x'],data['y'])
+		if(success):
+			num = len(self.rooms)
+			self.rooms[num] = Room()
+			self.rooms[num].createBaseRooms()
+			connectData = self.rooms[num].addDoor();
+			return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"newRoom":self.rooms[num].walls}
+		return {"success":False}
 
 	def grabFlag(self,uniqueID,team):
 		if(team=="blue"):

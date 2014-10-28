@@ -10,12 +10,77 @@ Room.prototype.addWall = function(wall)
 }
 
 
-Room.prototype.draw = function()
+Room.prototype.draw = function(offSetX,offSetY)
 {
 	for(var i = 0; i < this.walls.length;i++)
 	{
-		this.walls[i].draw();
+		this.walls[i].draw(offSetX,offSetY);
 	}
+}
+
+Room.prototype.checkInside=function(x,y)
+{
+	var negX=1,posX=1,negY=1,posY=1;
+	for(var i = 0; i < this.walls.length;i++)
+	{
+		if(this.walls[i].x<x)
+		{
+			negX+=1;
+		}
+		else if(this.walls[i].x>x)
+		{
+			posX+=1;
+		}
+		if(this.walls[i].y<y)
+		{
+			negY+=1;
+		}
+		else if(this.walls[i].y>y)
+		{
+			posY+=1;
+		}
+	}
+	var xPer,yPer;
+	var doorMat={};
+	if(posX>negX)
+	{
+		xPer=posX/negX;
+	}
+	else
+	{
+		xPer=negX/posX;
+	}
+	if(posY>negY)
+	{
+		yPer=posY/negY;
+	}
+	else
+	{
+		yPer=negY/posY;
+	}
+	if(yPer>xPer)
+	{
+		if(posY>negY)
+		{
+			doorMat= {"x":x,"y":y+32};
+		}
+		else
+		{
+			doorMat= {"x":x,"y":y-32};
+		}
+	}
+	else
+	{
+		if(posX>negX)
+		{
+			doorMat= {"x":x+32,"y":y};
+		}
+		else
+		{
+			doorMat= {"x":x-32,"y":y};
+		}
+	}
+	return doorMat;
 }
 
 
@@ -29,6 +94,7 @@ Room.prototype.checkCollision = function(object)
 	h=object.h;
 	var x2,y2,w2,h2;
 	var totalOverlap=[0,0];
+	var roomChange = false;
 	for(var i = 0; i < this.walls.length;i++)
 	{
 		x2=this.walls[i].x;
@@ -37,6 +103,10 @@ Room.prototype.checkCollision = function(object)
 		h2=this.walls[i].h;
 		if(x+w>x2&&x<x2+w2&&y+h>y2&&y<y2+h2)
 		{
+			if(this.walls[i].door == "true")
+			{
+				return {"roomChange":true,"x":this.walls[i].connectsTo[1],"y":this.walls[i].connectsTo[2],"room":this.walls[i].connectsTo[0]};
+			}
 			var overlapX,overlapY;
 			if(x<x2)
 			{
@@ -69,5 +139,5 @@ Room.prototype.checkCollision = function(object)
 	}
 	x+=totalOverlap[0];
 	y+=totalOverlap[1];
-	return [x,y];
+	return {"roomChange":false,"x":x,"y":y,"room":-1};
 }

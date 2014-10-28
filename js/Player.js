@@ -34,14 +34,14 @@ Player.prototype.getDir = function()
 	return this.dir;
 }
 
-Player.prototype.draw = function()
+Player.prototype.draw = function(offSetX,offSetY)
 {
 	ctx.fillStyle=rgb(0,0,0);
-	ctx.fillRect(this.x-1,this.y-11,this.w+2,7);
+	ctx.fillRect(this.x-1+offSetX,this.y-11+offSetY,this.w+2,7);
 	ctx.fillStyle=rgb(0,255,0);	
-	ctx.fillRect(this.x,this.y-10,this.w*(this.health/100),5);
+	ctx.fillRect(this.x+offSetX,this.y-10+offSetY,this.w*(this.health/100),5);
 	ctx.fillStyle=rgb(0,0,0);	
-	ctx.fillRect(this.x,this.y,this.w,this.h);
+	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
 	if(this.gotFlag==1)
 	{
 		if(main.playerTeam=="blue")
@@ -52,7 +52,7 @@ Player.prototype.draw = function()
 		{
 			ctx.fillStyle=rgb(0,0,255);
 		}
-		ctx.fillRect(this.x,this.y,this.w,5);	
-		ctx.fillRect(this.x,this.y,2,this.h);	
+		ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,10);	
+		ctx.fillRect(this.x+offSetX,this.y+offSetY,5,this.h);	
 	}
 }
