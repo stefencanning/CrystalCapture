@@ -97,9 +97,7 @@ class MessageHandler:
 			
 	def createDoor(self,data):
 		roomData = playerSession[data['uniqueID']].createDoor(data)
-		print ('door created %s' %roomData)
 		if(roomData['success']):
-			print ('door created %s' %roomData)
 			for player in playerSession[data['uniqueID']].players:
 				self.sendMessage(player,"doorCreated",roomData)
 			

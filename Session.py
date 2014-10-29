@@ -1,4 +1,5 @@
 from Rooms import Room
+import random
 class Session:	
 	WAITING_FOR_PLAYERS=0;
 	STARTING_GAME=1;
@@ -58,11 +59,29 @@ class Session:
 	def createDoor(self,data):
 		success = self.rooms[data['room']].createDoor(data['x'],data['y'])
 		if(success):
-			num = len(self.rooms)
-			self.rooms[num] = Room()
-			self.rooms[num].createBaseRooms()
-			connectData = self.rooms[num].addDoor();
-			return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"newRoom":self.rooms[num].walls}
+			num = random.randint(0,5)
+			print("rand num for room was: %s" %num)
+			if(num == 0):
+				connectData={"success":False}
+				while(connectData['success']==False):
+					num = random.randint(0,len(self.rooms)-1)
+					connectData = self.rooms[num].addDoor(0);
+				print("room to connect was: %s" %num)
+				return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"newRoom":self.rooms[num].walls}
+			else:
+				num = len(self.rooms)
+				self.rooms[num] = Room()
+				self.rooms[num].createBaseRooms()
+				connectData = self.rooms[num].addDoor(0);
+				if(connectData['success']==True):
+					print("room to connect was: %s" %num)
+					return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"newRoom":self.rooms[num].walls}
+				else:
+					while(connectData['success']==False):
+						num = random.randint(0,len(self.rooms)-1)
+						connectData = self.rooms[num].addDoor(0);
+					print("room to connect was: %s" %num)
+					return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"newRoom":self.rooms[num].walls}
 		return {"success":False}
 
 	def grabFlag(self,uniqueID,team):

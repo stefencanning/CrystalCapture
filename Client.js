@@ -270,26 +270,52 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "doorCreated")
 	{
-		game.rooms[msg.data.room2] = new Room();
-		for(var i = 0; i < msg.data.newRoom.length;i++)
+		if(msg.data.room2 < game.rooms.length)
 		{
-			var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32);
-			if(msg.data.newRoom[i][0]==msg.data.door2x&&msg.data.newRoom[i][1]==msg.data.door2y)
+			for(var i = 0; i < game.rooms[msg.data.room1].walls.length; i++)
 			{
-				wall.door="true";
-				doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
-				wall.connectsTo = [msg.data.room1,doorMat.x,doorMat.y];
+				if(game.rooms[msg.data.room1].walls[i].x==msg.data.door1x*32
+				&&game.rooms[msg.data.room1].walls[i].y==msg.data.door1y*32)
+				{
+					game.rooms[msg.data.room1].walls[i].door = "true";
+					doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
+					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,doorMat.x,doorMat.y];
+				}
 			}
-			game.rooms[msg.data.room2].addWall(wall);
-		}
-		for(var i = 0; i < game.rooms[msg.data.room1].walls.length; i++)
-		{
-			if(game.rooms[msg.data.room1].walls[i].x==msg.data.door1x*32
-			&&game.rooms[msg.data.room1].walls[i].y==msg.data.door1y*32)
+			for(var i = 0; i < game.rooms[msg.data.room2].walls.length; i++)
 			{
-				game.rooms[msg.data.room1].walls[i].door = "true";
-				doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
-				game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,doorMat.x,doorMat.y];
+				if(game.rooms[msg.data.room2].walls[i].x==msg.data.door2x*32
+				&&game.rooms[msg.data.room2].walls[i].y==msg.data.door2y*32)
+				{
+					game.rooms[msg.data.room2].walls[i].door = "true";
+					doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
+					game.rooms[msg.data.room2].walls[i].connectsTo = [msg.data.room1,doorMat.x,doorMat.y];
+				}
+			}
+		}
+		else
+		{
+			game.rooms[msg.data.room2] = new Room();
+			for(var i = 0; i < msg.data.newRoom.length;i++)
+			{
+				var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32);
+				if(msg.data.newRoom[i][0]==msg.data.door2x&&msg.data.newRoom[i][1]==msg.data.door2y)
+				{
+					wall.door="true";
+					doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
+					wall.connectsTo = [msg.data.room1,doorMat.x,doorMat.y];
+				}
+				game.rooms[msg.data.room2].addWall(wall);
+			}
+			for(var i = 0; i < game.rooms[msg.data.room1].walls.length; i++)
+			{
+				if(game.rooms[msg.data.room1].walls[i].x==msg.data.door1x*32
+				&&game.rooms[msg.data.room1].walls[i].y==msg.data.door1y*32)
+				{
+					game.rooms[msg.data.room1].walls[i].door = "true";
+					doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
+					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,doorMat.x,doorMat.y];
+				}
 			}
 		}
 	}

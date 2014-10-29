@@ -42,6 +42,18 @@ Player.prototype.draw = function(offSetX,offSetY)
 	ctx.fillRect(this.x+offSetX,this.y-10+offSetY,this.w*(this.health/100),5);
 	ctx.fillStyle=rgb(0,0,0);	
 	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
+	if(main.playerTeam=="blue")
+	{
+		ctx.fillStyle=rgb(0,0,255);
+	}
+	if(main.playerTeam=="red")
+	{
+		ctx.fillStyle=rgb(255,0,0);
+	}
+	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,5);
+	ctx.fillRect(this.x+offSetX,this.y+offSetY,5,this.h);
+	ctx.fillRect(this.x+offSetX+this.w-5,this.y+offSetY,5,this.h);
+	ctx.fillRect(this.x+offSetX,this.y+offSetY+this.h-5,this.w,5);
 	if(this.gotFlag==1)
 	{
 		if(main.playerTeam=="blue")
