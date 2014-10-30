@@ -3,6 +3,8 @@ class Room:
 
 	def __init__(self):
 		self.walls=list()
+		self.color=""
+		self.colorValue=0
 
 	def createBaseRooms(self):
 		self.walls.append([0,0,False])

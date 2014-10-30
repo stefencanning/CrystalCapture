@@ -251,7 +251,7 @@ Client.prototype.handleMessage = function(evt)
 			playerGameData[msg.data.uniqueID] = msg.data.update;
 		}
 	}
-	else if(msg.type == "flagCapture")
+	else if(msg.type == "flagGrabbed")
 	{
 		console.log("type: "+ msg.type);
 		console.log("data: "+ msg.data);
@@ -266,6 +266,24 @@ Client.prototype.handleMessage = function(evt)
 		if(msg.data.team == "blue")
 		{
 			game.redFlagCaptured = true;
+		}
+	}
+	else if(msg.type == "flagCaptured")
+	{
+		console.log("type: "+ msg.type);
+		console.log("data: "+ msg.data);
+		game.player.gotFlag = 0;
+		if(msg.data.team == "red")
+		{
+			game.redPoints+=1;
+			game.blueFlagCaptured = false;
+			game.redFlagCaptured = false;
+		}
+		if(msg.data.team == "blue")
+		{
+			game.bluePoints+=1;
+			game.blueFlagCaptured = false;
+			game.redFlagCaptured = false;
 		}
 	}
 	else if(msg.type == "doorCreated")
@@ -296,6 +314,10 @@ Client.prototype.handleMessage = function(evt)
 		else
 		{
 			game.rooms[msg.data.room2] = new Room();
+			game.rooms[msg.data.room2].oriColor = msg.data.color;
+			game.rooms[msg.data.room2].oriColorValue = msg.data.colorValue;
+			game.rooms[msg.data.room2].foundColor = msg.data.color;
+			game.rooms[msg.data.room2].foundColorValue = msg.data.colorValue;
 			for(var i = 0; i < msg.data.newRoom.length;i++)
 			{
 				var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32);

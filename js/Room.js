@@ -1,6 +1,10 @@
 function Room()
 {
 	this.walls = [];
+	this.oriColor="";
+	this.oriColorValue=200;
+	this.foundColor="";
+	this.foundColorValue=200;
 }
 
 
@@ -105,6 +109,7 @@ Room.prototype.checkCollision = function(object)
 		{
 			if(this.walls[i].door == "true")
 			{
+				this.walls[i].used=true;
 				return {"roomChange":true,"x":this.walls[i].connectsTo[1],"y":this.walls[i].connectsTo[2],"room":this.walls[i].connectsTo[0]};
 			}
 			var overlapX,overlapY;

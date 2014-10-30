@@ -26,10 +26,14 @@ Game.prototype.Initialise=function ()
 	}
 	game.blueFlagCapture=false;
 	game.redFlagCapture=false;
-	game.blueFlag=new Flag(128,128,"blue");
+	game.blueFlag=new Flag(128,96,"blue");
 	game.blueFlag.room=0;
-	game.redFlag=new Flag(160,128,"red");
+	game.redFlag=new Flag(128,96,"red");
 	game.redFlag.room=1;
+	game.redCapturePoint = [96,96,1];
+	game.blueCapturePoint = [96,96,0];
+	game.redPoints=0;
+	game.bluePoints=0;
 	game.players=[];
 }
 
@@ -67,6 +71,10 @@ Game.prototype.CreateStartRooms=function()
 		game.rooms[i].addWall(new Wall(0,128));
 		game.rooms[i].addWall(new Wall(0,160));
 	}
+	game.rooms[0].oriColor="blue";
+	game.rooms[0].foundColor="blue";
+	game.rooms[1].oriColor="red";
+	game.rooms[1].foundColor="red";
 }
 
 Game.prototype.initCanvas=function ()
@@ -94,6 +102,16 @@ Game.prototype.gameLoop = function ()
 	var newPos = game.rooms[game.player.room].checkCollision(game.player);
 	if(newPos.roomChange)
 	{
+		if(game.rooms[game.player.room].foundColorValue-5>game.rooms[newPos.room].foundColorValue)
+		{
+			game.rooms[newPos.room].foundColor = game.rooms[game.player.room].foundColor;
+			game.rooms[newPos.room].foundColorValue = game.rooms[game.player.room].foundColorValue-5;
+		}
+		else if(game.rooms[newPos.room].foundColorValue-5>game.rooms[game.player.room].foundColorValue)
+		{
+			game.rooms[game.player.room].foundColor = game.rooms[newPos.room].foundColor;
+			game.rooms[game.player.room].foundColorValue = game.rooms[newPos.room].foundColorValue-5;
+		}
 		game.player.room = newPos.room;
 	}
 	game.player.x = newPos.x;
@@ -112,6 +130,20 @@ Game.prototype.gameLoop = function ()
 				CLIENT.grabFlag();
 			}
 		}
+		if(game.player.room==game.blueCapturePoint[2])
+		{
+			if(game.player.gotFlag==1)
+			{
+				if(game.player.x+game.player.w>game.blueCapturePoint[0]
+				&&game.player.x<game.blueCapturePoint[0]+game.player.w
+				&&game.player.y+game.player.h>game.blueCapturePoint[1]
+				&&game.player.y<game.blueCapturePoint[1]+game.player.h)
+				if(!game.blueFlagCaptured)
+				{
+					//CLIENT.grabFlag();
+				}
+			}
+		}
 	}
 	if(main.playerTeam == "red")
 	{
@@ -125,6 +157,20 @@ Game.prototype.gameLoop = function ()
 			if(!game.blueFlagCaptured)
 			{
 				CLIENT.grabFlag();
+			}
+		}
+		if(game.player.room==game.redCapturePoint[2])
+		{
+			if(game.player.gotFlag==1)
+			{
+				if(game.player.x+game.player.w>game.redCapturePoint[0]
+				&&game.player.x<game.redCapturePoint[0]+game.player.w
+				&&game.player.y+game.player.h>game.redCapturePoint[1]
+				&&game.player.y<game.redCapturePoint[1]+game.player.h)
+				if(!game.redFlagCaptured)
+				{
+					//CLIENT.grabFlag();
+				}
 			}
 		}
 	}
@@ -204,9 +250,36 @@ Game.prototype.onKeyUp = function(e)
 
 Game.prototype.Draw = function()
 {
-	ctx.clearRect(0,0,canvas.width, canvas.height);
+	ctx.clearRect(0,0,canvas.width, canvas.height)
+	
+	ctx.lineWidth=10;
+	if(game.rooms[game.player.room].oriColor=="red")
+	{
+		ctx.strokeStyle=rgb(255,255-game.rooms[game.player.room].oriColorValue,255-game.rooms[game.player.room].oriColorValue);
+	}
+	if(game.rooms[game.player.room].oriColor=="blue")
+	{
+		ctx.strokeStyle=rgb(255-game.rooms[game.player.room].oriColorValue,255-game.rooms[game.player.room].oriColorValue,255);
+	}
+	ctx.strokeRect(6,6,canvas.width-12, canvas.height-12);
+	
+	if(game.rooms[game.player.room].foundColor=="red")
+	{
+		ctx.strokeStyle=rgb(255,255-game.rooms[game.player.room].foundColorValue,255-game.rooms[game.player.room].foundColorValue);
+	}
+	if(game.rooms[game.player.room].foundColor=="blue")
+	{
+		ctx.strokeStyle=rgb(255-game.rooms[game.player.room].foundColorValue,255-game.rooms[game.player.room].foundColorValue,255);
+	}
+	ctx.strokeRect(18,18,canvas.width-36, canvas.height-36);
+	
+	ctx.lineWidth=2;
 	ctx.strokeStyle=rgb(0,0,0);
-	ctx.strokeRect(0,0,canvas.width, canvas.height);
+	ctx.strokeRect(2,2,canvas.width-4, canvas.height-4);
+	ctx.strokeStyle=rgb(0,0,0);
+	ctx.strokeRect(12,12,canvas.width-24, canvas.height-24);
+	ctx.strokeStyle=rgb(0,0,0);
+	ctx.strokeRect(24,24,canvas.width-48, canvas.height-48);
 	
 	var offSetX = -game.player.x+(canvas.width/2);
 	var offSetY = -game.player.y+(canvas.height/2);

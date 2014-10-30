@@ -69,6 +69,8 @@ class MessageHandler:
 			self.updateState(data)
 		elif type == "grabFlag":
 			self.grabFlag(data['uniqueID'],data['team'])
+		elif type == "captureFlag":
+			self.captureFlag(data['uniqueID'],data['team'])
 		elif type == "replay":
 			for games in session:
 				for item in games.player:
@@ -112,8 +114,15 @@ class MessageHandler:
 		print(success)
 		if(success):
 			for player in playerSession[uniqueID].players:
-				self.sendMessage(player,"flagCapture",{"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
-			
+				self.sendMessage(player,"flagGrabbed",{"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
+		
+	def captureFlag(self,uniqueID,team):
+		success = playerSession[uniqueID].captureFlag(uniqueID,team)
+		print(success)
+		if(success):
+			for player in playerSession[uniqueID].players:
+				self.sendMessage(player,"flagCaptured",{"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
+				
 	def getWaitingGames(self,uniqueID):
 		sessionList = list()
 		print(len(session))
