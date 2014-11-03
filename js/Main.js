@@ -1,5 +1,6 @@
 var game,menu, ctx, matchmaking,player;
 var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3;
+var redCaptureImg,blueCaptureImg,redStandingCrystal,blueStandingCrystal,redCrystalBase,blueCrystalBase,redGrabbedCrystal,blueGrabbedCrystal;
 var currentSession=[];
 var redTeam = [];
 var blueTeam = [];
@@ -18,6 +19,31 @@ function Main()
 	//matchmaking.Initialise();
 	main.initCanvas();
 	ctx.clearRect(0,0,canvas.width, canvas.height);
+	redCaptureImg = [new Image(),new Image(),new Image()];
+	blueCaptureImg = [new Image(),new Image(),new Image()];
+	redStandingCrystal=new Image();
+	redStandingCrystal.src = 'img/redCrystal.png';
+	blueStandingCrystal=new Image();
+	blueStandingCrystal.src = 'img/blueCrystal.png';
+	redCrystalBase=new Image();
+	redCrystalBase.src = 'img/redCrystalBase.png';
+	blueCrystalBase=new Image();
+	blueCrystalBase.src = 'img/blueCrystalBase.png';
+	redGrabbedCrystal=new Image();
+	redGrabbedCrystal.src = 'img/redGrabbedCrystal.png';
+	blueGrabbedCrystal=new Image();
+	blueGrabbedCrystal.src = 'img/blueGrabbedCrystal.png';
+	
+	
+	redCaptureImg[0].src = 'img/redCaptureBot.png';
+	redCaptureImg[1].src = 'img/redCaptureMid.png';
+	redCaptureImg[2].src = 'img/redCaptureTop.png';
+	
+	blueCaptureImg[0].src = 'img/blueCaptureBot.png';
+	blueCaptureImg[1].src = 'img/blueCaptureMid.png';
+	blueCaptureImg[2].src = 'img/blueCaptureTop.png';
+	
+	
 	//img = [new Image(),new Image()];
 	//img[0].src = 'img/dancer1.png';
 	//img[1].src = 'img/dancer2.png';

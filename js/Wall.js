@@ -20,21 +20,21 @@ Wall.prototype.draw = function(offSetX,offSetY)
 		ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);	
 		if(this.used)
 		{
-			if(game.rooms[game.player.room].oriColor=="red")
+			if(game.rooms[this.connectsTo[0]].oriColor=="red")
 			{
 				ctx.fillStyle=rgb(255,255-game.rooms[this.connectsTo[0]].oriColorValue,255-game.rooms[this.connectsTo[0]].oriColorValue);
 			}
-			if(game.rooms[game.player.room].oriColor=="blue")
+			if(game.rooms[this.connectsTo[0]].oriColor=="blue")
 			{
 				ctx.fillStyle=rgb(255-game.rooms[this.connectsTo[0]].oriColorValue,255-game.rooms[this.connectsTo[0]].oriColorValue,255);
 			}
 			ctx.fillRect(this.x+offSetX+7,this.y+offSetY+7,this.w-14,this.h-14);
 			
-			if(game.rooms[game.player.room].foundColor=="red")
+			if(game.rooms[this.connectsTo[0]].foundColor=="red")
 			{
 				ctx.fillStyle=rgb(255,255-game.rooms[this.connectsTo[0]].foundColorValue,255-game.rooms[this.connectsTo[0]].foundColorValue);
 			}
-			if(game.rooms[game.player.room].foundColor=="blue")
+			if(game.rooms[this.connectsTo[0]].foundColor=="blue")
 			{
 				ctx.fillStyle=rgb(255-game.rooms[this.connectsTo[0]].foundColorValue,255-game.rooms[this.connectsTo[0]].foundColorValue,255);
 			}

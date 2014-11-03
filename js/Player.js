@@ -58,13 +58,11 @@ Player.prototype.draw = function(offSetX,offSetY)
 	{
 		if(main.playerTeam=="blue")
 		{
-			ctx.fillStyle=rgb(255,0,0);
+			ctx.drawImage(redGrabbedCrystal,this.x+offSetX+8,this.y+offSetY);
 		}
 		if(main.playerTeam=="red")
 		{
-			ctx.fillStyle=rgb(0,0,255);
+			ctx.drawImage(blueGrabbedCrystal,this.x+offSetX+8,this.y+offSetY);
 		}
-		ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,10);	
-		ctx.fillRect(this.x+offSetX,this.y+offSetY,5,this.h);	
 	}
 }

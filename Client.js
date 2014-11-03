@@ -111,6 +111,13 @@ Client.prototype.grabFlag = function()
 	this.SendMessage(message);
 }
 
+Client.prototype.captureFlag = function()
+{
+	var messageObject = {"type":"captureFlag","uniqueID":this.uniqueID,"team":main.playerTeam};
+	var message = JSON.stringify(messageObject);
+	this.SendMessage(message);
+}
+
 Client.prototype.newGame = function()
 {
 	var messageObject = {"type":"replay","uniqueID":this.uniqueID};

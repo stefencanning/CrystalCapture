@@ -15,26 +15,27 @@ Game.prototype.Initialise=function ()
 	"a":false,
 	"s":false,
 	"d":false};
-	game.player = new Player(96,96);
+	game.player = new Player(64,96);
 	if(main.playerTeam=="blue")
 	{
 		game.player.room=0;
 	}
 	if(main.playerTeam=="red")
 	{
-		game.player.room=1;
+		game.player.room=0;
 	}
 	game.blueFlagCapture=false;
 	game.redFlagCapture=false;
-	game.blueFlag=new Flag(128,96,"blue");
+	game.blueFlag=new Flag(96,96,"blue");
 	game.blueFlag.room=0;
-	game.redFlag=new Flag(128,96,"red");
+	game.redFlag=new Flag(96,96,"red");
 	game.redFlag.room=1;
 	game.redCapturePoint = [96,96,1];
 	game.blueCapturePoint = [96,96,0];
 	game.redPoints=0;
 	game.bluePoints=0;
 	game.players=[];
+	game.bullets=[];
 }
 
 Game.prototype.CreateStartRooms=function()
@@ -138,9 +139,11 @@ Game.prototype.gameLoop = function ()
 				&&game.player.x<game.blueCapturePoint[0]+game.player.w
 				&&game.player.y+game.player.h>game.blueCapturePoint[1]
 				&&game.player.y<game.blueCapturePoint[1]+game.player.h)
-				if(!game.blueFlagCaptured)
 				{
-					//CLIENT.grabFlag();
+					if(!game.blueFlagCaptured)
+					{
+						CLIENT.captureFlag();
+					}
 				}
 			}
 		}
@@ -167,9 +170,11 @@ Game.prototype.gameLoop = function ()
 				&&game.player.x<game.redCapturePoint[0]+game.player.w
 				&&game.player.y+game.player.h>game.redCapturePoint[1]
 				&&game.player.y<game.redCapturePoint[1]+game.player.h)
-				if(!game.redFlagCaptured)
 				{
-					//CLIENT.grabFlag();
+					if(!game.redFlagCaptured)
+					{
+						CLIENT.captureFlag();
+					}
 				}
 			}
 		}
@@ -284,6 +289,15 @@ Game.prototype.Draw = function()
 	var offSetX = -game.player.x+(canvas.width/2);
 	var offSetY = -game.player.y+(canvas.height/2);
 	
+	game.rooms[game.player.room].draw(offSetX,offSetY);
+	if(game.player.room==game.redCapturePoint[2])
+	{
+		ctx.drawImage(redCrystalBase,game.redCapturePoint[0]+offSetX,game.redCapturePoint[1]+offSetY-32);
+	}
+	if(game.player.room==game.blueCapturePoint[2])
+	{
+		ctx.drawImage(blueCrystalBase,game.blueCapturePoint[0]+offSetX,game.blueCapturePoint[1]+offSetY-32);
+	}
 	for(var i = 0; i < blueTeam.length;i++)
 	{
 		if(blueTeam[i]!=CLIENT.uniqueID)
@@ -299,9 +313,10 @@ Game.prototype.Draw = function()
 					ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerGameData[blueTeam[i]].flag==1)
 					{
-						ctx.fillStyle=rgb(255,0,0);
+						ctx.drawImage(redGrabbedCrystal,playerGameData[blueTeam[i]].x+offSetX+16,playerGameData[blueTeam[i]].y+offSetY);
+						/*ctx.fillStyle=rgb(255,0,0);
 						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,10);	
-						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,5,game.player.h);	
+						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,5,game.player.h);	*/
 					}
 				}
 			}
@@ -323,9 +338,10 @@ Game.prototype.Draw = function()
 					ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerGameData[redTeam[i]].flag==1)
 					{
-						ctx.fillStyle=rgb(0,0,255);
+						ctx.drawImage(blueGrabbedCrystal,playerGameData[redTeam[i]].x+offSetX+16,playerGameData[redTeam[i]].y+offSetY);
+						/*ctx.fillStyle=rgb(0,0,255);
 						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,10);	
-						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,5,game.player.h);	
+						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,5,game.player.h);	*/
 					}
 				}
 			}
@@ -333,7 +349,6 @@ Game.prototype.Draw = function()
 	}
 	
 	game.player.draw(offSetX,offSetY);
-	game.rooms[game.player.room].draw(offSetX,offSetY);
 	/*for(var i = 0; i < game.rooms.length;i++)
 	{
 		game.rooms[i].draw();
@@ -342,20 +357,37 @@ Game.prototype.Draw = function()
 	{
 		if(game.player.room==game.blueFlag.room)
 		{
-			game.blueFlag.draw(offSetX,offSetY);
+			ctx.drawImage(blueStandingCrystal,game.blueFlag.x+offSetX,game.blueFlag.y+offSetY-32);
+			//game.blueFlag.draw(offSetX,offSetY);
 		}
 	}
 	if(!game.redFlagCaptured)
 	{
 		if(game.player.room==game.redFlag.room)
 		{
-			game.redFlag.draw(offSetX,offSetY);
+			ctx.drawImage(redStandingCrystal,game.redFlag.x+offSetX,game.redFlag.y+offSetY-32);
+			//game.redFlag.draw(offSetX,offSetY);
 		}
 	}
-		//ctx.drawImage(dancerImg[game.waitingImage],40,40);
-		//ctx.fillStyle = rgb(0, 0, 0);
-		//ctx.font="20px Georgia";
-		//ctx.fillText("Waiting for opponent", 20, 20);
+	
+	
+	
+	ctx.fillStyle = rgb(0, 0, 0);
+	ctx.font="20px Lucida Console";
+	
+	ctx.fillStyle = rgb(255, 0, 0);
+	ctx.fillText(game.redPoints, 760, 50);
+	if(game.redFlagCaptured)
+	{
+		ctx.drawImage(redGrabbedCrystal,250,34);
+	}
+	
+	ctx.fillStyle = rgb(0, 0, 255);
+	ctx.fillText(game.bluePoints, 200, 50);
+	if(game.blueFlagCaptured)
+	{
+		ctx.drawImage(blueGrabbedCrystal,710,34);
+	}
 	
 }
 	
