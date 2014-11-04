@@ -116,3 +116,15 @@ class Session:
 					self.redCarrier=0
 					return True
 		return False
+		
+	
+	def playerDied(self,uniqueID,team):
+		if(team=="blue"):
+			if(self.blueCarrier==uniqueID):
+				self.blueCarrier=0
+				return True
+		if(team=="red"):
+			if(self.redCarrier==uniqueID):
+				self.redCarrier=0
+				return True
+		return False

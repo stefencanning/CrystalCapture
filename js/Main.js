@@ -5,6 +5,9 @@ var currentSession=[];
 var redTeam = [];
 var blueTeam = [];
 var playerGameData = [];
+var mousePos = [];
+var BulletDirections={"left":0,"up":1,"right":2,"down":3};
+var time=0;
 
 //var img;
 function Main()
@@ -66,6 +69,7 @@ Main.prototype.initCanvas = function()
 	canvas.addEventListener("oncontextmenu", onContextMenu, true);
 	canvas.addEventListener("mousedown", onMouseClick,true);
 	canvas.addEventListener("ondblclick", onDoubleClick,true);
+	canvas.addEventListener("mousemove", onMouseMove,true);
 	document.body.addEventListener('touchmove', function (ev) { ev.preventDefault();});
 	//document.body.addEventListener('ondblclick', function (ev) { ev.preventDefault();});
 	document.body.addEventListener('oncontextmenu', function (ev) { ev.preventDefault();});
@@ -88,9 +92,28 @@ Main.prototype.mainLoop = function ()
 	{
 		menu.Loop();
 	}
+	time = new Date();
 	window.requestAnimFrame(main.mainLoop);
 }
 
+
+function onMouseMove(e)
+{
+	mousePos["x"]=e.pageX-canvas.offsetLeft;
+	mousePos["y"]=e.pageY-canvas.offsetTop;
+	if(main.mode == GAMESELECT)
+	{
+		matchmaking.onMouseMove(mousePos);
+	}
+	else if(main.mode == INGAME)
+	{
+		game.onMouseMove(mousePos);
+	}
+	else if(main.mode == MENU)
+	{
+		menu.onMouseMove(mousePos);
+	}
+}
 
 function onDoubleClick(e)
 {

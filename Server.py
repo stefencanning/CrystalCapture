@@ -87,6 +87,12 @@ class MessageHandler:
 			self.updatePlayerData(data)
 		elif type == "createDoor":
 			self.createDoor(data)
+		elif type == "bulletFired":
+			self.fireBullet(data)
+		elif type == "playerDied":
+			self.playerDied(data)
+		elif type == "flagReturned":
+			self.flagReturned(data)
 		else:
 			msg = 'Error reading game request. Please make sure message type is either join, updateState, or...'
 			message={'type':'error', "data":msg}
@@ -103,8 +109,20 @@ class MessageHandler:
 			for player in playerSession[data['uniqueID']].players:
 				self.sendMessage(player,"doorCreated",roomData)
 			
+	def fireBullet(self,data):
+		for player in playerSession[data['uniqueID']].players:
+			self.sendMessage(player,"bulletFired",data['data'])
 			
-			
+	def flagReturned(self,data):
+		for player in playerSession[data['uniqueID']].players:
+			self.sendMessage(player,"flagReturned",data)
+		
+	def playerDied(self,data):
+		success = playerSession[data['uniqueID']].playerDied(data['uniqueID'],data['team'])
+		if(success):
+			for player in playerSession[data['uniqueID']].players:
+				self.sendMessage(player,"flagDropped",data)
+				
 	def updatePlayerData(self,data):
 		for player in playerSession[data['uniqueID']].players:
 			self.sendMessage(player,data['type'],{"name":playerName[data['uniqueID']],"uniqueID":data['uniqueID'],"update":data['update']})
@@ -198,7 +216,7 @@ class MessageHandler:
 			msg["data"]=data;
 			msg=json.dumps(msg)
 			playerConnections[uniqueID].write_message(msg)
-		except KeyError:
+		except:
 			print("Player " + str(uniqueID) + " isn't connected")
 	
 	def sendToAll(self, message):

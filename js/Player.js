@@ -8,6 +8,7 @@ function Player(x, y)
 	this.room = 0;
 	this.rotation=0;
 	this.gotFlag=0;
+	this.doorTime=0;
 }
 
 Player.prototype.getX = function()

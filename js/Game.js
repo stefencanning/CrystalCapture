@@ -1,4 +1,4 @@
-var time;
+
 var keys;
 function Game ()
 {
@@ -15,14 +15,14 @@ Game.prototype.Initialise=function ()
 	"a":false,
 	"s":false,
 	"d":false};
-	game.player = new Player(64,96);
+	game.player = new Player(96,96);
 	if(main.playerTeam=="blue")
 	{
 		game.player.room=0;
 	}
 	if(main.playerTeam=="red")
 	{
-		game.player.room=0;
+		game.player.room=1;
 	}
 	game.blueFlagCapture=false;
 	game.redFlagCapture=false;
@@ -84,6 +84,7 @@ Game.prototype.initCanvas=function ()
 
 Game.prototype.gameLoop = function () 
 {
+	var curTime=new Date();
 	if(game.keys["w"])
 	{
 		game.player.y-=1;
@@ -100,6 +101,37 @@ Game.prototype.gameLoop = function ()
 	{
 		game.player.x+=1;
 	}
+	if(game.keys["space"])
+	{
+		var dir;
+		var xDif = mousePos["x"]-(canvas.width/2);
+		var yDif = mousePos["y"]-(canvas.height/2);
+		if(Math.abs(xDif)<Math.abs(yDif))
+		{
+			if(yDif<0)
+			{
+				dir = BulletDirections["up"];
+			}
+			else
+			{
+				dir = BulletDirections["down"];
+			}
+		}
+		else
+		{
+			if(xDif<0)
+			{
+				dir = BulletDirections["left"];
+			}
+			else
+			{
+				dir = BulletDirections["right"];
+			}
+		}
+		CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"room":game.player.room,"team":main.playerTeam});
+	}
+	if(game.player.doorTime>0)
+		game.player.doorTime-=curTime.getTime()-time.getTime();
 	var newPos = game.rooms[game.player.room].checkCollision(game.player);
 	if(newPos.roomChange)
 	{
@@ -131,6 +163,23 @@ Game.prototype.gameLoop = function ()
 				CLIENT.grabFlag();
 			}
 		}
+		var flag = game.blueFlag;
+		if(game.player.room==flag.room)
+		{
+			if(game.player.x+game.player.w>flag.x
+			&&game.player.x<flag.x+flag.w
+			&&game.player.y+game.player.h>flag.y
+			&&game.player.y<flag.y+flag.h)
+			{
+				if(!game.blueFlagCaptured)
+				{
+					if(flag.x!=game.blueCapturePoint[0]||flag.y!=game.blueCapturePoint[1]||flag.room!=game.blueCapturePoint[2])
+					{
+						CLIENT.flagReturned();
+					}
+				}
+			}
+		}
 		if(game.player.room==game.blueCapturePoint[2])
 		{
 			if(game.player.gotFlag==1)
@@ -142,7 +191,10 @@ Game.prototype.gameLoop = function ()
 				{
 					if(!game.blueFlagCaptured)
 					{
-						CLIENT.captureFlag();
+						if(game.blueFlag.x==game.blueCapturePoint[0]&&game.blueFlag.y==game.blueCapturePoint[1]&&game.blueFlag.room==game.blueCapturePoint[2])
+						{
+							CLIENT.captureFlag();
+						}
 					}
 				}
 			}
@@ -162,6 +214,23 @@ Game.prototype.gameLoop = function ()
 				CLIENT.grabFlag();
 			}
 		}
+		var flag = game.redFlag;
+		if(game.player.room==flag.room)
+		{
+			if(game.player.x+game.player.w>flag.x
+			&&game.player.x<flag.x+flag.w
+			&&game.player.y+game.player.h>flag.y
+			&&game.player.y<flag.y+flag.h)
+			{
+				if(!game.redFlagCaptured)
+				{
+					if(flag.x!=game.redCapturePoint[0]||flag.y!=game.redCapturePoint[1]||flag.room!=game.redCapturePoint[2])
+					{
+						CLIENT.flagReturned();
+					}
+				}
+			}
+		}
 		if(game.player.room==game.redCapturePoint[2])
 		{
 			if(game.player.gotFlag==1)
@@ -173,10 +242,99 @@ Game.prototype.gameLoop = function ()
 				{
 					if(!game.redFlagCaptured)
 					{
-						CLIENT.captureFlag();
+						if(game.redFlag.x==game.redCapturePoint[0]&&game.redFlag.y==game.redCapturePoint[1]&&game.redFlag.room==game.redCapturePoint[2])
+						{
+							CLIENT.captureFlag();
+						}
 					}
 				}
 			}
+		}
+	}
+	for( var i = 0; i < game.bullets.length;i++)
+	{
+		if(game.bullets[i] != null)
+		{
+			game.bullets[i].update();
+			if(game.bullets[i].room == game.player.room)
+			{
+				if(game.bullets[i] != null)
+				{
+					if(game.bullets[i].team!=main.playerTeam)
+					{
+						if(game.player.x+game.player.w>game.bullets[i].x
+						&&game.player.x<game.bullets[i].x+game.bullets[i].w
+						&&game.player.y+game.player.h>game.bullets[i].y
+						&&game.player.y<game.bullets[i].y+game.bullets[i].h)
+						{
+							game.player.health-=2;
+							game.bullets[i] = null;
+						}
+					}
+				}
+			}
+			if(game.bullets[i] != null)
+			{
+				if(game.rooms[game.bullets[i].room].checkCollide(game.bullets[i]))
+				{
+					game.bullets[i] = null;
+				}
+			}
+			if(game.bullets[i] != null)
+			{
+				if(game.bullets[i].team=="blue")
+				{
+					for(var j = 0; j < redTeam.length;j++)
+					{
+						if(playerGameData[redTeam[j]]!=0&&game.bullets[i] != null)
+						{
+							if(playerGameData[redTeam[j]].room==game.bullets[i].room)
+							{
+								if(playerGameData[redTeam[j]].x+game.player.w>game.bullets[i].x
+								&&playerGameData[redTeam[j]].x<game.bullets[i].x+game.bullets[i].w
+								&&playerGameData[redTeam[j]].y+game.player.h>game.bullets[i].y
+								&&playerGameData[redTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+								{
+									game.bullets[i] = null;
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					for(var j = 0; j < blueTeam.length;j++)
+					{
+						if(playerGameData[blueTeam[j]]!=0)
+						{
+							if(playerGameData[blueTeam[j]].room==game.bullets[i].room)
+							{
+								if(playerGameData[blueTeam[j]].x+game.player.w>game.bullets[i].x
+								&&playerGameData[blueTeam[j]].x<game.bullets[i].x+game.bullets[i].w
+								&&playerGameData[blueTeam[j]].y+game.player.h>game.bullets[i].y
+								&&playerGameData[blueTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+								{
+									game.bullets[i] = null;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if(game.player.health<=0)
+	{
+		CLIENT.playerDied();
+		game.player.setPos(96,96);
+		game.player.health=100;
+		if(main.playerTeam=="blue")
+		{
+			game.player.room=0;
+		}
+		if(main.playerTeam=="red")
+		{
+			game.player.room=1;
 		}
 	}
 	var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room};
@@ -185,6 +343,10 @@ Game.prototype.gameLoop = function ()
 }
 
 Game.prototype.onDoubleClick = function(e)
+{
+}
+
+Game.prototype.onMouseMove = function(e)
 {
 }
 
@@ -228,6 +390,11 @@ Game.prototype.onKeyPress = function(e)
 	{
 		game.keys["d"] = true;
 	}
+	//SPACE
+	if (e.keyCode == 32) 
+	{
+		game.keys["space"] = true;
+	}
 }
 Game.prototype.onKeyUp = function(e)
 {
@@ -250,6 +417,11 @@ Game.prototype.onKeyUp = function(e)
 	if (e.keyCode == 68)
 	{
 		game.keys["d"] = false;
+	}
+	//SPACE
+	if (e.keyCode == 32) 
+	{
+		game.keys["space"] = false;
 	}
 }
 
@@ -313,7 +485,7 @@ Game.prototype.Draw = function()
 					ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerGameData[blueTeam[i]].flag==1)
 					{
-						ctx.drawImage(redGrabbedCrystal,playerGameData[blueTeam[i]].x+offSetX+16,playerGameData[blueTeam[i]].y+offSetY);
+						ctx.drawImage(redGrabbedCrystal,playerGameData[blueTeam[i]].x+offSetX+8,playerGameData[blueTeam[i]].y+offSetY);
 						/*ctx.fillStyle=rgb(255,0,0);
 						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,10);	
 						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,5,game.player.h);	*/
@@ -338,7 +510,7 @@ Game.prototype.Draw = function()
 					ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerGameData[redTeam[i]].flag==1)
 					{
-						ctx.drawImage(blueGrabbedCrystal,playerGameData[redTeam[i]].x+offSetX+16,playerGameData[redTeam[i]].y+offSetY);
+						ctx.drawImage(blueGrabbedCrystal,playerGameData[redTeam[i]].x+offSetX+8,playerGameData[redTeam[i]].y+offSetY);
 						/*ctx.fillStyle=rgb(0,0,255);
 						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,10);	
 						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,5,game.player.h);	*/
@@ -349,6 +521,16 @@ Game.prototype.Draw = function()
 	}
 	
 	game.player.draw(offSetX,offSetY);
+	for( var i = 0; i < game.bullets.length;i++)
+	{
+		if(game.bullets[i] != null)
+		{
+			if(game.bullets[i].room == game.player.room)
+			{
+				game.bullets[i].draw(offSetX,offSetY);
+			}
+		}
+	}
 	/*for(var i = 0; i < game.rooms.length;i++)
 	{
 		game.rooms[i].draw();

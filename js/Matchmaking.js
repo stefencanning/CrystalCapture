@@ -46,6 +46,10 @@ Matchmaking.prototype.onContextMenu = function(e)
 {
 }
 
+Matchmaking.prototype.onMouseMove = function(e)
+{
+}
+
 Matchmaking.prototype.onKeyPress = function(e)
 {
 	//R
@@ -85,7 +89,7 @@ Matchmaking.prototype.Draw = function()
 	ctx.font="20px Lucida Console";
 	if(!matchmaking.ingame)
 	{
-		ctx.fillText("search for games", 20, 23);
+		ctx.fillText("search for games   ('C' to create a lobby, 'R' to refresh game list)", 20, 23);
 		/*for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
 			ctx.fillText(matchmaking.gameList[i].hostName, 20, 45+i*25);
@@ -100,7 +104,7 @@ Matchmaking.prototype.Draw = function()
 	}
 	else
 	{
-		ctx.fillText("game lobby", 20, 23);
+		ctx.fillText("game lobby   ('S' to start game)", 20, 23);
 		ctx.fillStyle = rgb(0, 0, 255);
 		ctx.fillText("Blue Team", 20, 48);
 		for(var i = 0; i < blueTeam.length;i++)

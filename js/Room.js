@@ -109,8 +109,12 @@ Room.prototype.checkCollision = function(object)
 		{
 			if(this.walls[i].door == "true")
 			{
-				this.walls[i].used=true;
-				return {"roomChange":true,"x":this.walls[i].connectsTo[1],"y":this.walls[i].connectsTo[2],"room":this.walls[i].connectsTo[0]};
+				if(object.doorTime<=0)
+				{
+					this.walls[i].used=true;
+					object.doorTime=1000;
+					return {"roomChange":true,"x":this.walls[i].connectsTo[1],"y":this.walls[i].connectsTo[2],"room":this.walls[i].connectsTo[0]};
+				}
 			}
 			var overlapX,overlapY;
 			if(x<x2)
@@ -145,4 +149,26 @@ Room.prototype.checkCollision = function(object)
 	x+=totalOverlap[0];
 	y+=totalOverlap[1];
 	return {"roomChange":false,"x":x,"y":y,"room":-1};
+}
+
+Room.prototype.checkCollide = function(object)
+{
+	var x,y,w,h;
+	x=object.x;
+	y=object.y;
+	w=object.w;
+	h=object.h;
+	var x2,y2,w2,h2;
+	for(var i = 0; i < this.walls.length;i++)
+	{
+		x2=this.walls[i].x;
+		y2=this.walls[i].y;
+		w2=this.walls[i].w;
+		h2=this.walls[i].h;
+		if(x+w>x2&&x<x2+w2&&y+h>y2&&y<y2+h2)
+		{
+			return true;
+		}
+	}
+	return false;
 }

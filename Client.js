@@ -160,6 +160,27 @@ Client.prototype.updatePlayer = function(data)
 	this.SendMessage(message);
 }
 
+Client.prototype.fireBullet = function(data)
+{
+	var messageObject = {"type":"bulletFired","uniqueID":this.uniqueID,"data":data};
+	var message = JSON.stringify(messageObject);
+	this.SendMessage(message);
+}
+
+Client.prototype.playerDied = function()
+{
+	var messageObject = {"type":"playerDied","uniqueID":this.uniqueID,"x":game.player.x,"y":game.player.y,"room":game.player.room,"team":main.playerTeam};
+	var message = JSON.stringify(messageObject);
+	this.SendMessage(message);
+}
+
+Client.prototype.flagReturned = function()
+{
+	var messageObject = {"type":"flagReturned","uniqueID":this.uniqueID,"team":main.playerTeam};
+	var message = JSON.stringify(messageObject);
+	this.SendMessage(message);
+}
+
 Client.prototype.handleMessage = function(evt)
 {
 	var msg = JSON.parse(evt.data);
@@ -258,6 +279,52 @@ Client.prototype.handleMessage = function(evt)
 			playerGameData[msg.data.uniqueID] = msg.data.update;
 		}
 	}
+	else if(msg.type == "bulletFired")
+	{
+		console.log("type: "+ msg.type);
+		console.log("data: "+ msg.data);
+		var created = false;
+		for(var i = 0; i < game.bullets.length&&!created;i++)
+		{
+			if(game.bullets[i]==null)
+			{
+				game.bullets[i]= new Bullet(msg.data.x,msg.data.y);
+				game.bullets[i].team=msg.data.team;
+				game.bullets[i].room=msg.data.room;
+				game.bullets[i].dir=msg.data.direction;
+				created=true
+			}
+		}
+		if(!created)
+		{
+			var num = game.bullets.length;
+			game.bullets[num]= new Bullet(msg.data.x,msg.data.y);
+			game.bullets[num].team=msg.data.team;
+			game.bullets[num].room=msg.data.room;
+			game.bullets[num].dir=msg.data.direction;
+		}
+	}
+	else if(msg.type == "flagDropped")
+	{
+		if(msg.data.uniqueID==this.uniqueID)
+		{
+			game.player.gotFlag = 0;
+		}
+		if(msg.data.team == "red")
+		{
+			game.blueFlagCaptured = false;
+			game.blueFlag.room=msg.data.room;
+			game.blueFlag.x=msg.data.x;
+			game.blueFlag.y=msg.data.y;
+		}
+		if(msg.data.team == "blue")
+		{
+			game.redFlagCaptured = false;
+			game.redFlag.room=msg.data.room;
+			game.redFlag.x=msg.data.x;
+			game.redFlag.y=msg.data.y;
+		}
+	}
 	else if(msg.type == "flagGrabbed")
 	{
 		console.log("type: "+ msg.type);
@@ -285,12 +352,45 @@ Client.prototype.handleMessage = function(evt)
 			game.redPoints+=1;
 			game.blueFlagCaptured = false;
 			game.redFlagCaptured = false;
+			game.blueFlag.x=game.blueCapturePoint[0];
+			game.blueFlag.y=game.blueCapturePoint[1];
+			game.blueFlag.room=game.blueCapturePoint[2];
+			game.redFlag.x=game.redCapturePoint[0];
+			game.redFlag.y=game.redCapturePoint[1];
+			game.redFlag.room=game.redCapturePoint[2];
 		}
 		if(msg.data.team == "blue")
 		{
 			game.bluePoints+=1;
 			game.blueFlagCaptured = false;
 			game.redFlagCaptured = false;
+			game.blueFlag.x=game.blueCapturePoint[0];
+			game.blueFlag.y=game.blueCapturePoint[1];
+			game.blueFlag.room=game.blueCapturePoint[2];
+			game.redFlag.x=game.redCapturePoint[0];
+			game.redFlag.y=game.redCapturePoint[1];
+			game.redFlag.room=game.redCapturePoint[2];
+		}
+	}
+	else if(msg.type == "flagReturned")
+	{
+		console.log("type: "+ msg.type);
+		console.log("data: "+ msg.data);
+		if(msg.data.uniqueID==this.uniqueID)
+		{
+			game.player.gotFlag = 0;
+		}
+		if(msg.data.team == "red")
+		{
+			game.redFlag.x=game.redCapturePoint[0];
+			game.redFlag.y=game.redCapturePoint[1];
+			game.redFlag.room=game.redCapturePoint[2];
+		}
+		if(msg.data.team == "blue")
+		{
+			game.blueFlag.x=game.blueCapturePoint[0];
+			game.blueFlag.y=game.blueCapturePoint[1];
+			game.blueFlag.room=game.blueCapturePoint[2];
 		}
 	}
 	else if(msg.type == "doorCreated")

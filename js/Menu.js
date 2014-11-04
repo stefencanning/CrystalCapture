@@ -5,8 +5,8 @@ function Menu()
 Menu.prototype.Initialise = function()
 {
 	menu.options =[];
-	menu.options[0]=[20,5,"Matchmaking",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
-	menu.options[1]=[20,30,"Character Customisation",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
+	menu.options[0]=[20,5,"Matchmaking",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();}];
+	menu.options[1]=[20,30,"Character Customisation",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();}];
 	menu.options[2]=[20,55,"Quit",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
 }
 
@@ -43,6 +43,10 @@ Menu.prototype.Draw = function()
 
 
 Menu.prototype.onDoubleClick = function(e)
+{
+}
+
+Menu.prototype.onMouseMove = function(e)
 {
 }
 

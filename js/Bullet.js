@@ -1,4 +1,4 @@
-var Directions={left:0,up:1,right:2,down:3};
+
 function Bullet(x, y)
 {
 	this.x = x;
@@ -6,6 +6,8 @@ function Bullet(x, y)
 	this.w = 4;
 	this.h = 4;
 	this.team="";
+	this.room=0;
+	this.dir=0;
 }
 
 Bullet.prototype.getX = function()
@@ -25,19 +27,19 @@ Bullet.prototype.setPos = function(x, y)
 
 Bullet.prototype.update = function()
 {
-	if(this.dir==Directions.left)
+	if(this.dir==BulletDirections["left"])
 	{
 		this.x-=3;
 	}
-	if(this.dir==Directions.up)
+	if(this.dir==BulletDirections["up"])
 	{
 		this.y-=3;
 	}
-	if(this.dir==Directions.right)
+	if(this.dir==BulletDirections["right"])
 	{
 		this.x+=3;
 	}
-	if(this.dir==Directions.down)
+	if(this.dir==BulletDirections["down"])
 	{
 		this.y+=3;
 	}
