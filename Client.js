@@ -5,6 +5,7 @@ function Client()
 	CLIENT = this;
 	var host='149.153.102.40';
 	//var host='192.168.0.18';
+	//var host='46.7.218.238';
 	var port=8080;
 	this.me;
 
@@ -376,10 +377,10 @@ Client.prototype.handleMessage = function(evt)
 	{
 		console.log("type: "+ msg.type);
 		console.log("data: "+ msg.data);
-		if(msg.data.uniqueID==this.uniqueID)
+		/*if(msg.data.uniqueID==this.uniqueID)
 		{
 			game.player.gotFlag = 0;
-		}
+		}*/
 		if(msg.data.team == "red")
 		{
 			game.redFlag.x=game.redCapturePoint[0];
