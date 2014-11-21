@@ -305,7 +305,7 @@ Game.prototype.gameLoop = function ()
 				{
 					for(var j = 0; j < blueTeam.length;j++)
 					{
-						if(playerGameData[blueTeam[j]]!=0)
+						if(playerGameData[blueTeam[j]]!=0&&game.bullets[i] != null)
 						{
 							if(playerGameData[blueTeam[j]].room==game.bullets[i].room)
 							{

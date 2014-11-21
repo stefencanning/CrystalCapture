@@ -10,7 +10,9 @@ class Session:
 		self.blue=list()
 		self.red=list()
 		self.blueCarrier=0
+		self.blueData={}
 		self.redCarrier=0
+		self.redData={}
 		self.hostID = 0
 		self.playerTeam={}
 		self.rooms={}
@@ -64,7 +66,7 @@ class Session:
 		success = self.rooms[data['room']].createDoor(data['x'],data['y'])
 		if(success):
 			if(len(self.rooms) > 15):
-				num = random.randint(0,3)
+				num = random.randint(0,0)
 				print("rand num for room was: %s" %num)
 				if(num == 0):
 					connectData={"success":False}
@@ -128,3 +130,22 @@ class Session:
 				self.redCarrier=0
 				return True
 		return False
+	
+	def updatePlayer(self,uniqueID,data):
+		if(uniqueID==self.blueCarrier):
+			self.blueData[0]=data['x']
+			self.blueData[1]=data['y']
+			self.blueData[2]=data['room']
+		if(uniqueID==self.redCarrier):
+			self.redData[0]=data['x']
+			self.redData[1]=data['y']
+			self.redData[2]=data['room']
+	
+	def disconnectedPlayer(self,uniqueID):
+		if(self.blueCarrier==uniqueID):
+			self.blueCarrier=0
+			return {"success":True,"x":self.blueData[0],"y":self.blueData[1],"room":self.blueData[2],"team":"blue"}
+		if(self.redCarrier==uniqueID):
+			self.redCarrier=0
+			return {"success":True,"x":self.redData[0],"y":self.redData[1],"room":self.redData[2],"team":"red"}
+		return {"success":False}

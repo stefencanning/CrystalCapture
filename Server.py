@@ -124,6 +124,7 @@ class MessageHandler:
 				self.sendMessage(player,"flagDropped",data)
 				
 	def updatePlayerData(self,data):
+		playerSession[data['uniqueID']].updatePlayer(data['uniqueID'],data['update'])
 		for player in playerSession[data['uniqueID']].players:
 			self.sendMessage(player,data['type'],{"name":playerName[data['uniqueID']],"uniqueID":data['uniqueID'],"update":data['update']})
 
@@ -217,7 +218,12 @@ class MessageHandler:
 			msg=json.dumps(msg)
 			playerConnections[uniqueID].write_message(msg)
 		except:
-			print("Player " + str(uniqueID) + " isn't connected")
+			#print("Player " + str(uniqueID) + " isn't connected")
+			success = playerSession[uniqueID].disconnectedPlayer(uniqueID)
+			if(success['success']):
+				for player in playerSession[uniqueID].players:
+					self.sendMessage(player,"flagDropped",success)
+			
 	
 	def sendToAll(self, message):
 		try:

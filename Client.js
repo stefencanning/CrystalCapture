@@ -311,6 +311,10 @@ Client.prototype.handleMessage = function(evt)
 		{
 			game.player.gotFlag = 0;
 		}
+		else
+		{
+			playerGameData[msg.data.uniqueID].flag=0;
+		}
 		if(msg.data.team == "red")
 		{
 			game.blueFlagCaptured = false;
