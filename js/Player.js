@@ -9,6 +9,7 @@ function Player(x, y)
 	this.rotation=0;
 	this.gotFlag=0;
 	this.doorTime=0;
+	this.fireTime=0;
 }
 
 Player.prototype.getX = function()
@@ -42,7 +43,8 @@ Player.prototype.draw = function(offSetX,offSetY)
 	ctx.fillStyle=rgb(0,255,0);	
 	ctx.fillRect(this.x+offSetX,this.y-10+offSetY,this.w*(this.health/100),5);
 	ctx.fillStyle=rgb(0,0,0);	
-	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
+	//ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
+	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],0,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
 	if(main.playerTeam=="blue")
 	{
 		ctx.fillStyle=rgb(0,0,255);
@@ -51,10 +53,10 @@ Player.prototype.draw = function(offSetX,offSetY)
 	{
 		ctx.fillStyle=rgb(255,0,0);
 	}
-	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,5);
+	/*ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,5);
 	ctx.fillRect(this.x+offSetX,this.y+offSetY,5,this.h);
 	ctx.fillRect(this.x+offSetX+this.w-5,this.y+offSetY,5,this.h);
-	ctx.fillRect(this.x+offSetX,this.y+offSetY+this.h-5,this.w,5);
+	ctx.fillRect(this.x+offSetX,this.y+offSetY+this.h-5,this.w,5);*/
 	if(this.gotFlag==1)
 	{
 		if(main.playerTeam=="blue")

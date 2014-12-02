@@ -36,6 +36,7 @@ Game.prototype.Initialise=function ()
 	game.bluePoints=0;
 	game.players=[];
 	game.bullets=[];
+	game.timeSinceLastUpdate=0;
 }
 
 Game.prototype.CreateStartRooms=function()
@@ -88,50 +89,60 @@ Game.prototype.gameLoop = function ()
 	if(game.keys["w"])
 	{
 		game.player.y-=1;
+		game.player.rotation=3;
 	}
 	if(game.keys["s"])
 	{
 		game.player.y+=1;
+		game.player.rotation=0;
 	}
 	if(game.keys["a"])
 	{
 		game.player.x-=1;
+		game.player.rotation=1;
 	}
 	if(game.keys["d"])
 	{
 		game.player.x+=1;
+		game.player.rotation=2;
 	}
 	if(game.keys["space"])
 	{
-		var dir;
-		var xDif = mousePos["x"]-(canvas.width/2);
-		var yDif = mousePos["y"]-(canvas.height/2);
-		if(Math.abs(xDif)<Math.abs(yDif))
+		if(game.player.fireTime<=0)
 		{
-			if(yDif<0)
+			var dir;
+			var xDif = mousePos["x"]-(canvas.width/2);
+			var yDif = mousePos["y"]-(canvas.height/2);
+			if(Math.abs(xDif)<Math.abs(yDif))
 			{
-				dir = BulletDirections["up"];
+				if(yDif<0)
+				{
+					dir = BulletDirections["up"];
+				}
+				else
+				{
+					dir = BulletDirections["down"];
+				}
 			}
 			else
 			{
-				dir = BulletDirections["down"];
+				if(xDif<0)
+				{
+					dir = BulletDirections["left"];
+				}
+				else
+				{
+					dir = BulletDirections["right"];
+				}
 			}
+			CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"room":game.player.room,"team":main.playerTeam});
+			game.player.fireTime=0.5;
 		}
-		else
-		{
-			if(xDif<0)
-			{
-				dir = BulletDirections["left"];
-			}
-			else
-			{
-				dir = BulletDirections["right"];
-			}
-		}
-		CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"room":game.player.room,"team":main.playerTeam});
 	}
 	if(game.player.doorTime>0)
 		game.player.doorTime-=curTime.getTime()-time.getTime();
+	if(game.player.fireTime>0)
+		game.player.fireTime-=curTime.getTime()-time.getTime();
 	var newPos = game.rooms[game.player.room].checkCollision(game.player);
 	if(newPos.roomChange)
 	{
@@ -267,7 +278,7 @@ Game.prototype.gameLoop = function ()
 						&&game.player.y+game.player.h>game.bullets[i].y
 						&&game.player.y<game.bullets[i].y+game.bullets[i].h)
 						{
-							game.player.health-=2;
+							game.player.health-=20;
 							game.bullets[i] = null;
 						}
 					}
@@ -337,8 +348,12 @@ Game.prototype.gameLoop = function ()
 			game.player.room=1;
 		}
 	}
-	var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room};
-	CLIENT.updatePlayer(msg);
+	game.timeSinceLastUpdate+=curTime.getTime()-time.getTime();
+	if(game.timeSinceLastUpdate>1/30)
+	{
+		var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room};
+		CLIENT.updatePlayer(msg);
+	}
 	game.Draw();
 }
 
@@ -427,6 +442,7 @@ Game.prototype.onKeyUp = function(e)
 
 Game.prototype.Draw = function()
 {
+	
 	ctx.clearRect(0,0,canvas.width, canvas.height)
 	
 	ctx.lineWidth=10;
@@ -464,11 +480,11 @@ Game.prototype.Draw = function()
 	game.rooms[game.player.room].draw(offSetX,offSetY);
 	if(game.player.room==game.redCapturePoint[2])
 	{
-		ctx.drawImage(redCrystalBase,game.redCapturePoint[0]+offSetX,game.redCapturePoint[1]+offSetY-32);
+		ctx.drawImage(images.redCrystalBase,game.redCapturePoint[0]+offSetX,game.redCapturePoint[1]+offSetY-32);
 	}
 	if(game.player.room==game.blueCapturePoint[2])
 	{
-		ctx.drawImage(blueCrystalBase,game.blueCapturePoint[0]+offSetX,game.blueCapturePoint[1]+offSetY-32);
+		ctx.drawImage(images.blueCrystalBase,game.blueCapturePoint[0]+offSetX,game.blueCapturePoint[1]+offSetY-32);
 	}
 	for(var i = 0; i < blueTeam.length;i++)
 	{
@@ -485,7 +501,7 @@ Game.prototype.Draw = function()
 					ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerGameData[blueTeam[i]].flag==1)
 					{
-						ctx.drawImage(redGrabbedCrystal,playerGameData[blueTeam[i]].x+offSetX+8,playerGameData[blueTeam[i]].y+offSetY);
+						ctx.drawImage(images.redGrabbedCrystal,playerGameData[blueTeam[i]].x+offSetX+8,playerGameData[blueTeam[i]].y+offSetY);
 						/*ctx.fillStyle=rgb(255,0,0);
 						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,10);	
 						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,5,game.player.h);	*/
@@ -510,7 +526,7 @@ Game.prototype.Draw = function()
 					ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerGameData[redTeam[i]].flag==1)
 					{
-						ctx.drawImage(blueGrabbedCrystal,playerGameData[redTeam[i]].x+offSetX+8,playerGameData[redTeam[i]].y+offSetY);
+						ctx.drawImage(images.blueGrabbedCrystal,playerGameData[redTeam[i]].x+offSetX+8,playerGameData[redTeam[i]].y+offSetY);
 						/*ctx.fillStyle=rgb(0,0,255);
 						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,10);	
 						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,5,game.player.h);	*/
@@ -539,7 +555,7 @@ Game.prototype.Draw = function()
 	{
 		if(game.player.room==game.blueFlag.room)
 		{
-			ctx.drawImage(blueStandingCrystal,game.blueFlag.x+offSetX,game.blueFlag.y+offSetY-32);
+			ctx.drawImage(images.blueStandingCrystal,game.blueFlag.x+offSetX,game.blueFlag.y+offSetY-32);
 			//game.blueFlag.draw(offSetX,offSetY);
 		}
 	}
@@ -547,7 +563,7 @@ Game.prototype.Draw = function()
 	{
 		if(game.player.room==game.redFlag.room)
 		{
-			ctx.drawImage(redStandingCrystal,game.redFlag.x+offSetX,game.redFlag.y+offSetY-32);
+			ctx.drawImage(images.redStandingCrystal,game.redFlag.x+offSetX,game.redFlag.y+offSetY-32);
 			//game.redFlag.draw(offSetX,offSetY);
 		}
 	}
@@ -561,14 +577,14 @@ Game.prototype.Draw = function()
 	ctx.fillText(game.redPoints, 760, 50);
 	if(game.redFlagCaptured)
 	{
-		ctx.drawImage(redGrabbedCrystal,250,34);
+		ctx.drawImage(images.redGrabbedCrystal,250,34);
 	}
 	
 	ctx.fillStyle = rgb(0, 0, 255);
 	ctx.fillText(game.bluePoints, 200, 50);
 	if(game.blueFlagCaptured)
 	{
-		ctx.drawImage(blueGrabbedCrystal,710,34);
+		ctx.drawImage(images.blueGrabbedCrystal,710,34);
 	}
 	
 }
