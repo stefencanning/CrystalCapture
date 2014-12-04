@@ -9,6 +9,7 @@ function Images()
 Images.prototype.Initialise = function()
 {
 	images.BodyImages();
+	images.HairImages();
 	images.CrystalImages();
 	
 }
@@ -82,4 +83,20 @@ Images.prototype.CrystalImages = function()
 	images.blueCaptureImg[0].src = 'img/crystal/blueCaptureBot.png';
 	images.blueCaptureImg[1].src = 'img/crystal/blueCaptureMid.png';
 	images.blueCaptureImg[2].src = 'img/crystal/blueCaptureTop.png';
+}
+
+Images.prototype.HairImages = function()
+{
+	images.hair=[[]];
+	strGen="male ";
+	for(i=0;i<2;i++)
+	{
+		images.hair[i]=[];
+		for(k=0;k<100;k++)
+		{
+			images.hair[i][k]=new Image();
+			images.hair[i][k].src="img/hair/$hair "+strGen+"("+(k+1)+").png";
+		}
+		strGen="female ";
+	}
 }

@@ -18,13 +18,20 @@ CharCust.prototype.Draw = function()
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="20px Lucida Console";
 	ctx.strokeStyle=rgb(0,0,255);
-	ctx.fillText("skin colour", 50, 30);
-	ctx.fillText("<-", 5, 30);
-	ctx.fillText("->", 175, 30);
+	ctx.fillText("skin colour", 50, 50);
+	ctx.fillText("<-", 5, 50);
+	ctx.fillText("->", 175, 50);
 	ctx.fillText("gender", 50, 100);
 	ctx.fillText("<-", 5, 100);
 	ctx.fillText("->", 175, 100);
-	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],canvas.width/2,canvas.height/2);
+	ctx.fillText("hair", 50, 150);
+	ctx.fillText("<-", 5, 150);
+	ctx.fillText("->", 175, 150);
+	for(i = 0; i < 4;i++)
+	{
+		ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,i*32,32,32,canvas.width/2,canvas.height/2+(i*32),32,32);
+		ctx.drawImage(images.hair[main.playerGender][main.playerHair],main.animation[main.frame]*32,i*32,32,32,canvas.width/2,canvas.height/2+(i*32),32,32);
+	}
 }
 
 
@@ -38,7 +45,7 @@ CharCust.prototype.onMouseMove = function(e)
 
 CharCust.prototype.onMouseClick = function(e)
 {
-	if(e.x>5&&e.x<50&&e.y>10&&e.y<30)
+	if(e.x>5&&e.x<50&&e.y>20&&e.y<50)
 	{
 		main.playerColour-=1;
 		if(main.playerColour<0)
@@ -46,7 +53,7 @@ CharCust.prototype.onMouseClick = function(e)
 			main.playerColour=4;
 		}
 	}
-	if(e.x>175&&e.x<210&&e.y>10&&e.y<30)
+	if(e.x>175&&e.x<210&&e.y>20&&e.y<50)
 	{
 		main.playerColour+=1;
 		if(main.playerColour>4)
@@ -68,6 +75,22 @@ CharCust.prototype.onMouseClick = function(e)
 		if(main.playerGender>1)
 		{
 			main.playerGender=0;
+		}
+	}
+	if(e.x>5&&e.x<50&&e.y>120&&e.y<150)
+	{
+		main.playerHair-=1;
+		if(main.playerHair<0)
+		{
+			main.playerHair=100;
+		}
+	}
+	if(e.x>175&&e.x<210&&e.y>120&&e.y<150)
+	{
+		main.playerHair+=1;
+		if(main.playerHair>99)
+		{
+			main.playerHair=0;
 		}
 	}
 	if(e.x>canvas.width/2&&e.y>canvas.height/2)

@@ -349,7 +349,7 @@ Game.prototype.gameLoop = function ()
 		}
 	}
 	game.timeSinceLastUpdate+=curTime.getTime()-time.getTime();
-	if(game.timeSinceLastUpdate>1/30)
+	if(game.timeSinceLastUpdate>1000/30)
 	{
 		var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room};
 		CLIENT.updatePlayer(msg);

@@ -16,6 +16,10 @@ function Main()
 	main.playerGender=0;
 	main.playerBodyType=0;
 	main.playerColour=0;
+	main.playerHair=0;
+	main.animation=[0,1,2,1];
+	main.frame = 0;
+	main.frameTime=0;
 	main.mode = MENU;
 	//game= new Game();	
 	images = new Images();
@@ -61,6 +65,13 @@ Main.prototype.initCanvas = function()
 
 Main.prototype.mainLoop = function ()
 {
+	var curTime=new Date();
+	main.frameTime+=curTime-time;
+	if(main.frameTime>1000/5)
+	{
+		main.frameTime=0;
+		main.frame=(main.frame+1)%4;
+	}
 	if(main.mode == GAMESELECT)
 	{
 		matchmaking.Loop();

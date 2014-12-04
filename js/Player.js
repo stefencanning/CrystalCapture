@@ -44,7 +44,9 @@ Player.prototype.draw = function(offSetX,offSetY)
 	ctx.fillRect(this.x+offSetX,this.y-10+offSetY,this.w*(this.health/100),5);
 	ctx.fillStyle=rgb(0,0,0);	
 	//ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
-	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],0,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
+	//ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],0,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
+	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,i*32,32,32,canvas.width/2,canvas.height/2+(i*32),32,32);
+	ctx.drawImage(images.hair[main.playerGender][main.playerHair],main.animation[main.frame]*32,i*32,32,32,canvas.width/2,canvas.height/2+(i*32),32,32);
 	if(main.playerTeam=="blue")
 	{
 		ctx.fillStyle=rgb(0,0,255);
