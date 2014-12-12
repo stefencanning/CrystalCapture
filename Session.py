@@ -7,6 +7,7 @@ class Session:
 	def __init__(self):		
 		self.gameState = Session.WAITING_FOR_PLAYERS
 		self.players=list()
+		self.playerOutfits={}
 		self.blue=list()
 		self.red=list()
 		self.blueCarrier=0
@@ -66,15 +67,18 @@ class Session:
 		success = self.rooms[data['room']].createDoor(data['x'],data['y'])
 		if(success):
 			if(len(self.rooms) > 15):
-				num = random.randint(0,0)
+				num = random.randint(0,3)
 				print("rand num for room was: %s" %num)
 				if(num == 0):
 					connectData={"success":False}
-					while(connectData['success']==False):
+					roomCheckCounter = 0
+					while(connectData['success']==False and roomCheckCounter<20):
 						num = random.randint(10,len(self.rooms)-1)
 						connectData = self.rooms[num].addDoor(0);
-					print("room to connect was: %s" %num)
-					return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y']}#,"newRoom":self.rooms[num].walls
+						roomCheckCounter+=1
+					if(connectData['success']==True):
+						print("room to connect was: %s" %num)
+						return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y']}#,"newRoom":self.rooms[num].walls
 			num = len(self.rooms)
 			self.rooms[num] = Room()
 			self.rooms[num].createBaseRooms()

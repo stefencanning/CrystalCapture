@@ -4,6 +4,7 @@ var currentSession=[];
 var redTeam = [];
 var blueTeam = [];
 var playerGameData = [];
+var playerOutfit = [];
 var mousePos = [];
 var BulletDirections={"left":0,"up":1,"right":2,"down":3};
 var time=0;
@@ -17,6 +18,10 @@ function Main()
 	main.playerBodyType=0;
 	main.playerColour=0;
 	main.playerHair=0;
+	main.playerClothes=0;
+	main.playerShowHair=1;
+	main.playerBeard=0;
+	main.playerShowBeard=1;
 	main.animation=[0,1,2,1];
 	main.frame = 0;
 	main.frameTime=0;
@@ -66,8 +71,7 @@ Main.prototype.initCanvas = function()
 Main.prototype.mainLoop = function ()
 {
 	var curTime=new Date();
-	main.frameTime+=curTime-time;
-	if(main.frameTime>1000/5)
+	if(main.frameTime>1000/6)
 	{
 		main.frameTime=0;
 		main.frame=(main.frame+1)%4;
@@ -86,6 +90,7 @@ Main.prototype.mainLoop = function ()
 	}
 	else if(main.mode == CHARCUST)
 	{
+		main.frameTime+=curTime-time;
 		charCust.Loop();
 	}
 	time = new Date();

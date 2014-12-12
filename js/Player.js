@@ -45,8 +45,16 @@ Player.prototype.draw = function(offSetX,offSetY)
 	ctx.fillStyle=rgb(0,0,0);	
 	//ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
 	//ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],0,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
-	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,i*32,32,32,canvas.width/2,canvas.height/2+(i*32),32,32);
-	ctx.drawImage(images.hair[main.playerGender][main.playerHair],main.animation[main.frame]*32,i*32,32,32,canvas.width/2,canvas.height/2+(i*32),32,32);
+	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
+	if(main.playerShowHair)
+	{
+		ctx.drawImage(images.hair[main.playerGender][main.playerHair],main.animation[main.frame]*32,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
+	}
+	if(main.playerShowBeard)
+	{
+		ctx.drawImage(images.beard[main.playerBeard],main.animation[main.frame]*32,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
+	}
+	ctx.drawImage(images.clothes[main.playerGender][main.playerClothes],main.animation[main.frame]*32,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
 	if(main.playerTeam=="blue")
 	{
 		ctx.fillStyle=rgb(0,0,255);
@@ -63,11 +71,11 @@ Player.prototype.draw = function(offSetX,offSetY)
 	{
 		if(main.playerTeam=="blue")
 		{
-			ctx.drawImage(redGrabbedCrystal,this.x+offSetX+8,this.y+offSetY);
+			ctx.drawImage(images.redGrabbedCrystal,this.x+offSetX+8,this.y+offSetY);
 		}
 		if(main.playerTeam=="red")
 		{
-			ctx.drawImage(blueGrabbedCrystal,this.x+offSetX+8,this.y+offSetY);
+			ctx.drawImage(images.blueGrabbedCrystal,this.x+offSetX+8,this.y+offSetY);
 		}
 	}
 }

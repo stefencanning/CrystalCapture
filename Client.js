@@ -100,7 +100,11 @@ Client.prototype.createDoor = function(x,y,room)
 
 Client.prototype.join = function(hostID)
 {
-	var messageObject = {"type":"join","uniqueID":this.uniqueID,"hostID":hostID};
+	var messageObject = {"type":"join","uniqueID":this.uniqueID,"hostID":hostID,
+						"outfit":{"gender":main.playerGender,"body":main.playerBodyType,
+								"colour":main.playerColour,"hairStyle":main.playerHair,
+								"clothes":main.playerClothes,"hair":main.playerShowHair,
+								"beardStyle":main.playerBeard,"beard":main.playerShowBeard}};
 	var message = JSON.stringify(messageObject);
 	this.SendMessage(message);
 }
@@ -142,7 +146,11 @@ Client.prototype.getGames = function()
 
 Client.prototype.createGame = function()
 {
-	var messageObject = {"type":"createGame","uniqueID":this.uniqueID};
+	var messageObject = {"type":"createGame","uniqueID":this.uniqueID,
+						"outfit":{"gender":main.playerGender,"body":main.playerBodyType,
+								"colour":main.playerColour,"hairStyle":main.playerHair,
+								"clothes":main.playerClothes,"hair":main.playerShowHair,
+								"beardStyle":main.playerBeard,"beard":main.playerShowBeard}};
 	var message = JSON.stringify(messageObject);
 	this.SendMessage(message);
 }
@@ -226,12 +234,14 @@ Client.prototype.handleMessage = function(evt)
 				redTeam[redTeam.length] = msg.data.uniqueID;
 				currentSession[msg.data.uniqueID] = msg.data.name
 				playerGameData[msg.data.uniqueID]=0;
+				playerOutfit[msg.data.uniqueID]=msg.data.outfit;
 			}
 			else if(msg.data.team == "blue")
 			{
 				blueTeam[blueTeam.length] = msg.data.uniqueID;
 				currentSession[msg.data.uniqueID] = msg.data.name
 				playerGameData[msg.data.uniqueID]=0;
+				playerOutfit[msg.data.uniqueID]=msg.data.outfit;
 			}
 		}
 	}
@@ -251,6 +261,7 @@ Client.prototype.handleMessage = function(evt)
 				redTeam[redTeam.length] = msg.data[i].uniqueID;
 				currentSession[msg.data[i].uniqueID] = msg.data[i].name
 				playerGameData[msg.data[i].uniqueID]=0;
+				playerOutfit[msg.data[i].uniqueID]=msg.data[i].outfit;
 			}
 			else if(msg.data[i].team == "blue")
 			{
@@ -261,6 +272,7 @@ Client.prototype.handleMessage = function(evt)
 				blueTeam[blueTeam.length] = msg.data[i].uniqueID;
 				currentSession[msg.data[i].uniqueID] = msg.data[i].name
 				playerGameData[msg.data[i].uniqueID]=0;
+				playerOutfit[msg.data[i].uniqueID]=msg.data[i].outfit;
 			}
 		}
 	}

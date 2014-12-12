@@ -59,7 +59,7 @@ class MessageHandler:
 		if type == "connect":
 			self.addToConnectionList(socket, data)
 		elif type == "join":
-			self.addToGame(data['uniqueID'],data['hostID'])
+			self.addToGame(data['uniqueID'],data['hostID'],data['outfit'])
 		elif type == "startGame":
 			started = playerSession[data['uniqueID']].startGame(data['uniqueID'])
 			if(started):
@@ -82,7 +82,7 @@ class MessageHandler:
 		elif type == "getGames":
 			self.getWaitingGames(data['uniqueID'])
 		elif type == "createGame":
-			self.createGame(data['uniqueID'])
+			self.createGame(data['uniqueID'],data['outfit'])
 		elif type == "updatePlayer":
 			self.updatePlayerData(data)
 		elif type == "createDoor":
@@ -172,22 +172,24 @@ class MessageHandler:
 		return 0
 		#winlist.update({'username' : pid}, {'username' : pid,'wins' : (self.findWins(pid) + 1)})
 	
-	def createGame(self,uniqueID):
+	def createGame(self,uniqueID,outfit):
 		s = Session()
 		session.append(s)
 		#= session[len(session)-1]
 		success = s.addPlayer(uniqueID)
 		print(success)
 		if(success):
+			s.playerOutfits[uniqueID]=outfit
 			self.sendMessage(uniqueID,"joinedGame",uniqueID)
 			playerSession[uniqueID] = s
 			self.joinedGame(uniqueID)
 			self.getGamePlayers(uniqueID)
 		
-	def addToGame(self,uniqueID,gameHostId):
+	def addToGame(self,uniqueID,gameHostId,outfit):
 		s = playerSession[gameHostId]
 		success = s.addPlayer(uniqueID)
 		if(success):
+			s.playerOutfits[uniqueID]=outfit
 			self.sendMessage(uniqueID,"joinedGame",gameHostId)
 			playerSession[uniqueID] = s
 			self.joinedGame(uniqueID)
@@ -196,7 +198,7 @@ class MessageHandler:
 	def getGamePlayers(self, uniqueID):
 		playerList = list()
 		for player in playerSession[uniqueID].players:
-			playerList.append({"name":playerName[player],"uniqueID":player,"team":playerSession[uniqueID].playerTeam[player]})
+			playerList.append({"name":playerName[player],"uniqueID":player,"team":playerSession[uniqueID].playerTeam[player],"outfit":playerSession[uniqueID].playerOutfits[player]})
 			print(playerName[player])
 			print(player)
 			print(playerSession[uniqueID].playerTeam[player])
@@ -207,7 +209,7 @@ class MessageHandler:
 	
 	def joinedGame(self, uniqueID):
 		for player in playerSession[uniqueID].players:
-			self.sendMessage(player,"playerJoined",{"name":playerName[uniqueID],"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
+			self.sendMessage(player,"playerJoined",{"name":playerName[uniqueID],"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID],"outfit":playerSession[uniqueID].playerOutfits[uniqueID]})
 	
 	def sendMessage(self,uniqueID,type,data):
 		try:
