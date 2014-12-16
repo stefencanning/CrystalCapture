@@ -40,9 +40,9 @@ Player.prototype.draw = function(offSetX,offSetY)
 {
 	ctx.fillStyle=rgb(0,0,0);
 	ctx.fillRect(this.x-1+offSetX,this.y-11+offSetY,this.w+2,7);
-	ctx.fillStyle=rgb(0,255,0);	
+	ctx.fillStyle=rgb(0,255,0);
 	ctx.fillRect(this.x+offSetX,this.y-10+offSetY,this.w*(this.health/100),5);
-	ctx.fillStyle=rgb(0,0,0);	
+	ctx.fillStyle=rgb(0,0,0);
 	//ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
 	//ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],0,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
 	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);

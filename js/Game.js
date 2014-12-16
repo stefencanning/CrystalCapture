@@ -75,8 +75,10 @@ Game.prototype.CreateStartRooms=function()
 	}
 	game.rooms[0].oriColor="blue";
 	game.rooms[0].foundColor="blue";
+	game.rooms[0].distBlue=0;
 	game.rooms[1].oriColor="red";
 	game.rooms[1].foundColor="red";
+	game.rooms[1].distRed=0;
 }
 
 Game.prototype.initCanvas=function ()
@@ -157,6 +159,7 @@ Game.prototype.gameLoop = function ()
 	var newPos = game.rooms[game.player.room].checkCollision(game.player);
 	if(newPos.roomChange)
 	{
+		game.rooms[newPos.room].checkRoomDist();
 		if(game.rooms[game.player.room].foundColorValue-5>game.rooms[newPos.room].foundColorValue)
 		{
 			game.rooms[newPos.room].foundColor = game.rooms[game.player.room].foundColor;
@@ -615,6 +618,11 @@ Game.prototype.Draw = function()
 	
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="20px Lucida Console";
+	
+	ctx.fillStyle = rgb(0, 0, 255);
+	ctx.fillText(game.rooms[game.player.room].distBlue, 50, 50);
+	ctx.fillStyle = rgb(255, 0, 0);
+	ctx.fillText(game.rooms[game.player.room].distRed, 150, 50);
 	
 	ctx.fillStyle = rgb(255, 0, 0);
 	ctx.fillText(game.redPoints, 760, 50);
