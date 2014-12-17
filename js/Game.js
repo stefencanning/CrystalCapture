@@ -638,5 +638,18 @@ Game.prototype.Draw = function()
 		ctx.drawImage(images.blueGrabbedCrystal,710,34);
 	}
 	
+	ctx.fillStyle = rgb(0, 0, 0);
+	ctx.font="16px Lucida Console";
+	ctx.fillText("hints:", 700, 75);
+	ctx.fillText("click on walls", 700, 100);
+	ctx.fillText("create doors", 700, 120);
+	ctx.fillText("travel through doors", 700, 140);
+	ctx.fillText("find the enemy base", 700, 160);
+	ctx.fillText("steal the enemy crystal", 700, 180);
+	ctx.fillText("bring crystal to base", 700, 200);
+	ctx.fillText("space to shoot", 700, 220);
+	ctx.fillText("kill enemies", 700, 240);
+	ctx.fillText("keep your crystal safe", 700, 260);
+	
 }
 	
