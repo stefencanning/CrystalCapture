@@ -125,6 +125,26 @@ Room.prototype.checkRoomDist = function()
 					}
 				}
 			}
+			/*
+			if(this.distBlue != -1)
+			{
+				var dist = game.rooms[this.walls[i].connectsTo[0]].distBlue;
+				if(dist-1 > this.distBlue||dist==-1)
+				{
+					game.rooms[this.walls[i].connectsTo[0]].distBlue=this.distBlue+1;
+					game.rooms[this.walls[i].connectsTo[0]].checkRoomDist();
+				}
+			}
+			if(this.distRed != -1)
+			{
+				var dist = game.rooms[this.walls[i].connectsTo[0]].distRed;
+				if(dist-1> this.distRed||dist==-1)
+				{
+					game.rooms[this.walls[i].connectsTo[0]].distRed=this.distRed+1;
+					game.rooms[this.walls[i].connectsTo[0]].checkRoomDist();
+				}
+			}
+			*/
 		}
 	}
 }
