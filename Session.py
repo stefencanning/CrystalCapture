@@ -148,8 +148,8 @@ class Session:
 	def disconnectedPlayer(self,uniqueID):
 		if(self.blueCarrier==uniqueID):
 			self.blueCarrier=0
-			return {"success":True,"x":self.blueData[0],"y":self.blueData[1],"room":self.blueData[2],"team":"blue"}
+			return {"success":True,"x":self.blueData[0],"y":self.blueData[1],"room":self.blueData[2],"team":"blue","uniqueID":uniqueID}
 		if(self.redCarrier==uniqueID):
 			self.redCarrier=0
-			return {"success":True,"x":self.redData[0],"y":self.redData[1],"room":self.redData[2],"team":"red"}
+			return {"success":True,"x":self.redData[0],"y":self.redData[1],"room":self.redData[2],"team":"red","uniqueID":uniqueID}
 		return {"success":False}
