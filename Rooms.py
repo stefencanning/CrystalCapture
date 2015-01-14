@@ -35,6 +35,102 @@ class Room:
 		self.walls.append([6,4,False])
 		self.walls.append([6,5,False])
 	
+	def createProceduralRoom(self):
+		wallBase={}
+		wallBase[0]={}
+		wallBase[0][0]=True
+		wallList=list()
+		wallList.append([0,0,True])
+		chance=2
+		placed=0
+		while(placed < 20):
+			for wall in wallList:
+				if( placed < 500 and random.randint(0,100)!=0):
+					x=wall[0]
+					y=wall[1]
+					bool=wall[2]
+					xNew=x-1
+					yNew=y
+					if(wallBase.get(xNew,False) == False):
+						wallBase[xNew]={}
+					if(wallBase[xNew].get(yNew,False) == False):
+						rand = random.randint(0,chance)
+						if(rand != 0):
+							wallBase[xNew][yNew]=True
+							wallList.append([xNew,yNew,True])
+							placed+=1
+					
+					xNew=x+1
+					yNew=y
+					if(wallBase.get(xNew,False) == False):
+						wallBase[xNew]={}
+					if(wallBase[xNew].get(yNew,False) == False):
+						rand = random.randint(0,chance)
+						if(rand != 0):
+							wallBase[xNew][yNew]=True
+							wallList.append([xNew,yNew,True])
+							placed+=1
+					
+					xNew=x
+					yNew=y-1
+					if(wallBase.get(xNew,False) == False):
+						wallBase[xNew]={}
+					if(wallBase[xNew].get(yNew,False) == False):
+						rand = random.randint(0,chance)
+						if(rand != 0):
+							wallBase[xNew][yNew]=True
+							wallList.append([xNew,yNew,True])
+							placed+=1
+					
+					xNew=x
+					yNew=y+1
+					if(wallBase.get(xNew,False) == False):
+						wallBase[xNew]={}
+					if(wallBase[xNew].get(yNew,False) == False):
+						rand = random.randint(0,chance)
+						if(rand != 0):
+							wallBase[xNew][yNew]=True
+							wallList.append([xNew,yNew,True])
+							placed+=1
+				
+		for wall in wallList:
+			x=wall[0]
+			y=wall[1]
+			if(wallBase.get(x-1,False) == False):
+				sideCounter=0
+				if(wallBase[x+1].get(y,False)):
+					sideCounter+=1
+				if(wallBase[x].get(y-1,False)):
+					sideCounter+=1
+				if(wallBase[x].get(y+1,False)):
+					sideCounter+=1
+				if(sideCounter>1):
+					self.walls.append([x,y,False])
+			elif(wallBase.get(x+1,False) == False):
+				sideCounter=0
+				if(wallBase[x-1].get(y,False)):
+					sideCounter+=1
+				if(wallBase[x].get(y-1,False)):
+					sideCounter+=1
+				if(wallBase[x].get(y+1,False)):
+					sideCounter+=1
+				if(sideCounter>1):
+					self.walls.append([x,y,False])
+			elif(wallBase[x-1].get(y,False) == False or wallBase[x+1].get(y,False) == False or wallBase[x].get(y-1,False) == False or wallBase[x].get(y+1,False) == False
+			or wallBase[x-1].get(y-1,False) == False or wallBase[x-1].get(y+1,False) == False or wallBase[x+1].get(y-1,False) == False or wallBase[x+1].get(y+1,False) == False):
+				sideCounter=0
+				if(wallBase[x-1].get(y,False)):
+					sideCounter+=1
+				if(wallBase[x+1].get(y,False)):
+					sideCounter+=1
+				if(wallBase[x].get(y-1,False)):
+					sideCounter+=1
+				if(wallBase[x].get(y+1,False)):
+					sideCounter+=1
+				if(sideCounter>1):
+					self.walls.append([x,y,False])
+		
+	
 	def createDoor(self,x,y):
 		for wall in self.walls:
 			if(wall[0]==x and wall[1]==y):
