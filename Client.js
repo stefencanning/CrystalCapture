@@ -420,8 +420,8 @@ Client.prototype.handleMessage = function(evt)
 				&&game.rooms[msg.data.room1].walls[i].y==msg.data.door1y*32)
 				{
 					game.rooms[msg.data.room1].walls[i].door = "true";
-					doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
-					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,doorMat.x,doorMat.y];
+					//doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
+					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,msg.data.mat2X*32,msg.data.mat2Y*32];
 				}
 			}
 			for(var i = 0; i < game.rooms[msg.data.room2].walls.length; i++)
@@ -430,8 +430,8 @@ Client.prototype.handleMessage = function(evt)
 				&&game.rooms[msg.data.room2].walls[i].y==msg.data.door2y*32)
 				{
 					game.rooms[msg.data.room2].walls[i].door = "true";
-					doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
-					game.rooms[msg.data.room2].walls[i].connectsTo = [msg.data.room1,doorMat.x,doorMat.y];
+					//doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
+					game.rooms[msg.data.room2].walls[i].connectsTo = [msg.data.room1,msg.data.mat1X*32,msg.data.mat1Y*32];
 				}
 			}
 		}
@@ -448,8 +448,8 @@ Client.prototype.handleMessage = function(evt)
 				if(msg.data.newRoom[i][0]==msg.data.door2x&&msg.data.newRoom[i][1]==msg.data.door2y)
 				{
 					wall.door="true";
-					doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
-					wall.connectsTo = [msg.data.room1,doorMat.x,doorMat.y];
+					//doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
+					wall.connectsTo = [msg.data.room1,msg.data.mat1X*32,msg.data.mat1Y*32];
 				}
 				game.rooms[msg.data.room2].addWall(wall);
 			}
@@ -459,8 +459,8 @@ Client.prototype.handleMessage = function(evt)
 				&&game.rooms[msg.data.room1].walls[i].y==msg.data.door1y*32)
 				{
 					game.rooms[msg.data.room1].walls[i].door = "true";
-					doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
-					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,doorMat.x,doorMat.y];
+					//doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
+					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,msg.data.mat2X*32,msg.data.mat2Y*32];
 				}
 			}
 		}
