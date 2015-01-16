@@ -178,7 +178,10 @@ CharCust.prototype.onMouseClick = function(e)
 	ctx.fillText(String.fromCharCode(42),150,155);
 	if(e.x>canvas.width/2&&e.y>canvas.height/2)
 	{
-		 matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();
+		//matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();
+		main.mode = MENU;
+		menu = new Menu();
+		menu.Initialise();
 	}
 }
 

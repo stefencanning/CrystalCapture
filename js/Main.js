@@ -25,12 +25,15 @@ function Main()
 	main.animation=[0,1,2,1];
 	main.frame = 0;
 	main.frameTime=0;
-	main.mode = MENU;
+	charCust= new CharCust();
+	charCust.Initialise();
+	main.mode=CHARCUST;
 	//game= new Game();	
 	images = new Images();
 	images.Initialise();
+	/*main.mode = MENU;
 	menu = new Menu();
-	menu.Initialise();
+	menu.Initialise();*/
 	//matchmaking= new Matchmaking();	
 	//matchmaking.Initialise();
 	main.initCanvas();
