@@ -88,188 +88,205 @@ Game.prototype.initCanvas=function ()
 Game.prototype.gameLoop = function () 
 {
 	var curTime=new Date();
-	if(game.keys["w"])
+	if(game.player.dead)
 	{
-		game.player.y-=1;
-		game.player.rotation=3;
-	}
-	if(game.keys["s"])
-	{
-		game.player.y+=1;
-		game.player.rotation=0;
-	}
-	if(game.keys["a"])
-	{
-		game.player.x-=1;
-		game.player.rotation=1;
-	}
-	if(game.keys["d"])
-	{
-		game.player.x+=1;
-		game.player.rotation=2;
-	}
-	if(game.keys["w"]||game.keys["s"]||game.keys["a"]||game.keys["d"])
-	{
-		main.frameTime+=curTime-time;
+		game.player.respawnTimer-=curTime.getTime()-time.getTime();
+		if(game.player.respawnTimer<=0)
+		{
+			game.player.dead=false;
+			game.player.setPos(96,96);
+		}
 	}
 	else
 	{
-		if(main.frame==0)
-			main.frame=1;
-		if(main.frame==2)
-			main.frame=3;
-	}
-	if(game.keys["space"])
-	{
-		if(game.player.fireTime<=0)
+		if(game.keys["w"])
 		{
-			var dir;
-			var xDif = mousePos["x"]-(canvas.width/2);
-			var yDif = mousePos["y"]-(canvas.height/2);
-			if(Math.abs(xDif)<Math.abs(yDif))
-			{
-				if(yDif<0)
-				{
-					dir = BulletDirections["up"];
-				}
-				else
-				{
-					dir = BulletDirections["down"];
-				}
-			}
-			else
-			{
-				if(xDif<0)
-				{
-					dir = BulletDirections["left"];
-				}
-				else
-				{
-					dir = BulletDirections["right"];
-				}
-			}
-			CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"room":game.player.room,"team":main.playerTeam});
-			game.player.fireTime=500;
+			game.player.y-=main.playerSpeed;
+			game.player.rotation=3;
 		}
-	}
-	if(game.player.doorTime>0)
-		game.player.doorTime-=curTime.getTime()-time.getTime();
-	if(game.player.fireTime>0)
-		game.player.fireTime-=curTime.getTime()-time.getTime();
-	var newPos = game.rooms[game.player.room].checkCollision(game.player);
-	if(newPos.roomChange)
-	{
-		game.rooms[newPos.room].checkRoomDist();
-		if(game.rooms[game.player.room].foundColorValue-5>game.rooms[newPos.room].foundColorValue)
+		if(game.keys["s"])
 		{
-			game.rooms[newPos.room].foundColor = game.rooms[game.player.room].foundColor;
-			game.rooms[newPos.room].foundColorValue = game.rooms[game.player.room].foundColorValue-5;
+			game.player.y+=main.playerSpeed;
+			game.player.rotation=0;
 		}
-		else if(game.rooms[newPos.room].foundColorValue-5>game.rooms[game.player.room].foundColorValue)
+		if(game.keys["a"])
 		{
-			game.rooms[game.player.room].foundColor = game.rooms[newPos.room].foundColor;
-			game.rooms[game.player.room].foundColorValue = game.rooms[newPos.room].foundColorValue-5;
+			game.player.x-=main.playerSpeed;
+			game.player.rotation=1;
 		}
-		game.player.room = newPos.room;
-	}
-	game.player.x = newPos.x;
-	game.player.y = newPos.y;
-	if(main.playerTeam == "blue")
-	{
-		var flag = game.redFlag;
-		if(game.player.room==flag.room)
+		if(game.keys["d"])
 		{
-			if(game.player.x+game.player.w>flag.x
-			&&game.player.x<flag.x+flag.w
-			&&game.player.y+game.player.h>flag.y
-			&&game.player.y<flag.y+flag.h)
-			if(!game.redFlagCaptured)
+			game.player.x+=main.playerSpeed;
+			game.player.rotation=2;
+		}
+		if(game.keys["w"]||game.keys["s"]||game.keys["a"]||game.keys["d"])
+		{
+			main.frameTime+=curTime-time;
+		}
+		else
+		{
+			if(main.frame==0)
+				main.frame=1;
+			if(main.frame==2)
+				main.frame=3;
+		}
+		if(game.keys["space"])
+		{
+			if(game.player.fireTime<=0)
 			{
-				CLIENT.grabFlag();
-			}
-		}
-		var flag = game.blueFlag;
-		if(game.player.room==flag.room)
-		{
-			if(game.player.x+game.player.w>flag.x
-			&&game.player.x<flag.x+flag.w
-			&&game.player.y+game.player.h>flag.y
-			&&game.player.y<flag.y+flag.h)
-			{
-				if(!game.blueFlagCaptured)
+				var dir;
+				var xDif = mousePos["x"]-(canvas.width/2);
+				var yDif = mousePos["y"]-(canvas.height/2);
+				var length = Math.sqrt((xDif*xDif)+(yDif*yDif));
+				xDif/=length;
+				yDif/=length;
+				if(Math.abs(xDif)<Math.abs(yDif))
 				{
-					if(flag.x!=game.blueCapturePoint[0]||flag.y!=game.blueCapturePoint[1]||flag.room!=game.blueCapturePoint[2])
+					if(yDif<0)
 					{
-						CLIENT.flagReturned();
+						dir = BulletDirections["up"];
+					}
+					else
+					{
+						dir = BulletDirections["down"];
 					}
 				}
+				else
+				{
+					if(xDif<0)
+					{
+						dir = BulletDirections["left"];
+					}
+					else
+					{
+						dir = BulletDirections["right"];
+					}
+				}
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":((xDif-yDif)/2)*main.gunSpeed[main.playerGun],"ySpeed":((yDif+xDif)/2)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":((xDif+yDif)/2)*main.gunSpeed[main.playerGun],"ySpeed":((yDif-xDif)/2)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+				game.player.fireTime=500;
 			}
 		}
-		if(game.player.room==game.blueCapturePoint[2])
+		if(game.player.doorTime>0)
+			game.player.doorTime-=curTime.getTime()-time.getTime();
+		if(game.player.fireTime>0)
+			game.player.fireTime-=curTime.getTime()-time.getTime();
+		var newPos = game.rooms[game.player.room].checkCollision(game.player);
+		if(newPos.roomChange)
 		{
-			if(game.player.gotFlag==1)
+			game.rooms[newPos.room].checkRoomDist();
+			if(game.rooms[game.player.room].foundColorValue-5>game.rooms[newPos.room].foundColorValue)
 			{
-				if(game.player.x+game.player.w>game.blueCapturePoint[0]
-				&&game.player.x<game.blueCapturePoint[0]+game.player.w
-				&&game.player.y+game.player.h>game.blueCapturePoint[1]
-				&&game.player.y<game.blueCapturePoint[1]+game.player.h)
+				game.rooms[newPos.room].foundColor = game.rooms[game.player.room].foundColor;
+				game.rooms[newPos.room].foundColorValue = game.rooms[game.player.room].foundColorValue-5;
+			}
+			else if(game.rooms[newPos.room].foundColorValue-5>game.rooms[game.player.room].foundColorValue)
+			{
+				game.rooms[game.player.room].foundColor = game.rooms[newPos.room].foundColor;
+				game.rooms[game.player.room].foundColorValue = game.rooms[newPos.room].foundColorValue-5;
+			}
+			game.player.room = newPos.room;
+		}
+		game.player.x = newPos.x;
+		game.player.y = newPos.y;
+		if(main.playerTeam == "blue")
+		{
+			var flag = game.redFlag;
+			if(game.player.room==flag.room)
+			{
+				if(game.player.x+game.player.w>flag.x
+				&&game.player.x<flag.x+flag.w
+				&&game.player.y+game.player.h>flag.y
+				&&game.player.y<flag.y+flag.h)
+				if(!game.redFlagCaptured)
+				{
+					CLIENT.grabFlag();
+				}
+			}
+			var flag = game.blueFlag;
+			if(game.player.room==flag.room)
+			{
+				if(game.player.x+game.player.w>flag.x
+				&&game.player.x<flag.x+flag.w
+				&&game.player.y+game.player.h>flag.y
+				&&game.player.y<flag.y+flag.h)
 				{
 					if(!game.blueFlagCaptured)
 					{
-						if(game.blueFlag.x==game.blueCapturePoint[0]&&game.blueFlag.y==game.blueCapturePoint[1]&&game.blueFlag.room==game.blueCapturePoint[2])
+						if(flag.x!=game.blueCapturePoint[0]||flag.y!=game.blueCapturePoint[1]||flag.room!=game.blueCapturePoint[2])
 						{
-							CLIENT.captureFlag();
+							CLIENT.flagReturned();
+						}
+					}
+				}
+			}
+			if(game.player.room==game.blueCapturePoint[2])
+			{
+				if(game.player.gotFlag==1)
+				{
+					if(game.player.x+game.player.w>game.blueCapturePoint[0]
+					&&game.player.x<game.blueCapturePoint[0]+game.player.w
+					&&game.player.y+game.player.h>game.blueCapturePoint[1]
+					&&game.player.y<game.blueCapturePoint[1]+game.player.h)
+					{
+						if(!game.blueFlagCaptured)
+						{
+							if(game.blueFlag.x==game.blueCapturePoint[0]&&game.blueFlag.y==game.blueCapturePoint[1]&&game.blueFlag.room==game.blueCapturePoint[2])
+							{
+								CLIENT.captureFlag();
+							}
 						}
 					}
 				}
 			}
 		}
-	}
-	if(main.playerTeam == "red")
-	{
-		var flag = game.blueFlag;
-		if(game.player.room==flag.room)
+		if(main.playerTeam == "red")
 		{
-			if(game.player.x+game.player.w>flag.x
-			&&game.player.x<flag.x+flag.w
-			&&game.player.y+game.player.h>flag.y
-			&&game.player.y<flag.y+flag.h)
-			if(!game.blueFlagCaptured)
+			var flag = game.blueFlag;
+			if(game.player.room==flag.room)
 			{
-				CLIENT.grabFlag();
-			}
-		}
-		var flag = game.redFlag;
-		if(game.player.room==flag.room)
-		{
-			if(game.player.x+game.player.w>flag.x
-			&&game.player.x<flag.x+flag.w
-			&&game.player.y+game.player.h>flag.y
-			&&game.player.y<flag.y+flag.h)
-			{
-				if(!game.redFlagCaptured)
+				if(game.player.x+game.player.w>flag.x
+				&&game.player.x<flag.x+flag.w
+				&&game.player.y+game.player.h>flag.y
+				&&game.player.y<flag.y+flag.h)
+				if(!game.blueFlagCaptured)
 				{
-					if(flag.x!=game.redCapturePoint[0]||flag.y!=game.redCapturePoint[1]||flag.room!=game.redCapturePoint[2])
-					{
-						CLIENT.flagReturned();
-					}
+					CLIENT.grabFlag();
 				}
 			}
-		}
-		if(game.player.room==game.redCapturePoint[2])
-		{
-			if(game.player.gotFlag==1)
+			var flag = game.redFlag;
+			if(game.player.room==flag.room)
 			{
-				if(game.player.x+game.player.w>game.redCapturePoint[0]
-				&&game.player.x<game.redCapturePoint[0]+game.player.w
-				&&game.player.y+game.player.h>game.redCapturePoint[1]
-				&&game.player.y<game.redCapturePoint[1]+game.player.h)
+				if(game.player.x+game.player.w>flag.x
+				&&game.player.x<flag.x+flag.w
+				&&game.player.y+game.player.h>flag.y
+				&&game.player.y<flag.y+flag.h)
 				{
 					if(!game.redFlagCaptured)
 					{
-						if(game.redFlag.x==game.redCapturePoint[0]&&game.redFlag.y==game.redCapturePoint[1]&&game.redFlag.room==game.redCapturePoint[2])
+						if(flag.x!=game.redCapturePoint[0]||flag.y!=game.redCapturePoint[1]||flag.room!=game.redCapturePoint[2])
 						{
-							CLIENT.captureFlag();
+							CLIENT.flagReturned();
+						}
+					}
+				}
+			}
+			if(game.player.room==game.redCapturePoint[2])
+			{
+				if(game.player.gotFlag==1)
+				{
+					if(game.player.x+game.player.w>game.redCapturePoint[0]
+					&&game.player.x<game.redCapturePoint[0]+game.player.w
+					&&game.player.y+game.player.h>game.redCapturePoint[1]
+					&&game.player.y<game.redCapturePoint[1]+game.player.h)
+					{
+						if(!game.redFlagCaptured)
+						{
+							if(game.redFlag.x==game.redCapturePoint[0]&&game.redFlag.y==game.redCapturePoint[1]&&game.redFlag.room==game.redCapturePoint[2])
+							{
+								CLIENT.captureFlag();
+							}
 						}
 					}
 				}
@@ -351,8 +368,10 @@ Game.prototype.gameLoop = function ()
 	if(game.player.health<=0)
 	{
 		CLIENT.playerDied();
-		game.player.setPos(96,96);
-		game.player.health=100;
+		game.player.setPos(-32,-32);
+		game.player.dead=true;
+		game.player.respawnTimer=1000;
+		game.player.health=main.playerMaxHealth;
 		if(main.playerTeam=="blue")
 		{
 			game.player.room=0;
@@ -365,7 +384,8 @@ Game.prototype.gameLoop = function ()
 	game.timeSinceLastUpdate+=curTime.getTime()-time.getTime();
 	if(game.timeSinceLastUpdate>1000/30)
 	{
-		var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room};
+		game.timeSinceLastUpdate=0;
+		var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room,"frame":main.frame};
 		CLIENT.updatePlayer(msg);
 	}
 	game.Draw();
@@ -381,16 +401,21 @@ Game.prototype.onMouseMove = function(e)
 
 Game.prototype.onMouseClick = function(e)
 {
-	var offSetX = -game.player.x+(canvas.width/2);
-	var offSetY = -game.player.y+(canvas.height/2);
-	var inGamePos=[];
-	inGamePos["x"]=e.x-offSetX;
-	inGamePos["y"]=e.y-offSetY;
-	inGamePos.x/=32;
-	inGamePos.x=Math.floor(inGamePos.x);
-	inGamePos.y/=32;
-	inGamePos.y=Math.floor(inGamePos.y);
-	CLIENT.createDoor(inGamePos.x,inGamePos.y,game.player.room);
+	if(!game.player.dead)
+	{
+		var offSetX = -game.player.x-(game.player.w/2)+(canvas.width/2);
+		var offSetY = -game.player.y-(game.player.h/2)+(canvas.height/2);
+		//var offSetX = -game.player.x+(canvas.width/2);
+		//var offSetY = -game.player.y+(canvas.height/2);
+		var inGamePos=[];
+		inGamePos["x"]=e.x-offSetX;
+		inGamePos["y"]=e.y-offSetY;
+		inGamePos.x/=32;
+		inGamePos.x=Math.floor(inGamePos.x);
+		inGamePos.y/=32;
+		inGamePos.y=Math.floor(inGamePos.y);
+		CLIENT.createDoor(inGamePos.x,inGamePos.y,game.player.room);
+	}
 }
 
 Game.prototype.onContextMenu = function(e)
@@ -459,7 +484,7 @@ Game.prototype.Draw = function()
 	
 	ctx.clearRect(0,0,canvas.width, canvas.height)
 	
-	ctx.lineWidth=10;
+	/*ctx.lineWidth=10;
 	if(game.rooms[game.player.room].oriColor=="red")
 	{
 		ctx.strokeStyle=rgb(255,255-game.rooms[game.player.room].oriColorValue,255-game.rooms[game.player.room].oriColorValue);
@@ -486,10 +511,10 @@ Game.prototype.Draw = function()
 	ctx.strokeStyle=rgb(0,0,0);
 	ctx.strokeRect(12,12,canvas.width-24, canvas.height-24);
 	ctx.strokeStyle=rgb(0,0,0);
-	ctx.strokeRect(24,24,canvas.width-48, canvas.height-48);
+	ctx.strokeRect(24,24,canvas.width-48, canvas.height-48);*/
 	
-	var offSetX = -game.player.x+(canvas.width/2);
-	var offSetY = -game.player.y+(canvas.height/2);
+	var offSetX = -game.player.x-(game.player.w/2)+(canvas.width/2);
+	var offSetY = -game.player.y-(game.player.h/2)+(canvas.height/2);
 	
 	game.rooms[game.player.room].draw(offSetX,offSetY);
 	if(game.player.room==game.redCapturePoint[2])
@@ -517,16 +542,16 @@ Game.prototype.Draw = function()
 					//ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
 					
-					ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[main.frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerOutfit[blueTeam[i]].hair)
 					{
-						ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[main.frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					}
 					if(playerOutfit[blueTeam[i]].beard)
 					{
-						ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[main.frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					}
-					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[main.frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[playerGameData[blueTeam[i]].clothes],main.animation[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
 					
 					
@@ -558,16 +583,16 @@ Game.prototype.Draw = function()
 					//ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
 					
-					ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[main.frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					if(playerOutfit[redTeam[i]].hair)
 					{
-						ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[main.frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					}
 					if(playerOutfit[redTeam[i]].beard)
 					{
-						ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[main.frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					}
-					ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[main.frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
 					
 					if(playerGameData[redTeam[i]].flag==1)

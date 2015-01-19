@@ -93,7 +93,7 @@ Images.prototype.HairImages = function()
 	for(i=0;i<2;i++)
 	{
 		images.hair[i]=[];
-		for(k=0;k<100;k++)
+		for(k=0;k<20;k++)
 		{
 			images.hair[i][k]=new Image();
 			images.hair[i][k].src="img/hair/$hair "+strGen+"("+(k+1)+").png";
@@ -105,7 +105,7 @@ Images.prototype.HairImages = function()
 Images.prototype.BeardImages = function()
 {
 	images.beard=[];
-	for(k=0;k<100;k++)
+	for(k=0;k<20;k++)
 	{
 		images.beard[k]=new Image();
 		images.beard[k].src="img/beard/$beard ("+(k+1)+").png";
@@ -119,7 +119,7 @@ Images.prototype.ClothesImages = function()
 	for(i=0;i<2;i++)
 	{
 		images.clothes[i]=[];
-		for(k=0;k<100;k++)
+		for(k=0;k<20;k++)
 		{
 			images.clothes[i][k]=new Image();
 			images.clothes[i][k].src="img/clothes/$clothes "+strGen+"("+(k+1)+").png";

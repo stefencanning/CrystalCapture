@@ -1,4 +1,4 @@
-var game, menu, ctx, matchmaking, player, charCust,images;
+var game, menu, ctx, matchmaking, player, charCust;
 var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3;
 var currentSession=[];
 var redTeam = [];
@@ -22,6 +22,14 @@ function Main()
 	main.playerShowHair=1;
 	main.playerBeard=0;
 	main.playerShowBeard=1;
+	main.playerGun=0;
+	main.gunDamage=[20,12,40];
+	main.gunReload=[500,500,750];
+	main.gunSpeed=[3,3,6];
+	main.playerMaxHealth=100;
+	main.playerHealthScaling=1;
+	main.playerSpeed=1;
+	main.playerSpeedScaling=1;
 	main.animation=[0,1,2,1];
 	main.frame = 0;
 	main.frameTime=0;
@@ -29,8 +37,6 @@ function Main()
 	charCust.Initialise();
 	main.mode=CHARCUST;
 	//game= new Game();	
-	images = new Images();
-	images.Initialise();
 	/*main.mode = MENU;
 	menu = new Menu();
 	menu.Initialise();*/
@@ -51,6 +57,7 @@ function Main()
 Main.prototype.initCanvas = function()
 {
 	canvas = document.createElement('canvas'); 
+	canvas.onContextMenu="return false";
 	ctx = canvas.getContext('2d');	
 	document.body.appendChild(canvas);
 	//set canvas to size of the screen.
@@ -59,9 +66,13 @@ Main.prototype.initCanvas = function()
 	canvas.ondragstart = function() { return false };
 	canvas.addEventListener("keydown", onKeyPress, true);
 	canvas.addEventListener("keyup", onKeyUp, true);
-	canvas.addEventListener("oncontextmenu", onContextMenu, true);
-	canvas.addEventListener("mousedown", onMouseClick,true);
-	canvas.addEventListener("ondblclick", onDoubleClick,true);
+	/*canvas.addEventListener('contextmenu', function(e) {
+            alert("You've tried to open context menu"); //here you draw your own menu
+            e.preventDefault();
+        }, false);*/
+	canvas.addEventListener("contextmenu", onContextMenu, false);
+	canvas.addEventListener("click", onMouseClick,true);
+	canvas.addEventListener("dblclick", onDoubleClick,true);
 	canvas.addEventListener("mousemove", onMouseMove,true);
 	document.body.addEventListener('touchmove', function (ev) { ev.preventDefault();});
 	//document.body.addEventListener('ondblclick', function (ev) { ev.preventDefault();});
@@ -145,7 +156,7 @@ function onMouseClick(e)
 	clickPos["y"]=e.pageY-canvas.offsetTop;
 	if(main.mode == GAMESELECT)
 	{
-		matchmaking.onDoubleClick(clickPos);
+		matchmaking.onMouseClick(clickPos);
 	}
 	else if(main.mode == INGAME)
 	{

@@ -5,9 +5,9 @@ function Menu()
 Menu.prototype.Initialise = function()
 {
 	menu.options =[];
-	menu.options[0]=[20,5,"Matchmaking",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();}];
-	//menu.options[1]=[20,30,"Character Customisation",function () { charCust= new CharCust();charCust.Initialise();main.mode=CHARCUST;}];
-	menu.options[2]=[20,55,"Quit",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
+	menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Matchmaking",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();}];
+	//menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Character Customisation",function () { charCust= new CharCust();charCust.Initialise();main.mode=CHARCUST;}];
+	menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Quit",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
 }
 
 Menu.prototype.Loop = function () 

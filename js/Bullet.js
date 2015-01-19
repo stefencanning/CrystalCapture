@@ -8,6 +8,8 @@ function Bullet(x, y)
 	this.team="";
 	this.room=0;
 	this.dir=0;
+	this.xSpeed=0;
+	this.ySpeed=0;
 }
 
 Bullet.prototype.getX = function()
@@ -27,6 +29,7 @@ Bullet.prototype.setPos = function(x, y)
 
 Bullet.prototype.update = function()
 {
+	/*
 	if(this.dir==BulletDirections["left"])
 	{
 		this.x-=3;
@@ -43,6 +46,9 @@ Bullet.prototype.update = function()
 	{
 		this.y+=3;
 	}
+	*/
+	this.x+=this.xSpeed;
+	this.y+=this.ySpeed;
 }
 
 Bullet.prototype.getDir = function()

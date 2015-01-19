@@ -10,6 +10,8 @@ function Player(x, y)
 	this.gotFlag=0;
 	this.doorTime=0;
 	this.fireTime=0;
+	this.dead=false;
+	this.respawnTimer=0;
 }
 
 Player.prototype.getX = function()

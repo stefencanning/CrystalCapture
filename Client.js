@@ -1,11 +1,11 @@
-var main, CLIENT;
+var main, CLIENT,images;
 
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.40';
+	//var host='149.153.102.40';
 	//var host='192.168.0.18';
-	//var host='46.7.218.244';
+	var host='46.7.218.244';
 	var port=8080;
 	this.me;
 
@@ -16,7 +16,7 @@ function Client()
  
     this.ws.onclose = function(evt) { console.log("Connection close"); };
  
-    this.ws.onopen = function(evt) { console.log('open connection');  };
+    this.ws.onopen = function(evt) { console.log('open connection'); };
 
 	//changes made
     p1Button = document.getElementById('button');
@@ -33,6 +33,8 @@ function Client()
 		}
 	}, false);
 	
+	images = new Images();
+	images.Initialise();
 	/*
 	addEventListener("click", function(e)
 	{
@@ -55,7 +57,8 @@ Client.prototype.addFindButton = function()
     element.value = "new game";
     element.name = "replay";
     element.id = "replay"; 
-    element.onclick = function() { 
+    element.onclick = function()
+	{ 
     	this.style.background+='#00FF00';
     	CLIENT.newGame();
 		elem = document.getElementById('label');
@@ -305,6 +308,8 @@ Client.prototype.handleMessage = function(evt)
 				game.bullets[i].team=msg.data.team;
 				game.bullets[i].room=msg.data.room;
 				game.bullets[i].dir=msg.data.direction;
+				game.bullets[i].xSpeed=msg.data.xSpeed;
+				game.bullets[i].ySpeed=msg.data.ySpeed;
 				created=true
 			}
 		}
@@ -315,6 +320,8 @@ Client.prototype.handleMessage = function(evt)
 			game.bullets[num].team=msg.data.team;
 			game.bullets[num].room=msg.data.room;
 			game.bullets[num].dir=msg.data.direction;
+			game.bullets[num].xSpeed=msg.data.xSpeed;
+			game.bullets[num].ySpeed=msg.data.ySpeed;
 		}
 	}
 	else if(msg.type == "flagDropped")
