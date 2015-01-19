@@ -1,4 +1,4 @@
-var game, menu, ctx, matchmaking, player, charCust;
+var game, menu, ctx, matchmaking, player, charCust;//,images;
 var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3;
 var currentSession=[];
 var redTeam = [];
@@ -23,7 +23,7 @@ function Main()
 	main.playerBeard=0;
 	main.playerShowBeard=1;
 	main.playerGun=0;
-	main.gunDamage=[20,12,40];
+	main.gunDamage=[20,6,40];
 	main.gunReload=[500,500,750];
 	main.gunSpeed=[3,3,6];
 	main.playerMaxHealth=100;
@@ -36,6 +36,8 @@ function Main()
 	charCust= new CharCust();
 	charCust.Initialise();
 	main.mode=CHARCUST;
+	//images = new Images();
+	//images.Initialise();
 	//game= new Game();	
 	/*main.mode = MENU;
 	menu = new Menu();
