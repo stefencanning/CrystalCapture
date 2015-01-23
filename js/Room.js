@@ -221,13 +221,16 @@ Room.prototype.checkCollide = function(object)
 	var x2,y2,w2,h2;
 	for(var i = 0; i < this.walls.length;i++)
 	{
-		x2=this.walls[i].x;
-		y2=this.walls[i].y;
-		w2=this.walls[i].w;
-		h2=this.walls[i].h;
-		if(x+w>x2&&x<x2+w2&&y+h>y2&&y<y2+h2)
+		if(((this.walls[i].x-x)*(this.walls[i].x-x))+((this.walls[i].y-y)*(this.walls[i].y-y))<(this.walls[i].w*this.walls[i].h)*(h*w))
 		{
-			return true;
+			x2=this.walls[i].x;
+			y2=this.walls[i].y;
+			w2=this.walls[i].w;
+			h2=this.walls[i].h;
+			if(x+w>x2&&x<x2+w2&&y+h>y2&&y<y2+h2)
+			{
+				return true;
+			}
 		}
 	}
 	return false;

@@ -14,6 +14,8 @@ function Main()
 {
 	main=this;
 	main.playerTeam="";
+	
+	//player look
 	main.playerGender=0;
 	main.playerBodyType=0;
 	main.playerColour=0;
@@ -22,14 +24,26 @@ function Main()
 	main.playerShowHair=1;
 	main.playerBeard=0;
 	main.playerShowBeard=1;
+	
+	//weapons
+	main.guns=["pistol","shotgun","sniper"];
+	main.gunReload=[500,750,1000];
+	main.gunSpeed=[6*60,6*60,12*60];
+	main.gunDamage=[20,6,50];
+	
+	//perks
+	main.perks=["HP regen","flag sprint","poison bullet"];
+	main.perkStrength=[3,1.5,2];
+	
+	//player stats
 	main.playerGun=0;
-	main.gunDamage=[20,6,40];
-	main.gunReload=[500,500,750];
-	main.gunSpeed=[3,3,6];
 	main.playerMaxHealth=100;
-	main.playerHealthScaling=1;
-	main.playerSpeed=1;
-	main.playerSpeedScaling=1;
+	main.playerHealthScaling=10;
+	main.playerSpeed=60;
+	main.playerSpeedScaling=10;
+	main.playerPerk=0;
+	
+	
 	main.animation=[0,1,2,1];
 	main.frame = 0;
 	main.frameTime=0;

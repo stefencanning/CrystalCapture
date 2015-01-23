@@ -5,15 +5,15 @@ function CharCust()
 CharCust.prototype.Initialise = function()
 {
 	charCust.options =[];
-	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"skin colour",function (){ main.playerColour-=1;if(main.playerColour<0){main.playerColour=4;}},function () { main.playerColour+=1;if(main.playerColour>4){main.playerColour=0;}}];
-	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"gender",function () { main.playerGender-=1;if(main.playerGender<0){main.playerGender=1;}},function () { main.playerGender+=1;if(main.playerGender>1){main.playerGender=0;}}];
-	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"hair",function () { main.playerHair-=1;if(main.playerHair<0){main.playerHair=19;}},function () { main.playerHair+=1;if(main.playerHair>19){main.playerHair=0;}}];
-	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"clothes",function () { main.playerClothes-=1;if(main.playerClothes<0){main.playerClothes=19;}},function () { main.playerClothes+=1;if(main.playerClothes>19){main.playerClothes=0;}}];
-	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"beard",function () { main.playerBeard-=1;if(main.playerBeard<0){main.playerBeard=19;}},function () { main.playerBeard+=1;if(main.playerBeard>19){main.playerBeard=0;}}];
+	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"skin colour",function (){ main.playerColour-=1;if(main.playerColour<0){main.playerColour=4;}},function () { main.playerColour+=1;if(main.playerColour>4){main.playerColour=0;}},""];
+	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"gender",function () { main.playerGender-=1;if(main.playerGender<0){main.playerGender=1;}},function () { main.playerGender+=1;if(main.playerGender>1){main.playerGender=0;}},""];
+	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"hair",function () { main.playerHair-=1;if(main.playerHair<0){main.playerHair=19;}},function () { main.playerHair+=1;if(main.playerHair>19){main.playerHair=0;}},""];
+	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"clothes",function () { main.playerClothes-=1;if(main.playerClothes<0){main.playerClothes=19;}},function () { main.playerClothes+=1;if(main.playerClothes>19){main.playerClothes=0;}},""];
+	charCust.options[charCust.options.length]=[5,50+(charCust.options.length*50),"beard",function () { main.playerBeard-=1;if(main.playerBeard<0){main.playerBeard=19;}},function () { main.playerBeard+=1;if(main.playerBeard>19){main.playerBeard=0;}},""];
 	var num = charCust.options.length;
-	charCust.options[charCust.options.length]=[500,50+((charCust.options.length-num)*50),"gun type",function () { main.playerGun-=1;if(main.playerGun<0){main.playerGun=2;}},function () { main.playerGun+=1;if(main.playerGun>2){main.playerGun=0;}}];
-	charCust.options[charCust.options.length]=[500,50+((charCust.options.length-num)*50),"gun type",function () { main.playerGun-=1;if(main.playerGun<0){main.playerGun=2;}},function () { main.playerGun+=1;if(main.playerGun>2){main.playerGun=0;}}];
-	charCust.options[charCust.options.length]=[500,50+((charCust.options.length-num)*50),"gun type",function () { main.playerGun-=1;if(main.playerGun<0){main.playerGun=2;}},function () { main.playerGun+=1;if(main.playerGun>2){main.playerGun=0;}}];
+	charCust.options[charCust.options.length]=[600,50+((charCust.options.length-num)*50),"gun type",function () { main.playerGun-=1;if(main.playerGun<0){main.playerGun=main.guns.length-1;}},function () { main.playerGun+=1;if(main.playerGun>main.guns.length-1){main.playerGun=0;}},"gun"];
+	charCust.options[charCust.options.length]=[600,50+((charCust.options.length-num)*50),"HP:speed",function () {if(main.playerHealthScaling>5){if(main.playerHealthScaling>10){main.playerHealthScaling-=1;}main.playerHealthScaling=main.playerHealthScaling-1;if(main.playerSpeedScaling>=10){main.playerSpeedScaling+=1;}main.playerSpeedScaling=main.playerSpeedScaling+1;}},function () { if(main.playerHealthScaling<20){if(main.playerHealthScaling>=10){main.playerHealthScaling+=1;}main.playerHealthScaling=main.playerHealthScaling+1;if(main.playerSpeedScaling>10){main.playerSpeedScaling-=1;}main.playerSpeedScaling=main.playerSpeedScaling-1;}},"HS"];
+	charCust.options[charCust.options.length]=[600,50+((charCust.options.length-num)*50),"perk",function () { main.playerPerk-=1;if(main.playerPerk<0){main.perks=main.perks.length-1;}},function () { main.playerPerk+=1;if(main.playerPerk>main.perks.length-1){main.playerPerk=0;}},"perk"];
 }
 
 CharCust.prototype.Loop = function () 
@@ -34,6 +34,18 @@ CharCust.prototype.Draw = function()
 		ctx.fillText(charCust.options[i][2], charCust.options[i][0]+45, charCust.options[i][1]);
 		ctx.fillText("<-",  charCust.options[i][0], charCust.options[i][1]);
 		ctx.fillText("->", charCust.options[i][0]+170, charCust.options[i][1]);
+		if(charCust.options[i][5]=="gun")
+		{
+			ctx.fillText(main.guns[main.playerGun], charCust.options[i][0]+200, charCust.options[i][1]);
+		}
+		else if(charCust.options[i][5]=="HS")
+		{
+			ctx.fillText((main.playerHealthScaling*10)+'%:'+(main.playerSpeedScaling*10)+'%', charCust.options[i][0]+200, charCust.options[i][1]);
+		}
+		else if(charCust.options[i][5]=="perk")
+		{
+			ctx.fillText(main.perks[main.playerPerk], charCust.options[i][0]+200, charCust.options[i][1]);
+		}
 	}
 	ctx.fillText(String.fromCharCode(91),145,150);
 	ctx.fillText(String.fromCharCode(93),154,150);

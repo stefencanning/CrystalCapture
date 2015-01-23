@@ -37,6 +37,7 @@ Game.prototype.Initialise=function ()
 	game.players=[];
 	game.bullets=[];
 	game.timeSinceLastUpdate=0;
+	//game.fps=0;
 }
 
 Game.prototype.CreateStartRooms=function()
@@ -85,9 +86,11 @@ Game.prototype.initCanvas=function ()
 {
 }
 
+
 Game.prototype.gameLoop = function () 
 {
 	var curTime=new Date();
+	//game.fps=1/((curTime.getTime()-time.getTime())/1000);
 	if(game.player.dead)
 	{
 		game.player.respawnTimer-=curTime.getTime()-time.getTime();
@@ -101,22 +104,58 @@ Game.prototype.gameLoop = function ()
 	{
 		if(game.keys["w"])
 		{
-			game.player.y-=main.playerSpeed;
+			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+			if(game.player.gotFlag)
+			{
+				dist/=2;
+				if(main.playerPerk==1)
+				{
+					dist*=main.perks[main.playerPerk];
+				}
+			}
+			game.player.y-=(dist*((curTime.getTime()-time.getTime())/1000));
 			game.player.rotation=3;
 		}
 		if(game.keys["s"])
 		{
-			game.player.y+=main.playerSpeed;
+			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+			if(game.player.gotFlag)
+			{
+				dist/=2;
+				if(main.playerPerk==1)
+				{
+					dist*=main.perks[main.playerPerk];
+				}
+			}
+			game.player.y+=(dist*((curTime.getTime()-time.getTime())/1000));
 			game.player.rotation=0;
 		}
 		if(game.keys["a"])
 		{
-			game.player.x-=main.playerSpeed;
+			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+			if(game.player.gotFlag)
+			{
+				dist/=2;
+				if(main.playerPerk==1)
+				{
+					dist*=main.perks[main.playerPerk];
+				}
+			}
+			game.player.x-=(dist*((curTime.getTime()-time.getTime())/1000));
 			game.player.rotation=1;
 		}
 		if(game.keys["d"])
 		{
-			game.player.x+=main.playerSpeed;
+			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+			if(game.player.gotFlag)
+			{
+				dist/=2;
+				if(main.playerPerk==1)
+				{
+					dist*=main.perks[main.playerPerk];
+				}
+			}
+			game.player.x+=(dist*((curTime.getTime()-time.getTime())/1000));
 			game.player.rotation=2;
 		}
 		if(game.keys["w"]||game.keys["s"]||game.keys["a"]||game.keys["d"])
@@ -134,44 +173,28 @@ Game.prototype.gameLoop = function ()
 		{
 			if(game.player.fireTime<=0)
 			{
-				var dir;
 				var xDif = mousePos["x"]-(canvas.width/2);
 				var yDif = mousePos["y"]-(canvas.height/2);
 				var length = Math.sqrt((xDif*xDif)+(yDif*yDif));
 				xDif/=length;
 				yDif/=length;
-				if(Math.abs(xDif)<Math.abs(yDif))
+				var poisoned=false;
+				var poisDmg=0;
+				if(main.playerPerk==2)
 				{
-					if(yDif<0)
-					{
-						dir = BulletDirections["up"];
-					}
-					else
-					{
-						dir = BulletDirections["down"];
-					}
-				}
-				else
-				{
-					if(xDif<0)
-					{
-						dir = BulletDirections["left"];
-					}
-					else
-					{
-						dir = BulletDirections["right"];
-					}
+					poisoned=true;
+					poisDmg=main.perks[main.playerPerk];
 				}
 				if(main.playerGun==1)
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
 				}
 				else
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"direction":dir,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
 				}
 				game.player.fireTime=main.gunReload[main.playerGun];
 			}
@@ -305,7 +328,7 @@ Game.prototype.gameLoop = function ()
 	{
 		if(game.bullets[i] != null)
 		{
-			game.bullets[i].update();
+			game.bullets[i].update(((curTime.getTime()-time.getTime())/1000));
 			if(game.bullets[i].room == game.player.room)
 			{
 				if(game.bullets[i] != null)
@@ -388,6 +411,14 @@ Game.prototype.gameLoop = function ()
 		{
 			game.player.room=1;
 		}
+	}
+	if(main.playerPerk==0)
+	{
+		game.player.health+=((main.playerMaxHealth*(main.playerHealthScaling/10))*0.03)*((curTime.getTime()-time.getTime())/1000);
+	}
+	if(game.player.health>(main.playerMaxHealth*(main.playerHealthScaling/10)))
+	{
+		game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
 	}
 	game.timeSinceLastUpdate+=curTime.getTime()-time.getTime();
 	if(game.timeSinceLastUpdate>1000/30)
@@ -521,8 +552,8 @@ Game.prototype.Draw = function()
 	ctx.strokeStyle=rgb(0,0,0);
 	ctx.strokeRect(24,24,canvas.width-48, canvas.height-48);*/
 	
-	var offSetX = -game.player.x-(game.player.w/2)+(canvas.width/2);
-	var offSetY = -game.player.y-(game.player.h/2)+(canvas.height/2);
+	var offSetX = Math.floor(-game.player.x-(game.player.w/2)+(canvas.width/2));
+	var offSetY = Math.floor(-game.player.y-(game.player.h/2)+(canvas.height/2));
 	
 	game.rooms[game.player.room].draw(offSetX,offSetY);
 	if(game.player.room==game.redCapturePoint[2])
@@ -559,7 +590,7 @@ Game.prototype.Draw = function()
 					{
 						ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					}
-					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[playerGameData[blueTeam[i]].clothes],main.animation[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
 					
 					
@@ -688,6 +719,7 @@ Game.prototype.Draw = function()
 	ctx.fillText("space to shoot", 700, 240);
 	ctx.fillText("kill enemies", 700, 260);
 	ctx.fillText("keep your crystal safe", 700, 280);
+	//ctx.fillText("fps: "+game.fps, 700, 300);
 	
 }
 	

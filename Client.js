@@ -252,9 +252,6 @@ Client.prototype.handleMessage = function(evt)
 	{
 		for(var i = 0; i < msg.data.length;i++)
 		{
-			console.log("team: "+ msg.data[i].team);
-			console.log("uniqueID: "+ msg.data[i].uniqueID);
-			console.log("name: "+ msg.data[i].name);
 			if(msg.data[i].team == "red")
 			{
 				if(msg.data[i].uniqueID == this.uniqueID)
@@ -297,8 +294,6 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "bulletFired")
 	{
-		console.log("type: "+ msg.type);
-		console.log("data: "+ msg.data);
 		var created = false;
 		for(var i = 0; i < game.bullets.length&&!created;i++)
 		{
@@ -307,7 +302,6 @@ Client.prototype.handleMessage = function(evt)
 				game.bullets[i]= new Bullet(msg.data.x,msg.data.y);
 				game.bullets[i].team=msg.data.team;
 				game.bullets[i].room=msg.data.room;
-				game.bullets[i].dir=msg.data.direction;
 				game.bullets[i].xSpeed=msg.data.xSpeed;
 				game.bullets[i].ySpeed=msg.data.ySpeed;
 				created=true
@@ -319,7 +313,6 @@ Client.prototype.handleMessage = function(evt)
 			game.bullets[num]= new Bullet(msg.data.x,msg.data.y);
 			game.bullets[num].team=msg.data.team;
 			game.bullets[num].room=msg.data.room;
-			game.bullets[num].dir=msg.data.direction;
 			game.bullets[num].xSpeed=msg.data.xSpeed;
 			game.bullets[num].ySpeed=msg.data.ySpeed;
 		}
@@ -351,8 +344,6 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "flagGrabbed")
 	{
-		console.log("type: "+ msg.type);
-		console.log("data: "+ msg.data);
 		if(msg.data.uniqueID==this.uniqueID)
 		{
 			game.player.gotFlag = 1;
@@ -368,8 +359,6 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "flagCaptured")
 	{
-		console.log("type: "+ msg.type);
-		console.log("data: "+ msg.data);
 		game.player.gotFlag = 0;
 		if(msg.data.team == "red")
 		{
@@ -398,8 +387,6 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "flagReturned")
 	{
-		console.log("type: "+ msg.type);
-		console.log("data: "+ msg.data);
 		/*if(msg.data.uniqueID==this.uniqueID)
 		{
 			game.player.gotFlag = 0;
