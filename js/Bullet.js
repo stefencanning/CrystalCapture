@@ -9,6 +9,7 @@ function Bullet(x, y)
 	this.room=0;
 	this.xSpeed=0;
 	this.ySpeed=0;
+	this.poisonDamage=0;
 }
 
 Bullet.prototype.getX = function()

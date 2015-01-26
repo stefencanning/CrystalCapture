@@ -178,23 +178,21 @@ Game.prototype.gameLoop = function ()
 				var length = Math.sqrt((xDif*xDif)+(yDif*yDif));
 				xDif/=length;
 				yDif/=length;
-				var poisoned=false;
 				var poisDmg=0;
 				if(main.playerPerk==2)
 				{
-					poisoned=true;
 					poisDmg=main.perks[main.playerPerk];
 				}
 				if(main.playerGun==1)
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam"poisonDamage":poisDmg});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
 				}
 				else
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
 				}
 				game.player.fireTime=main.gunReload[main.playerGun];
 			}
@@ -341,6 +339,8 @@ Game.prototype.gameLoop = function ()
 						&&game.player.y<game.bullets[i].y+game.bullets[i].h)
 						{
 							game.player.health-=20;
+							game.player.poisoned+=game.bullets[i].poisonDamage;
+							game.player.poisonTime=game.player.poisonMaxTime;
 							game.bullets[i] = null;
 						}
 					}
@@ -395,6 +395,13 @@ Game.prototype.gameLoop = function ()
 				}
 			}
 		}
+	}
+	if(game.player.poisonTime>0)
+	{
+		game.player.poisonTime-=curTime.getTime()-time.getTime();
+		damage=(game.player.poisoned/game.player.poisonMaxTime)*(curTime.getTime()-time.getTime());
+		game.player.health-=damage;
+		game.player.poisoned-=damage;
 	}
 	if(game.player.health<=0)
 	{

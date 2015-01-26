@@ -12,6 +12,9 @@ function Player(x, y)
 	this.fireTime=0;
 	this.dead=false;
 	this.respawnTimer=0;
+	this.poisoned=0;
+	this.poisonTime=0;
+	this.poisonMaxTime=5000;
 }
 
 Player.prototype.getX = function()
