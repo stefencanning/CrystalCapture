@@ -9,6 +9,7 @@ function Bullet(x, y)
 	this.room=0;
 	this.xSpeed=0;
 	this.ySpeed=0;
+	this.damage=0;
 	this.poisonDamage=0;
 }
 
@@ -66,5 +67,5 @@ Bullet.prototype.draw = function(offSetX,offSetY)
 	{
 		ctx.fillStyle=rgb(255,0,0);
 	}
-	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
+	ctx.fillRect(Math.ceil(this.x+offSetX),Math.ceil(this.y+offSetY),this.w,this.h);
 }

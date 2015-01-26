@@ -181,18 +181,18 @@ Game.prototype.gameLoop = function ()
 				var poisDmg=0;
 				if(main.playerPerk==2)
 				{
-					poisDmg=main.perks[main.playerPerk];
+					poisDmg=main.perkStrength[main.playerPerk];
 				}
 				if(main.playerGun==1)
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam"poisonDamage":poisDmg});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
 				}
 				else
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg});
+					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
 				}
 				game.player.fireTime=main.gunReload[main.playerGun];
 			}
@@ -338,7 +338,7 @@ Game.prototype.gameLoop = function ()
 						&&game.player.y+game.player.h>game.bullets[i].y
 						&&game.player.y<game.bullets[i].y+game.bullets[i].h)
 						{
-							game.player.health-=20;
+							game.player.health-=game.bullets[i].damage;
 							game.player.poisoned+=game.bullets[i].poisonDamage;
 							game.player.poisonTime=game.player.poisonMaxTime;
 							game.bullets[i] = null;
@@ -399,8 +399,8 @@ Game.prototype.gameLoop = function ()
 	if(game.player.poisonTime>0)
 	{
 		game.player.poisonTime-=curTime.getTime()-time.getTime();
-		damage=(game.player.poisoned/game.player.poisonMaxTime)*(curTime.getTime()-time.getTime());
-		game.player.health-=damage;
+		damage=(game.player.poisoned/game.player.poisonMaxTime)*Math.min((curTime.getTime()-time.getTime()),game.player.poisonTime);
+		game.player.health-=Math.max(damage,(damage/100)*game.player.health);
 		game.player.poisoned-=damage;
 	}
 	if(game.player.health<=0)
@@ -409,7 +409,7 @@ Game.prototype.gameLoop = function ()
 		game.player.setPos(-32,-32);
 		game.player.dead=true;
 		game.player.respawnTimer=1000;
-		game.player.health=main.playerMaxHealth;
+		game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
 		if(main.playerTeam=="blue")
 		{
 			game.player.room=0;
@@ -581,29 +581,29 @@ Game.prototype.Draw = function()
 				{
 					
 					ctx.fillStyle=rgb(0,0,0);
-					ctx.fillRect(playerGameData[blueTeam[i]].x-1+offSetX,playerGameData[blueTeam[i]].y-11+offSetY,game.player.w+2,7);
+					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x-1+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-11+offSetY),game.player.w+2,7);
 					ctx.fillStyle=rgb(0,0,255);	
-					ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y-10+offSetY,game.player.w*(playerGameData[blueTeam[i]].health/100),5);
+					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-10+offSetY),game.player.w*(playerGameData[blueTeam[i]].health/100),5);
 					
 					//ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
 					
-					ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),game.player.w,game.player.h);
 					if(playerOutfit[blueTeam[i]].hair)
 					{
-						ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),game.player.w,game.player.h);
 					}
 					if(playerOutfit[blueTeam[i]].beard)
 					{
-						ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),game.player.w,game.player.h);
 					}
-					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),game.player.w,game.player.h);
 					
 					
 					
 					if(playerGameData[blueTeam[i]].flag==1)
 					{
-						ctx.drawImage(images.redGrabbedCrystal,playerGameData[blueTeam[i]].x+offSetX+8,playerGameData[blueTeam[i]].y+offSetY);
+						ctx.drawImage(images.redGrabbedCrystal,Math.ceil(playerGameData[blueTeam[i]].x+offSetX+8),Math.ceil(playerGameData[blueTeam[i]].y+offSetY));
 						/*ctx.fillStyle=rgb(255,0,0);
 						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,10);	
 						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,5,game.player.h);	*/
@@ -622,28 +622,28 @@ Game.prototype.Draw = function()
 				if(playerGameData[redTeam[i]].room==game.player.room)
 				{
 					ctx.fillStyle=rgb(0,0,0);
-					ctx.fillRect(playerGameData[redTeam[i]].x-1+offSetX,playerGameData[redTeam[i]].y-11+offSetY,game.player.w+2,7);
+					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x-1+offSetX),Math.ceil(playerGameData[redTeam[i]].y-11+offSetY),game.player.w+2,7);
 					ctx.fillStyle = rgb(255, 0, 0);
-					ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y-10+offSetY,game.player.w*(playerGameData[redTeam[i]].health/100),5);
+					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y-10+offSetY),game.player.w*(playerGameData[redTeam[i]].health/100),5);
 					
 					//ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
 					
-					ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),game.player.w,game.player.h);
 					if(playerOutfit[redTeam[i]].hair)
 					{
-						ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),game.player.w,game.player.h);
 					}
 					if(playerOutfit[redTeam[i]].beard)
 					{
-						ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+						ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),game.player.w,game.player.h);
 					}
-					ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
+					ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),game.player.w,game.player.h);
 					
 					
 					if(playerGameData[redTeam[i]].flag==1)
 					{
-						ctx.drawImage(images.blueGrabbedCrystal,playerGameData[redTeam[i]].x+offSetX+8,playerGameData[redTeam[i]].y+offSetY);
+						ctx.drawImage(images.blueGrabbedCrystal,Math.ceil(playerGameData[redTeam[i]].x+offSetX+8),Math.ceil(playerGameData[redTeam[i]].y+offSetY));
 						/*ctx.fillStyle=rgb(0,0,255);
 						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,10);	
 						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,5,game.player.h);	*/
@@ -672,7 +672,7 @@ Game.prototype.Draw = function()
 	{
 		if(game.player.room==game.blueFlag.room)
 		{
-			ctx.drawImage(images.blueStandingCrystal,game.blueFlag.x+offSetX,game.blueFlag.y+offSetY-32);
+			ctx.drawImage(images.blueStandingCrystal,Math.ceil(game.blueFlag.x+offSetX),Math.ceil(game.blueFlag.y+offSetY-32));
 			//game.blueFlag.draw(offSetX,offSetY);
 		}
 	}
@@ -680,7 +680,7 @@ Game.prototype.Draw = function()
 	{
 		if(game.player.room==game.redFlag.room)
 		{
-			ctx.drawImage(images.redStandingCrystal,game.redFlag.x+offSetX,game.redFlag.y+offSetY-32);
+			ctx.drawImage(images.redStandingCrystal,Math.ceil(game.redFlag.x+offSetX),Math.ceil(game.redFlag.y+offSetY-32));
 			//game.redFlag.draw(offSetX,offSetY);
 		}
 	}

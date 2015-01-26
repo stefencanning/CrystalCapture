@@ -13,7 +13,7 @@ CharCust.prototype.Initialise = function()
 	var num = charCust.options.length;
 	charCust.options[charCust.options.length]=[600,50+((charCust.options.length-num)*50),"gun type",function () { main.playerGun-=1;if(main.playerGun<0){main.playerGun=main.guns.length-1;}},function () { main.playerGun+=1;if(main.playerGun>main.guns.length-1){main.playerGun=0;}},"gun"];
 	charCust.options[charCust.options.length]=[600,50+((charCust.options.length-num)*50),"HP:speed",function () {if(main.playerHealthScaling>5){if(main.playerHealthScaling>10){main.playerHealthScaling-=1;}main.playerHealthScaling=main.playerHealthScaling-1;if(main.playerSpeedScaling>=10){main.playerSpeedScaling+=1;}main.playerSpeedScaling=main.playerSpeedScaling+1;}},function () { if(main.playerHealthScaling<20){if(main.playerHealthScaling>=10){main.playerHealthScaling+=1;}main.playerHealthScaling=main.playerHealthScaling+1;if(main.playerSpeedScaling>10){main.playerSpeedScaling-=1;}main.playerSpeedScaling=main.playerSpeedScaling-1;}},"HS"];
-	charCust.options[charCust.options.length]=[600,50+((charCust.options.length-num)*50),"perk",function () { main.playerPerk-=1;if(main.playerPerk<0){main.perks=main.perks.length-1;}},function () { main.playerPerk+=1;if(main.playerPerk>main.perks.length-1){main.playerPerk=0;}},"perk"];
+	charCust.options[charCust.options.length]=[600,50+((charCust.options.length-num)*50),"perk",function () { main.playerPerk-=1;if(main.playerPerk<0){main.playerPerk=main.perks.length-1;}},function () { main.playerPerk+=1;if(main.playerPerk>main.perks.length-1){main.playerPerk=0;}},"perk"];
 }
 
 CharCust.prototype.Loop = function () 

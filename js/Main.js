@@ -33,7 +33,7 @@ function Main()
 	
 	//perks
 	main.perks=["HP regen","flag sprint","poison bullet"];
-	main.perkStrength=[3,1.5,2];
+	main.perkStrength=[3,1.5,10];
 	
 	//player stats
 	main.playerGun=0;

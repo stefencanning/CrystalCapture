@@ -3,7 +3,7 @@ var main, CLIENT,images;
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.40';
+	var host='149.153.102.56';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
 	var port=8080;
@@ -304,6 +304,8 @@ Client.prototype.handleMessage = function(evt)
 				game.bullets[i].room=msg.data.room;
 				game.bullets[i].xSpeed=msg.data.xSpeed;
 				game.bullets[i].ySpeed=msg.data.ySpeed;
+				game.bullets[i].poisonDamage=msg.data.poisonDamage;
+				game.bullets[i].damage=msg.data.damage;
 				created=true
 			}
 		}
@@ -315,6 +317,8 @@ Client.prototype.handleMessage = function(evt)
 			game.bullets[num].room=msg.data.room;
 			game.bullets[num].xSpeed=msg.data.xSpeed;
 			game.bullets[num].ySpeed=msg.data.ySpeed;
+			game.bullets[num].poisonDamage=msg.data.poisonDamage;
+			game.bullets[num].damage=msg.data.damage;
 		}
 	}
 	else if(msg.type == "flagDropped")
@@ -463,6 +467,7 @@ Client.prototype.handleMessage = function(evt)
 	{
 	console.log("type: "+ msg.type);
 	console.log("data: "+ msg.data);
+	console.log("msg: "+ msg);
 	}
 
 }

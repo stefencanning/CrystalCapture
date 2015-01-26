@@ -4,7 +4,7 @@ function Player(x, y)
 	this.y = y;
 	this.w = 32;
 	this.h = 32;
-	this.health = 100;
+	this.health = (main.playerMaxHealth*(main.playerHealthScaling/10));
 	this.room = 0;
 	this.rotation=0;
 	this.gotFlag=0;
@@ -44,22 +44,22 @@ Player.prototype.getDir = function()
 Player.prototype.draw = function(offSetX,offSetY)
 {
 	ctx.fillStyle=rgb(0,0,0);
-	ctx.fillRect(this.x-1+offSetX,this.y-11+offSetY,this.w+2,7);
+	ctx.fillRect(Math.ceil(this.x-1+offSetX),Math.ceil(this.y-11+offSetY),this.w+2,7);
 	ctx.fillStyle=rgb(0,255,0);
-	ctx.fillRect(this.x+offSetX,this.y-10+offSetY,this.w*(this.health/100),5);
+	ctx.fillRect(Math.ceil(this.x+offSetX),Math.ceil(this.y-10+offSetY),this.w*(this.health/(main.playerMaxHealth*(main.playerHealthScaling/10))),5);
 	ctx.fillStyle=rgb(0,0,0);
 	//ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);
 	//ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],0,this.rotation*32,32,32,this.x+offSetX,this.y+offSetY,this.w,this.h);
-	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,this.rotation*32,32,32,Math.floor(this.x+offSetX),Math.floor(this.y+offSetY),this.w,this.h);
+	ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,this.rotation*32,32,32,Math.ceil(this.x+offSetX),Math.ceil(this.y+offSetY),this.w,this.h);
 	if(main.playerShowHair)
 	{
-		ctx.drawImage(images.hair[main.playerGender][main.playerHair],main.animation[main.frame]*32,this.rotation*32,32,32,Math.floor(this.x+offSetX),Math.floor(this.y+offSetY),this.w,this.h);
+		ctx.drawImage(images.hair[main.playerGender][main.playerHair],main.animation[main.frame]*32,this.rotation*32,32,32,Math.ceil(this.x+offSetX),Math.ceil(this.y+offSetY),this.w,this.h);
 	}
 	if(main.playerShowBeard)
 	{
-		ctx.drawImage(images.beard[main.playerBeard],main.animation[main.frame]*32,this.rotation*32,32,32,Math.floor(this.x+offSetX),Math.floor(this.y+offSetY),this.w,this.h);
+		ctx.drawImage(images.beard[main.playerBeard],main.animation[main.frame]*32,this.rotation*32,32,32,Math.ceil(this.x+offSetX),Math.ceil(this.y+offSetY),this.w,this.h);
 	}
-	ctx.drawImage(images.clothes[main.playerGender][main.playerClothes],main.animation[main.frame]*32,this.rotation*32,32,32,Math.floor(this.x+offSetX),Math.floor(this.y+offSetY),this.w,this.h);
+	ctx.drawImage(images.clothes[main.playerGender][main.playerClothes],main.animation[main.frame]*32,this.rotation*32,32,32,Math.ceil(this.x+offSetX),Math.ceil(this.y+offSetY),this.w,this.h);
 	if(main.playerTeam=="blue")
 	{
 		ctx.fillStyle=rgb(0,0,255);
@@ -76,11 +76,11 @@ Player.prototype.draw = function(offSetX,offSetY)
 	{
 		if(main.playerTeam=="blue")
 		{
-			ctx.drawImage(images.redGrabbedCrystal,Math.floor(this.x+offSetX+8),Math.floor(this.y+offSetY));
+			ctx.drawImage(images.redGrabbedCrystal,Math.ceil(this.x+offSetX+8),Math.ceil(this.y+offSetY));
 		}
 		if(main.playerTeam=="red")
 		{
-			ctx.drawImage(images.blueGrabbedCrystal,Math.floor(this.x+offSetX+8),Math.floor(this.y+offSetY));
+			ctx.drawImage(images.blueGrabbedCrystal,Math.ceil(this.x+offSetX+8),Math.ceil(this.y+offSetY));
 		}
 	}
 }
