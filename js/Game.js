@@ -204,6 +204,115 @@ Game.prototype.gameLoop = function ()
 		var newPos = game.rooms[game.player.room].checkCollision(game.player);
 		if(newPos.roomChange)
 		{
+			var queue = new Queue();
+			queue.enqueue(0);
+			var set = {};
+			while(!queue.isEmpty())
+			{
+				var roomNum = queue.dequeue();
+				set[roomNum]=true;
+				game.rooms[roomNum].previous=-1;
+				var walls = game.rooms[roomNum].walls;
+				for(var i = 0; i < walls.length; i++)
+				{
+					if(walls[i].door=="true")
+					{
+						var newRoom = walls[i].door.connectsTo[0];
+						if(!set[newRoom])
+						{
+							game.rooms[newRoom].distBlue=game.rooms[roomNum].distBlue+1;
+							queue.enqueue(newRoom);
+						}
+					}
+				}
+			}
+			queue = new Queue();
+			queue.enqueue(1);
+			set = {};
+			while(!queue.isEmpty())
+			{
+				var roomNum = queue.dequeue();
+				set[roomNum]=true;
+				game.rooms[roomNum].previous=-1;
+				var walls = game.rooms[roomNum].walls;
+				for(var i = 0; i < walls.length; i++)
+				{
+					if(walls[i].door=="true")
+					{
+						var newRoom = walls[i].door.connectsTo[0];
+						if(!set[newRoom])
+						{
+							game.rooms[newRoom].distRed=game.rooms[roomNum].distRed+1;
+							queue.enqueue(newRoom);
+						}
+					}
+				}
+			}
+			var flagCarRoom = -1;
+			if(main.playerTeam == "red")
+			{
+				if(game.blueFlagCaptured)
+				{
+					for(var i =0; i < blueTeam.length; i++)
+					{
+						if(playerGameData[blueTeam[i]].flag)
+						{
+							flagCarRoom = playerGameData[blueTeam[i]].room;
+						}
+					}
+				}
+				else
+				{
+					flagCarRoom=game.blueFlag.room;
+				}
+			}
+			if(main.playerTeam == "blue")
+			{
+				if(game.redFlagCaptured)
+				{
+					for(var i =0; i < redTeam.length; i++)
+					{
+						if(playerGameData[redTeam[i]].flag)
+						{
+							flagCarRoom = playerGameData[redTeam[i]].room;
+						}
+					}
+				}
+				else
+				{
+					flagCarRoom=game.redFlag.room;
+				}
+			}
+			if(flagCarRoom!=-1)
+			{
+				queue = new Queue();
+				queue.enqueue(flagCarRoom);
+				set = {};
+				var found = false;
+				while(!queue.isEmpty()&&!found)
+				{
+					var roomNum = queue.dequeue();
+					set[roomNum]=true;
+					var walls = game.rooms[roomNum].walls;
+					for(var i = 0; i < walls.length; i++)
+					{
+						if(walls[i].door=="true")
+						{
+							var newRoom = walls[i].door.connectsTo[0];
+							if(!set[newRoom])
+							{
+								if(newRoom==newPos.room)
+								{
+									found=true;
+								}
+								game.rooms[newRoom].previous=roomNum;
+								queue.enqueue(newRoom);
+							}
+						}
+					}
+				}
+			}
+			/*
 			game.rooms[newPos.room].checkRoomDist();
 			if(game.rooms[game.player.room].foundColorValue-5>game.rooms[newPos.room].foundColorValue)
 			{
@@ -214,7 +323,7 @@ Game.prototype.gameLoop = function ()
 			{
 				game.rooms[game.player.room].foundColor = game.rooms[newPos.room].foundColor;
 				game.rooms[game.player.room].foundColorValue = game.rooms[newPos.room].foundColorValue-5;
-			}
+			}*/
 			game.player.room = newPos.room;
 		}
 		game.player.x = newPos.x;

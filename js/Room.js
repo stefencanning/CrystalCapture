@@ -7,6 +7,7 @@ function Room()
 	this.foundColorValue=200;
 	this.distBlue=-1;
 	this.distRed=-1;
+	this.previous=-1;
 }
 
 
@@ -20,7 +21,7 @@ Room.prototype.draw = function(offSetX,offSetY)
 {
 	for(var i = 0; i < this.walls.length;i++)
 	{
-		this.walls[i].draw(offSetX,offSetY);
+		this.walls[i].draw(offSetX,offSetY,this.previous);
 	}
 }
 
@@ -171,7 +172,6 @@ Room.prototype.checkCollision = function(object)
 			{
 				if(object.doorTime<=0)
 				{
-					this.walls[i].used=true;
 					object.doorTime=1000;
 					return {"roomChange":true,"x":this.walls[i].connectsTo[1],"y":this.walls[i].connectsTo[2],"room":this.walls[i].connectsTo[0]};
 				}

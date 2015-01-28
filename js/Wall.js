@@ -10,16 +10,22 @@ function Wall(x,y)
 }
 
 
-Wall.prototype.draw = function(offSetX,offSetY)
+Wall.prototype.draw = function(offSetX,offSetY, prev)
 {
 	ctx.fillStyle=rgb(0,0,0);
 	ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);	
 	if(this.door=="true")
 	{
 		ctx.fillStyle=rgb(139,69,19);
+		if(prev==this.connectsTo[0])
+		{
+			ctx.fillStyle=rgb(139,69,19);
+		}
 		ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);	
+		/*
 		if(this.used)
 		{
+			
 			if(game.rooms[this.connectsTo[0]].oriColor=="red")
 			{
 				ctx.fillStyle=rgb(255,255-game.rooms[this.connectsTo[0]].oriColorValue,255-game.rooms[this.connectsTo[0]].oriColorValue);
@@ -39,6 +45,6 @@ Wall.prototype.draw = function(offSetX,offSetY)
 				ctx.fillStyle=rgb(255-game.rooms[this.connectsTo[0]].foundColorValue,255-game.rooms[this.connectsTo[0]].foundColorValue,255);
 			}
 			ctx.fillRect(this.x+offSetX+12,this.y+offSetY+12,this.w-24,this.h-24);	
-		}
+		}*/
 	}
 }

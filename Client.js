@@ -3,7 +3,7 @@ var main, CLIENT,images;
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.56';
+	var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
 	var port=8080;
