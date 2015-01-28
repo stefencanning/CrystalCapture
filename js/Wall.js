@@ -19,7 +19,7 @@ Wall.prototype.draw = function(offSetX,offSetY, prev)
 		ctx.fillStyle=rgb(139,69,19);
 		if(prev==this.connectsTo[0])
 		{
-			ctx.fillStyle=rgb(139,69,19);
+			ctx.fillStyle=rgb(212,175,55);
 		}
 		ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);	
 		/*
