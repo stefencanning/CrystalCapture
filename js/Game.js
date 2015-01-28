@@ -46,33 +46,33 @@ Game.prototype.CreateStartRooms=function()
 	for(var i = 0; i < 2; i++)
 	{
 		game.rooms[i] = new Room();
-		game.rooms[i].addWall(new Wall(0,0));
-		game.rooms[i].addWall(new Wall(32,0));
-		game.rooms[i].addWall(new Wall(64,0));
-		game.rooms[i].addWall(new Wall(96,0));
-		game.rooms[i].addWall(new Wall(128,0));
-		game.rooms[i].addWall(new Wall(160,0));
-		game.rooms[i].addWall(new Wall(192,0));
+		game.rooms[i].addWall(new Wall(0,0,1));
+		game.rooms[i].addWall(new Wall(32,0,9));
+		game.rooms[i].addWall(new Wall(64,0,9));
+		game.rooms[i].addWall(new Wall(96,0,9));
+		game.rooms[i].addWall(new Wall(128,0,9));
+		game.rooms[i].addWall(new Wall(160,0,9));
+		game.rooms[i].addWall(new Wall(192,0,0));
 		
-		game.rooms[i].addWall(new Wall(0,192));
-		game.rooms[i].addWall(new Wall(32,192));
-		game.rooms[i].addWall(new Wall(64,192));
-		game.rooms[i].addWall(new Wall(96,192));
-		game.rooms[i].addWall(new Wall(128,192));
-		game.rooms[i].addWall(new Wall(160,192));
-		game.rooms[i].addWall(new Wall(192,192));
+		game.rooms[i].addWall(new Wall(0,192,2));
+		game.rooms[i].addWall(new Wall(32,192,9));
+		game.rooms[i].addWall(new Wall(64,192,9));
+		game.rooms[i].addWall(new Wall(96,192,9));
+		game.rooms[i].addWall(new Wall(128,192,9));
+		game.rooms[i].addWall(new Wall(160,192,9));
+		game.rooms[i].addWall(new Wall(192,192,3));
 		
-		game.rooms[i].addWall(new Wall(192,32));
-		game.rooms[i].addWall(new Wall(192,64));
-		game.rooms[i].addWall(new Wall(192,96));
-		game.rooms[i].addWall(new Wall(192,128));
-		game.rooms[i].addWall(new Wall(192,160));
+		game.rooms[i].addWall(new Wall(192,32,10));
+		game.rooms[i].addWall(new Wall(192,64,10));
+		game.rooms[i].addWall(new Wall(192,96,10));
+		game.rooms[i].addWall(new Wall(192,128,10));
+		game.rooms[i].addWall(new Wall(192,160,10));
 		
-		game.rooms[i].addWall(new Wall(0,32));
-		game.rooms[i].addWall(new Wall(0,64));
-		game.rooms[i].addWall(new Wall(0,96));
-		game.rooms[i].addWall(new Wall(0,128));
-		game.rooms[i].addWall(new Wall(0,160));
+		game.rooms[i].addWall(new Wall(0,32,10));
+		game.rooms[i].addWall(new Wall(0,64,10));
+		game.rooms[i].addWall(new Wall(0,96,10));
+		game.rooms[i].addWall(new Wall(0,128,10));
+		game.rooms[i].addWall(new Wall(0,160,10));
 	}
 	game.rooms[0].oriColor="blue";
 	game.rooms[0].foundColor="blue";
@@ -217,7 +217,7 @@ Game.prototype.gameLoop = function ()
 				{
 					if(walls[i].door=="true")
 					{
-						var newRoom = walls[i].door.connectsTo[0];
+						var newRoom = walls[i].connectsTo[0];
 						if(!set[newRoom])
 						{
 							game.rooms[newRoom].distBlue=game.rooms[roomNum].distBlue+1;
@@ -239,7 +239,7 @@ Game.prototype.gameLoop = function ()
 				{
 					if(walls[i].door=="true")
 					{
-						var newRoom = walls[i].door.connectsTo[0];
+						var newRoom = walls[i].connectsTo[0];
 						if(!set[newRoom])
 						{
 							game.rooms[newRoom].distRed=game.rooms[roomNum].distRed+1;
@@ -251,7 +251,7 @@ Game.prototype.gameLoop = function ()
 			var flagCarRoom = -1;
 			if(main.playerTeam == "red")
 			{
-				if(game.blueFlagCaptured)
+				if(game.redFlagCaptured)
 				{
 					for(var i =0; i < blueTeam.length; i++)
 					{
@@ -263,12 +263,15 @@ Game.prototype.gameLoop = function ()
 				}
 				else
 				{
-					flagCarRoom=game.blueFlag.room;
+					if(game.player.gotFlag)
+					{
+						flagCarRoom=game.blueFlag.room;
+					}
 				}
 			}
 			if(main.playerTeam == "blue")
 			{
-				if(game.redFlagCaptured)
+				if(game.blueFlagCaptured)
 				{
 					for(var i =0; i < redTeam.length; i++)
 					{
@@ -280,7 +283,10 @@ Game.prototype.gameLoop = function ()
 				}
 				else
 				{
-					flagCarRoom=game.redFlag.room;
+					if(game.player.gotFlag)
+					{
+						flagCarRoom=game.redFlag.room;
+					}
 				}
 			}
 			if(flagCarRoom!=-1)
@@ -298,7 +304,7 @@ Game.prototype.gameLoop = function ()
 					{
 						if(walls[i].door=="true")
 						{
-							var newRoom = walls[i].door.connectsTo[0];
+							var newRoom = walls[i].connectsTo[0];
 							if(!set[newRoom])
 							{
 								if(newRoom==newPos.room)
@@ -668,10 +674,14 @@ Game.prototype.Draw = function()
 	ctx.strokeStyle=rgb(0,0,0);
 	ctx.strokeRect(24,24,canvas.width-48, canvas.height-48);*/
 	
+	ctx.lineWidth=2;
+	ctx.strokeStyle=rgb(0,0,0);
+	ctx.strokeRect(0,0,canvas.width, canvas.height);
+	
 	var offSetX = Math.floor(-game.player.x-(game.player.w/2)+(canvas.width/2));
 	var offSetY = Math.floor(-game.player.y-(game.player.h/2)+(canvas.height/2));
 	
-	game.rooms[game.player.room].draw(offSetX,offSetY);
+	game.rooms[game.player.room].drawFirst(offSetX,offSetY);
 	if(game.player.room==game.redCapturePoint[2])
 	{
 		ctx.drawImage(images.redCrystalBase,game.redCapturePoint[0]+offSetX,game.redCapturePoint[1]+offSetY-32);
@@ -794,6 +804,7 @@ Game.prototype.Draw = function()
 		}
 	}
 	
+	game.rooms[game.player.room].draw(offSetX,offSetY);
 	
 	
 	ctx.fillStyle = rgb(0, 0, 0);

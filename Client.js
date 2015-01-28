@@ -442,7 +442,7 @@ Client.prototype.handleMessage = function(evt)
 			game.rooms[msg.data.room2].foundColorValue = msg.data.colorValue;
 			for(var i = 0; i < msg.data.newRoom.length;i++)
 			{
-				var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32);
+				var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32,msg.data.newRoom[i][6]);
 				if(msg.data.newRoom[i][0]==msg.data.door2x&&msg.data.newRoom[i][1]==msg.data.door2y)
 				{
 					wall.door="true";

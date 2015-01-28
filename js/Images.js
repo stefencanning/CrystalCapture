@@ -13,6 +13,28 @@ Images.prototype.Initialise = function()
 	images.ClothesImages();
 	images.CrystalImages();
 	images.BeardImages();
+	images.WallsImages();
+}
+
+Images.prototype.WallsImages = function()
+{
+	images.walls=[,,,,,,,,,,,,,,];
+	for(var i = 0; i < 15; i++)
+	{
+		images.walls[i]=new Image();
+		images.walls[i].src="img/walls/"+i+".png";
+	}
+	images.walls[15]=new Image();
+	images.walls[15].src="img/walls/wall.png";
+	images.doors=[,];
+	images.doors[0]=new Image();
+	images.doors[0].src="img/walls/doorTop2.png";
+	images.doors[1]=new Image();
+	images.doors[1].src="img/walls/doorSide.png";
+	images.doors[2]=new Image();
+	images.doors[2].src="img/walls/doorTop4.png";
+	images.doors[3]=new Image();
+	images.doors[3].src="img/walls/doorSide2.png";
 }
 
 Images.prototype.BodyImages = function()

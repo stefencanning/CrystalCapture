@@ -16,6 +16,14 @@ Room.prototype.addWall = function(wall)
 	this.walls[this.walls.length] = wall;
 }
 
+Room.prototype.drawFirst = function(offSetX,offSetY)
+{
+	for(var i = 0; i < this.walls.length;i++)
+	{
+		this.walls[i].drawFirst(offSetX,offSetY,this.previous);
+	}
+}
+
 
 Room.prototype.draw = function(offSetX,offSetY)
 {
@@ -153,10 +161,12 @@ Room.prototype.checkRoomDist = function()
 Room.prototype.checkCollision = function(object)
 {
 	var x,y,w,h;
-	x=object.x;
-	y=object.y;
-	w=object.w;
+	x=object.x+4;
+	y=object.y+8;
+	w=object.w-8;
 	h=object.h;
+	xEnd=object.x;
+	yEnd=object.y;
 	var x2,y2,w2,h2;
 	var totalOverlap=[0,0];
 	var roomChange = false;
@@ -206,9 +216,9 @@ Room.prototype.checkCollision = function(object)
 			}
 		}
 	}
-	x+=totalOverlap[0];
-	y+=totalOverlap[1];
-	return {"roomChange":false,"x":x,"y":y,"room":-1};
+	xEnd+=totalOverlap[0];
+	yEnd+=totalOverlap[1];
+	return {"roomChange":false,"x":xEnd,"y":yEnd,"room":-1};
 }
 
 Room.prototype.checkCollide = function(object)

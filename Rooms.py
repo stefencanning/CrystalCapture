@@ -7,33 +7,33 @@ class Room:
 		self.colorValue=0
 
 	def createBaseRooms(self):
-		self.walls.append([0,0,False,False,0,0])
-		self.walls.append([1,0,False,True,1,1])
-		self.walls.append([2,0,False,True,2,1])
-		self.walls.append([3,0,False,True,3,1])
-		self.walls.append([4,0,False,True,4,1])
-		self.walls.append([5,0,False,True,5,1])
-		self.walls.append([6,0,False,False,0,0])
+		self.walls.append([0,0,False,False,0,0,1])
+		self.walls.append([1,0,False,True,1,1,9])
+		self.walls.append([2,0,False,True,2,1,9])
+		self.walls.append([3,0,False,True,3,1,9])
+		self.walls.append([4,0,False,True,4,1,9])
+		self.walls.append([5,0,False,True,5,1,9])
+		self.walls.append([6,0,False,False,0,0,0])
 		
-		self.walls.append([0,6,False,False,0,0])
-		self.walls.append([1,6,False,True,1,5])
-		self.walls.append([2,6,False,True,2,5])
-		self.walls.append([3,6,False,True,3,5])
-		self.walls.append([4,6,False,True,4,5])
-		self.walls.append([5,6,False,True,5,5])
-		self.walls.append([6,6,False,False,0,0])
+		self.walls.append([0,6,False,False,0,0,2])
+		self.walls.append([1,6,False,True,1,5,9])
+		self.walls.append([2,6,False,True,2,5,9])
+		self.walls.append([3,6,False,True,3,5,9])
+		self.walls.append([4,6,False,True,4,5,9])
+		self.walls.append([5,6,False,True,5,5,9])
+		self.walls.append([6,6,False,False,0,0,3])
 		
-		self.walls.append([0,1,False,True,1,1])
-		self.walls.append([0,2,False,True,1,2])
-		self.walls.append([0,3,False,True,1,3])
-		self.walls.append([0,4,False,True,1,4])
-		self.walls.append([0,5,False,True,1,5])
+		self.walls.append([0,1,False,True,1,1,10])
+		self.walls.append([0,2,False,True,1,2,10])
+		self.walls.append([0,3,False,True,1,3,10])
+		self.walls.append([0,4,False,True,1,4,10])
+		self.walls.append([0,5,False,True,1,5,10])
 		
-		self.walls.append([6,1,False,True,5,1])
-		self.walls.append([6,2,False,True,5,2])
-		self.walls.append([6,3,False,True,5,3])
-		self.walls.append([6,4,False,True,5,4])
-		self.walls.append([6,5,False,True,5,5])
+		self.walls.append([6,1,False,True,5,1,10])
+		self.walls.append([6,2,False,True,5,2,10])
+		self.walls.append([6,3,False,True,5,3,10])
+		self.walls.append([6,4,False,True,5,4,10])
+		self.walls.append([6,5,False,True,5,5,10])
 	
 	def createProceduralRoom(self):
 		wallBase={}
@@ -97,14 +97,14 @@ class Room:
 			x=wall[0]
 			y=wall[1]
 			if(wallBase.get(x-1,False) == False):
-				self.walls.append([x,y,False,False,0,0])
+				self.walls.append([x,y,False,False,0,0,0])
 				wallBase[x][y][1]=True
 			elif(wallBase.get(x+1,False) == False):
-				self.walls.append([x,y,False,False,0,0])
+				self.walls.append([x,y,False,False,0,0,0])
 				wallBase[x][y][1]=True
 			elif(wallBase[x-1].get(y,False) == False or wallBase[x+1].get(y,False) == False or wallBase[x].get(y-1,False) == False or wallBase[x].get(y+1,False) == False
 			or wallBase[x-1].get(y-1,False) == False or wallBase[x-1].get(y+1,False) == False or wallBase[x+1].get(y-1,False) == False or wallBase[x+1].get(y+1,False) == False):
-				self.walls.append([x,y,False,False,0,0])
+				self.walls.append([x,y,False,False,0,0,0])
 				wallBase[x][y][1]=True
 		
 		for wall in self.walls:
@@ -136,6 +136,63 @@ class Room:
 						wall[3]=True
 						wall[4]=x
 						wall[5]=y+1
+		
+		
+		for wall in self.walls:
+			x=wall[0]
+			y=wall[1]
+			up=False
+			down=False
+			left=False
+			right=False
+			if(wallBase.get(x-1,False)):
+				if(wallBase[x-1].get(y,False)):
+					if(wallBase[x-1][y][0]):
+						if(wallBase[x-1][y][1]==True):
+							left=True
+			if(wallBase.get(x+1,False)):
+				if(wallBase[x+1].get(y,False)):
+					if(wallBase[x+1][y][0]):
+						if(wallBase[x+1][y][1]==True):
+							right=True
+			if(wallBase[x].get(y-1,False)):
+				if(wallBase[x][y-1][0]):
+					if(wallBase[x][y-1][1]==True):
+						up=True
+			if(wallBase[x].get(y+1,False)):
+				if(wallBase[x][y+1][0]):
+					if(wallBase[x][y+1][1]==True):
+						down=True
+			if(up and down and left and right):
+				wall[6]=8
+			elif(up and down and left):
+				wall[6]=4
+			elif(up and down and right):
+				wall[6]=6
+			elif(up  and left and right):
+				wall[6]=7
+			elif(down and left and right):
+				wall[6]=5
+			elif(up and left):
+				wall[6]=3
+			elif(up and right):
+				wall[6]=2
+			elif(down and left):
+				wall[6]=0
+			elif(down and right):
+				wall[6]=1
+			elif(up and down):
+				wall[6]=10
+			elif(left and right):
+				wall[6]=9
+			elif(up ):
+				wall[6]=14
+			elif(down ):
+				wall[6]=12
+			elif(left ):
+				wall[6]=11
+			elif(right):
+				wall[6]=13
 	
 	def createDoor(self,x,y):
 		for wall in self.walls:
