@@ -3,9 +3,9 @@ var main, CLIENT,images;
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.40';
+	//var host='149.153.102.40';
 	//var host='192.168.0.18';
-	//var host='46.7.218.244';
+	var host='46.7.218.244';
 	var port=8080;
 	this.me;
 
@@ -24,10 +24,10 @@ function Client()
 		if(document.getElementById('firstname').value!="")
 		{
 			this.style.background+='#00FF00';
-			CLIENT.connect(document.getElementById('firstname').value) 
-			main = new Main()
+			CLIENT.connect(document.getElementById('firstname').value);
+			main = new Main();
 			elem = document.getElementById('label');
-			elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+"."
+			elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
 			elem.parentNode.removeChild(document.getElementById('firstname'));
 			elem.parentNode.removeChild(document.getElementById('button'));
 		}

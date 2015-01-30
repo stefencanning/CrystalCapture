@@ -263,7 +263,7 @@ Game.prototype.gameLoop = function ()
 				}
 				else
 				{
-					if(game.player.gotFlag)
+					if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.blueFlag.room;
 					}
@@ -283,7 +283,7 @@ Game.prototype.gameLoop = function ()
 				}
 				else
 				{
-					if(game.player.gotFlag)
+					if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.redFlag.room;
 					}
@@ -574,7 +574,7 @@ Game.prototype.onMouseClick = function(e)
 		inGamePos.x/=32;
 		inGamePos.x=Math.floor(inGamePos.x);
 		inGamePos.y/=32;
-		inGamePos.y=Math.floor(inGamePos.y);
+		inGamePos.y=Math.floor(inGamePos.y+16);
 		CLIENT.createDoor(inGamePos.x,inGamePos.y,game.player.room);
 	}
 }

@@ -43,7 +43,8 @@ class Room:
 		wallList.append([0,0,True,False,0,0])
 		chance=2
 		placed=0
-		while(placed < 20):
+		placedLimit=20
+		while(placed < placedLimit):
 			for wall in wallList:
 				if( placed < 500 and random.randint(0,100)!=0):
 					x=wall[0]
