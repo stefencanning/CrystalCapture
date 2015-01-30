@@ -110,7 +110,7 @@ Game.prototype.gameLoop = function ()
 				dist/=2;
 				if(main.playerPerk==1)
 				{
-					dist*=main.perks[main.playerPerk];
+					dist*=main.perkStrength[main.playerPerk];
 				}
 			}
 			game.player.y-=(dist*((curTime.getTime()-time.getTime())/1000));
@@ -124,7 +124,7 @@ Game.prototype.gameLoop = function ()
 				dist/=2;
 				if(main.playerPerk==1)
 				{
-					dist*=main.perks[main.playerPerk];
+					dist*=main.perkStrength[main.playerPerk];
 				}
 			}
 			game.player.y+=(dist*((curTime.getTime()-time.getTime())/1000));
@@ -138,7 +138,7 @@ Game.prototype.gameLoop = function ()
 				dist/=2;
 				if(main.playerPerk==1)
 				{
-					dist*=main.perks[main.playerPerk];
+					dist*=main.perkStrength[main.playerPerk];
 				}
 			}
 			game.player.x-=(dist*((curTime.getTime()-time.getTime())/1000));
@@ -152,7 +152,7 @@ Game.prototype.gameLoop = function ()
 				dist/=2;
 				if(main.playerPerk==1)
 				{
-					dist*=main.perks[main.playerPerk];
+					dist*=main.perkStrength[main.playerPerk];
 				}
 			}
 			game.player.x+=(dist*((curTime.getTime()-time.getTime())/1000));
@@ -536,7 +536,7 @@ Game.prototype.gameLoop = function ()
 	}
 	if(main.playerPerk==0)
 	{
-		game.player.health+=((main.playerMaxHealth*(main.playerHealthScaling/10))*0.03)*((curTime.getTime()-time.getTime())/1000);
+		game.player.health+=((main.playerMaxHealth*(main.playerHealthScaling/10))*(main.perkStrength[main.playerPerk]/100))*((curTime.getTime()-time.getTime())/1000);
 	}
 	if(game.player.health>(main.playerMaxHealth*(main.playerHealthScaling/10)))
 	{
@@ -570,11 +570,11 @@ Game.prototype.onMouseClick = function(e)
 		//var offSetY = -game.player.y+(canvas.height/2);
 		var inGamePos=[];
 		inGamePos["x"]=e.x-offSetX;
-		inGamePos["y"]=e.y-offSetY;
+		inGamePos["y"]=e.y-offSetY+16;
 		inGamePos.x/=32;
 		inGamePos.x=Math.floor(inGamePos.x);
 		inGamePos.y/=32;
-		inGamePos.y=Math.floor(inGamePos.y+16);
+		inGamePos.y=Math.floor(inGamePos.y);
 		CLIENT.createDoor(inGamePos.x,inGamePos.y,game.player.room);
 	}
 }

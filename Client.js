@@ -3,9 +3,9 @@ var main, CLIENT,images;
 function Client()
 {
 	CLIENT = this;
-	//var host='149.153.102.40';
+	var host='149.153.102.40';
 	//var host='192.168.0.18';
-	var host='46.7.218.244';
+	//var host='46.7.218.244';
 	var port=8080;
 	this.me;
 
@@ -18,6 +18,28 @@ function Client()
  
     this.ws.onopen = function(evt) { console.log('open connection'); };
 
+	
+	/*
+	var connection = new ActiveXObject("ADODB.Connection") ;
+
+	var connectionstring="Data Source=<server>;User ID=azureuser;Password=<password>;Provider=SQLOLEDB";//Initial Catalog=<catalog>;
+
+	connection.Open(connectionstring);
+	var rs = new ActiveXObject("ADODB.Recordset");
+
+	rs.Open("SELECT * FROM table", connection);
+	rs.MoveFirst
+	while(!rs.eof)
+	{
+	   document.write(rs.fields(1));
+	   rs.movenext;
+	}
+
+	rs.close;
+	connection.close;
+	*/
+	
+	
 	//changes made
     p1Button = document.getElementById('button');
     p1Button.addEventListener('click', function(){ 
