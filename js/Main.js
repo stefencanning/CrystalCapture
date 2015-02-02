@@ -66,6 +66,7 @@ function Main()
 	//img[0].src = 'img/dancer1.png';
 	//img[1].src = 'img/dancer2.png';
 	//game.Initialise();
+	time = new Date();
 	main.mainLoop();
 }
 
@@ -123,6 +124,7 @@ Main.prototype.mainLoop = function ()
 		main.frameTime+=curTime-time;
 		charCust.Loop();
 	}
+	sound.update((curTime.getTime()-time.getTime())/1000);
 	time = new Date();
 	window.requestAnimFrame(main.mainLoop);
 }

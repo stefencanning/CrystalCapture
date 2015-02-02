@@ -1,11 +1,14 @@
-var main, CLIENT,images;
+var main, CLIENT,images,sound;
+
+
+
 
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.40';
+	//var host='149.153.102.40';
 	//var host='192.168.0.18';
-	//var host='46.7.218.244';
+	var host='46.7.218.244';
 	var port=8080;
 	this.me;
 
@@ -48,6 +51,8 @@ function Client()
 			this.style.background+='#00FF00';
 			CLIENT.connect(document.getElementById('firstname').value);
 			main = new Main();
+			sound.playSong(sound.songNumbers["menu"]);
+			//sound.playSong(sound.songNumbers["enemy"]);
 			elem = document.getElementById('label');
 			elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
 			elem.parentNode.removeChild(document.getElementById('firstname'));
@@ -57,6 +62,9 @@ function Client()
 	
 	images = new Images();
 	images.Initialise();
+	
+	sound = new Sound();
+	sound.Initialise();
 	/*
 	addEventListener("click", function(e)
 	{
@@ -304,6 +312,8 @@ Client.prototype.handleMessage = function(evt)
 		{
 			game= new Game();
 			game.Initialise();
+			sound.stopSong(sound.songNumbers["menu"]);
+			sound.playSong(sound.songNumbers["walking"]);
 			main.mode=INGAME;
 		}
 	}

@@ -299,6 +299,10 @@ Game.prototype.gameLoop = function ()
 				{
 					var roomNum = queue.dequeue();
 					set[roomNum]=true;
+					if(roomNum==newPos.room)
+					{
+						found=true;
+					}
 					var walls = game.rooms[roomNum].walls;
 					for(var i = 0; i < walls.length; i++)
 					{
@@ -332,6 +336,42 @@ Game.prototype.gameLoop = function ()
 			}*/
 			game.player.room = newPos.room;
 		}
+		if(game.player.gotFlag)
+		{
+			sound.stopSong(sound.songNumbers["enemy"]);
+			sound.stopSong(sound.songNumbers["walking"]);
+			sound.playSong(sound.songNumbers["flag"]);
+		}
+		else
+		{
+			sound.stopSong(sound.songNumbers["flag"]);
+			sound.stopSong(sound.songNumbers["enemy"]);
+			sound.playSong(sound.songNumbers["walking"]);
+			
+			if(main.playerTeam == "blue")
+			{
+				for(var i =0; i < redTeam.length; i++)
+				{
+					if(playerGameData[redTeam[i]].room == game.player.room)
+					{
+						sound.playSong(sound.songNumbers["enemy"]);
+						sound.stopSong(sound.songNumbers["walking"]);
+					}
+				}
+			}
+			else if(main.playerTeam == "red")
+			{
+				for(var i =0; i < blueTeam.length; i++)
+				{
+					if(playerGameData[blueTeam[i]].room == game.player.room)
+					{
+						sound.playSong(sound.songNumbers["enemy"]);
+						sound.stopSong(sound.songNumbers["walking"]);
+					}
+				}
+			}
+		}
+		
 		game.player.x = newPos.x;
 		game.player.y = newPos.y;
 		if(main.playerTeam == "blue")
@@ -520,6 +560,9 @@ Game.prototype.gameLoop = function ()
 	}
 	if(game.player.health<=0)
 	{
+		sound.stopSong(sound.songNumbers["enemy"]);
+		sound.stopSong(sound.songNumbers["walking"]);
+		sound.stopSong(sound.songNumbers["flag"]);
 		CLIENT.playerDied();
 		game.player.setPos(-32,-32);
 		game.player.dead=true;
