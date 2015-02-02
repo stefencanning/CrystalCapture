@@ -162,9 +162,9 @@ Room.prototype.checkCollision = function(object)
 {
 	var x,y,w,h;
 	x=object.x+4;
-	y=object.y+8;
+	y=object.y+12;
 	w=object.w-8;
-	h=object.h;
+	h=object.h-12;
 	xEnd=object.x;
 	yEnd=object.y;
 	var x2,y2,w2,h2;

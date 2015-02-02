@@ -81,8 +81,8 @@ class Session:
 						return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"mat1X":success['matX'],"mat1Y":success['matY'],"mat2X":connectData['matX'],"mat2Y":connectData['matY']}#,"newRoom":self.rooms[num].walls
 			num = len(self.rooms)
 			self.rooms[num] = Room()
-			self.rooms[num].createBaseRooms()
-			#self.rooms[num].createProceduralRoom()
+			#self.rooms[num].createBaseRooms()
+			self.rooms[num].createProceduralRoom()
 			self.rooms[num].color = self.rooms[data['room']].color
 			self.rooms[num].colorValue = max(0,self.rooms[data['room']].colorValue-5)
 			connectData = self.rooms[num].addDoor(0);

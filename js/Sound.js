@@ -18,29 +18,30 @@ Sound.prototype.loadSongs = function()
 	sound.songState=[];
 	sound.songs=[];
 	
-	num = 0;
-	sound.songs[num]=new Audio();
-	sound.songs[num].src=songNames[num];
-	sound.songState[num]="stopped";
-	sound.songNumbers["menu"]=num;
+	sound.songs[0]=new Audio();
+	sound.songs[0].src="sound/menu.mp3";
+	sound.songState[0]="stopped";
+	sound.songNumbers["menu"]=0;
 	
-	num++;
-	sound.songs[num]=new Audio();
-	sound.songs[num].src=songNames[num];
-	sound.songState[num]="stopped";
-	sound.songNumbers["flag"]=num;
+	sound.songs[1]=new Audio();
+	sound.songs[1].src="sound/flag.mp3";
+	sound.songState[1]="stopped";
+	sound.songNumbers["flag"]=1;
 	
-	num++;
-	sound.songs[num]=new Audio();
-	sound.songs[num].src=songNames[num];
-	sound.songState[num]="stopped";
-	sound.songNumbers["walking"]=num;
+	sound.songs[2]=new Audio();
+	sound.songs[2].src="sound/walk.mp3";
+	sound.songState[2]="stopped";
+	sound.songNumbers["walking"]=2;
 	
-	num++;
-	sound.songs[num]=new Audio();
-	sound.songs[num].src=songNames[num];
-	sound.songState[num]="stopped";
-	sound.songNumbers["enemy"]=num;
+	sound.songs[3]=new Audio();
+	sound.songs[3].src="sound/battle.mp3";
+	sound.songState[3]="stopped";
+	sound.songNumbers["enemy"]=3;
+	
+	sound.songs[4]=new Audio();
+	sound.songs[4].src="sound/battle.mp3";
+	sound.songState[4]="stopped";
+	sound.songNumbers["enemy2"]=4;
 }
 
 
@@ -81,7 +82,7 @@ Sound.prototype.update = function(timeElapsed)
 	{
 		if(sound.songState[i]=="starting")
 		{
-			sound.songs[i].volume=Math.min(sound.songs[i].volume+1*timeElapsed/3,1);
+			sound.songs[i].volume=Math.min(sound.songs[i].volume+1*timeElapsed/5,1);
 			if(sound.songs[i].volume>=1)
 			{
 				sound.songs[i].volume=1;

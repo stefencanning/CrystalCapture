@@ -11,6 +11,7 @@ function Bullet(x, y)
 	this.ySpeed=0;
 	this.damage=0;
 	this.poisonDamage=0;
+	this.shotBy="";
 }
 
 Bullet.prototype.getX = function()
