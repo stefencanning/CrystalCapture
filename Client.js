@@ -51,6 +51,7 @@ function Client()
 			this.style.background+='#00FF00';
 			CLIENT.connect(document.getElementById('firstname').value);
 			main = new Main();
+			//ajaxGet("http://54.77.161.217:8000/getUsers");
 			sound.playSong(sound.songNumbers["menu"]);
 			//sound.playSong(sound.songNumbers["enemy"]);
 			elem = document.getElementById('label');
@@ -77,6 +78,81 @@ function Client()
 	}, false);
 	*/
 
+}
+
+function ajaxGet(theURL)
+{
+	$.ajax({url: theURL,
+			success: function(data){console.log(data);}
+			});	
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+	xmlHttp.onload = function()
+					{
+						if(this.status == 200 &&
+						this.responseXML != null &&
+						this.responseXML.getElementById('test').textContent)
+						{
+							console.log(this.responseXML);
+							//processData(this.responseXML.getElementById('test').textContent);
+						}
+						else
+						{
+						}
+					};
+    xmlHttp.open( "GET", theUrl);
+    xmlHttp.send();
+    //return xmlHttp.responseText;
+}
+
+function httpPost(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    postForm(form,path);
+}
+
+function postForm(form,path) {
+    var xmlhttp = null,
+        data = '';
+
+    for (var i = 0; i < form.elements.length; i++) {
+        data += '&' + encodeURIComponent(form.elements[i].name) + '=' + encodeURIComponent(form.elements[i].value);
+    }
+
+    data = data.substr(1); //Get rid of the first character.
+
+    if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+    } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    xmlhttp.onreadystate = function() { alert(msg); }
+
+    xmlhttp.open("POST",path,true);
+    xmlhttp.send(data); //Send your data in the send method.
 }
 
 
@@ -116,9 +192,11 @@ Client.prototype.SendMessage = function(message)
 Client.prototype.connect = function(name)
 {
 	this.me = name;
-	this.uniqueID = name+Math.random().toString();
+	this.id=Math.random();
+	this.uniqueID = name+this.id.toString();
 	var messageObject = {"type":"connect","pid":name,"uniqueID":this.uniqueID};
 	var message = JSON.stringify(messageObject);
+	//httpPost("http://54.77.161.217:8000/addUser",{"id":this.id*10000,"name":this.me},"post");
 	this.SendMessage(message);
 }
 
