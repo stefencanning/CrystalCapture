@@ -6,8 +6,8 @@ var main, CLIENT,images,sound;
 function Client()
 {
 	CLIENT = this;
-	var host='149.153.102.40';
-	//var host='192.168.0.18';
+	//var host='149.153.102.40';
+	var host='192.168.0.18';
 	//var host='46.7.218.244';
 	var port=8080;
 	this.me;
@@ -215,7 +215,7 @@ Client.prototype.join = function(hostID)
 						"outfit":{"gender":main.playerGender,"body":main.playerBodyType,
 								"colour":main.playerColour,"hairStyle":main.playerHair,
 								"clothes":main.playerClothes,"hair":main.playerShowHair,
-								"beardStyle":main.playerBeard,"beard":main.playerShowBeard}};
+								"beardStyle":main.playerBeard,"beard":main.playerShowBeard,"playerHealthScaling":main.playerHealthScaling}};
 	var message = JSON.stringify(messageObject);
 	this.SendMessage(message);
 }
@@ -261,7 +261,7 @@ Client.prototype.createGame = function()
 						"outfit":{"gender":main.playerGender,"body":main.playerBodyType,
 								"colour":main.playerColour,"hairStyle":main.playerHair,
 								"clothes":main.playerClothes,"hair":main.playerShowHair,
-								"beardStyle":main.playerBeard,"beard":main.playerShowBeard}};
+								"beardStyle":main.playerBeard,"beard":main.playerShowBeard,"playerHealthScaling":main.playerHealthScaling}};
 	var message = JSON.stringify(messageObject);
 	this.SendMessage(message);
 }

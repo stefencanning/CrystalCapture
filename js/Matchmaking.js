@@ -104,7 +104,12 @@ Matchmaking.prototype.Draw = function()
 	}
 	else
 	{
-		ctx.fillText("game lobby   ('S' to start game)", 20, 23);
+		var str = "game lobby";
+		if(matchmaking.hosting)
+		{
+			 str ="game lobby   ('S' to start game)";
+		}
+		ctx.fillText(str, 20, 23);
 		ctx.fillStyle = rgb(0, 0, 255);
 		ctx.fillText("Blue Team", 20, 48);
 		for(var i = 0; i < blueTeam.length;i++)

@@ -29,7 +29,7 @@ function Main()
 	main.guns=["pistol","shotgun","sniper"];
 	main.gunReload=[500,750,1000];
 	main.gunSpeed=[6*60,6*60,12*60];
-	main.gunDamage=[20,6,50];
+	main.gunDamage=[20,6.5,30];
 	
 	//perks
 	main.perks=["HP regen","flag sprint","poison bullet"];

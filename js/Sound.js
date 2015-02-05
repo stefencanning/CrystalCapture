@@ -65,14 +65,20 @@ Sound.prototype.playSong = function(songNum)
 			sound.songs[songNum].volume=0;
 			sound.songs[songNum].play();
 		}
-		sound.songState[songNum]="starting";
+		if(sound.songState[songNum]!="playing")
+		{
+			sound.songState[songNum]="starting";
+		}
 	}
 }
 
 
 Sound.prototype.stopSong = function(songNum)
 {
-	sound.songState[songNum]="stopping";
+	if(sound.songState[songNum]!="stopped")
+	{
+		sound.songState[songNum]="stopping";
+	}
 }
 
 
@@ -83,9 +89,9 @@ Sound.prototype.update = function(timeElapsed)
 		if(sound.songState[i]=="starting")
 		{
 			sound.songs[i].volume=Math.min(sound.songs[i].volume+1*timeElapsed/5,1);
-			if(sound.songs[i].volume>=1)
+			if(sound.songs[i].volume>=0.8)
 			{
-				sound.songs[i].volume=1;
+				sound.songs[i].volume=0.8;
 				sound.songState[i]="playing";
 			}
 		}

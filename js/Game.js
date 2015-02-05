@@ -263,7 +263,17 @@ Game.prototype.gameLoop = function ()
 				}
 				else
 				{
-					if(!game.player.gotFlag)
+					if(game.blueFlagCaptured)
+					{
+						for(var i =0; i < redTeam.length; i++)
+						{
+							if(playerGameData[redTeam[i]].flag)
+							{
+								flagCarRoom = playerGameData[redTeam[i]].room;
+							}
+						}
+					}
+					else if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.blueFlag.room;
 					}
@@ -283,7 +293,17 @@ Game.prototype.gameLoop = function ()
 				}
 				else
 				{
-					if(!game.player.gotFlag)
+					if(game.redFlagCaptured)
+					{
+						for(var i =0; i < blueTeam.length; i++)
+						{
+							if(playerGameData[blueTeam[i]].flag)
+							{
+								flagCarRoom = playerGameData[blueTeam[i]].room;
+							}
+						}
+					}
+					else if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.redFlag.room;
 					}
@@ -745,7 +765,7 @@ Game.prototype.Draw = function()
 					ctx.fillStyle=rgb(0,0,0);
 					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x-1+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-11+offSetY),game.player.w+2,7);
 					ctx.fillStyle=rgb(0,0,255);	
-					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-10+offSetY),game.player.w*(playerGameData[blueTeam[i]].health/100),5);
+					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-10+offSetY),game.player.w*(playerGameData[blueTeam[i]].health/(main.playerMaxHealth*(playerOutfit[blueTeam[i]].playerHealthScaling/10))),5);
 					
 					//ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
 					
@@ -786,7 +806,7 @@ Game.prototype.Draw = function()
 					ctx.fillStyle=rgb(0,0,0);
 					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x-1+offSetX),Math.ceil(playerGameData[redTeam[i]].y-11+offSetY),game.player.w+2,7);
 					ctx.fillStyle = rgb(255, 0, 0);
-					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y-10+offSetY),game.player.w*(playerGameData[redTeam[i]].health/100),5);
+					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y-10+offSetY),game.player.w*(playerGameData[redTeam[i]].health/(main.playerMaxHealth*(playerOutfit[redTeam[i]].playerHealthScaling/10))),5);
 					
 					//ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
 					

@@ -15,7 +15,7 @@ Wall.prototype.drawFirst = function(offSetX,offSetY, prev)
 {
 	if(this.door=="true")
 	{
-		//ctx.drawImage(images.doors[1],this.x+offSetX,this.y+offSetY+16);
+		ctx.drawImage(images.doors[1],this.x+offSetX,this.y+offSetY+16);
 		if(prev==this.connectsTo[0])
 		{
 			//ctx.drawImage(images.doors[3],this.x+offSetX,this.y+offSetY+16);
@@ -36,10 +36,10 @@ Wall.prototype.draw = function(offSetX,offSetY, prev)
 	if(this.door=="true")
 	{
 		ctx.fillStyle=rgb(139,69,19);
-		ctx.drawImage(images.doors[0],this.x+offSetX,this.y+offSetY);
+		ctx.drawImage(images.doors[0],this.x+offSetX,this.y+offSetY-16);
 		if(prev==this.connectsTo[0])
 		{
-			ctx.drawImage(images.doors[2],this.x+offSetX,this.y+offSetY);
+			ctx.drawImage(images.doors[2],this.x+offSetX,this.y+offSetY-16);
 		}
 	}
 	else
