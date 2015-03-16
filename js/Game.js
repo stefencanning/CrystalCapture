@@ -912,4 +912,70 @@ Game.prototype.Draw = function()
 	//ctx.fillText("fps: "+game.fps, 700, 300);
 	
 }
+
+
+
+
+
+
+
+
+
+/*
+
+	var queue = new Queue();
+	var set = {};
+	var walls = game.rooms[flagCarRoom].walls;
+	for(var i = 0; i < walls.length; i++)
+	{
+		if(walls[i].door=="true")
+		{
+			walls[i].path = false;
+			walls[i].leadingDoor=null;
+			queue.enqueue(walls[i]);
+		}
+	}
+	var found = false;
+	while(!queue.isEmpty()&&!found)
+	{
+		var door = queue.dequeue();
+		set[door]=true;
+		if(door.connectsTo[0]==newPos.room)
+		{
+			found=true;
+			door.path=true;
+			var pathDoor = door;
+			while(pathDoor.leadingDoor!=null)
+			{
+				pathDoor.path = true;
+				pathDoor = pathDoor.leadingDoor;
+			}
+		}
+		var doors = door.connectedDoors;
+		for(var i = 0; i < doors.length; i++)
+		{
+			if(!set[doors[i]])
+			{
+				doors[i].path = false;
+				doors[i].leadingDoor=door;
+				if(doors[i].connectsTo[0]==newPos.room)
+				{
+					found=true;
+					doors[i].path=true;
+					var pathDoor = doors[i];
+					while(pathDoor.leadingDoor!=null)
+					{
+						pathDoor.path = true;
+						pathDoor = pathDoor.leadingDoor;
+					}
+				}
+				queue.enqueue(doors[i]);
+			}
+		}
+	}
+
+
+
+
+*/
 	

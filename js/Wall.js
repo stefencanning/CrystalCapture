@@ -6,8 +6,11 @@ function Wall(x,y,imgNum)
 	this.h = 32;
 	this.door="false";
 	this.connectsTo=[];
+	this.connectedDoors=[];
 	this.used=false;
 	this.imgNum=imgNum;
+	this.leadingDoor=null;
+	this.path=false;
 }
 
 

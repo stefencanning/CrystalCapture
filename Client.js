@@ -520,6 +520,7 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "doorCreated")
 	{
+		var door1,door2;
 		if(msg.data.room2 < game.rooms.length)
 		{
 			for(var i = 0; i < game.rooms[msg.data.room1].walls.length; i++)
@@ -530,6 +531,7 @@ Client.prototype.handleMessage = function(evt)
 					game.rooms[msg.data.room1].walls[i].door = "true";
 					//doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
 					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,msg.data.mat2X*32,msg.data.mat2Y*32];
+					door1=game.rooms[msg.data.room1].walls[i];
 				}
 			}
 			for(var i = 0; i < game.rooms[msg.data.room2].walls.length; i++)
@@ -540,6 +542,7 @@ Client.prototype.handleMessage = function(evt)
 					game.rooms[msg.data.room2].walls[i].door = "true";
 					//doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
 					game.rooms[msg.data.room2].walls[i].connectsTo = [msg.data.room1,msg.data.mat1X*32,msg.data.mat1Y*32];
+					door2=game.rooms[msg.data.room2].walls[i];
 				}
 			}
 		}
@@ -558,6 +561,7 @@ Client.prototype.handleMessage = function(evt)
 					wall.door="true";
 					//doorMat = game.rooms[msg.data.room1].checkInside(msg.data.door1x*32,msg.data.door1y*32);
 					wall.connectsTo = [msg.data.room1,msg.data.mat1X*32,msg.data.mat1Y*32];
+					door2=wall;
 				}
 				game.rooms[msg.data.room2].addWall(wall);
 			}
@@ -569,7 +573,69 @@ Client.prototype.handleMessage = function(evt)
 					game.rooms[msg.data.room1].walls[i].door = "true";
 					//doorMat = game.rooms[msg.data.room2].checkInside(msg.data.door2x*32,msg.data.door2y*32);
 					game.rooms[msg.data.room1].walls[i].connectsTo = [msg.data.room2,msg.data.mat2X*32,msg.data.mat2Y*32];
+					door1=game.rooms[msg.data.room1].walls[i];
 				}
+			}
+		}
+		var queue = new Queue();
+		var set = {};
+		var walls = game.rooms[msg.data.room2].walls;
+		queue.enqueue([msg.data.mat2X*32,msg.data.mat2Y*32]);
+		while(!queue.isEmpty())
+		{
+			var point = queue.dequeue();
+			set[point]=true;
+			var left=true,right=true,up=true,down=true;
+			for(var i = 0; i < walls.length; i++)
+			{
+				if(walls[i].x==point[0]-32 && walls[i].y==point[1])
+				{
+					if(walls[i].door=="true"&&!set[[point[0]-32,point[1]]])
+					{
+						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
+					}
+					left=false;
+				}
+				if(walls[i].x==point[0]+32 && walls[i].y==point[1])
+				{
+					if(walls[i].door=="true"&&!set[[point[0]+32,point[1]]])
+					{
+						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
+					}
+					right=false;
+				}
+				if(walls[i].x==point[0] && walls[i].y==point[1]-32)
+				{
+					if(walls[i].door=="true"&&!set[[point[0],point[1]-32]])
+					{
+						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
+					}
+					down=false;
+				}
+				if(walls[i].x==point[0] && walls[i].y==point[1]+32)
+				{
+					if(walls[i].door=="true"&&!set[[point[0],point[1]+32]])
+					{
+						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
+					}
+					up=false;
+				}
+			}
+			if(left&&!set[[point[0]-32,point[1]]])
+			{
+				queue.enqueue([point[0]-32,point[1]]);
+			}
+			if(right&&!set[[point[0]+32,point[1]]])
+			{
+				queue.enqueue([point[0]+32,point[1]]);
+			}
+			if(up&&!set[[point[0],point[1]+32]])
+			{
+				queue.enqueue([point[0],point[1]+32]);
+			}
+			if(down&&!set[[point[0],point[1]-32]])
+			{
+				queue.enqueue([point[0],point[1]-32]);
 			}
 		}
 	}

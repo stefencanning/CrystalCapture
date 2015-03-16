@@ -41,7 +41,7 @@ class Room:
 		wallBase[0][0]=[True,False]
 		wallList=list()
 		wallList.append([0,0,True,False,0,0])
-		chance=2
+		chance=1
 		placed=0
 		placedMin=20
 		placedMax=100
