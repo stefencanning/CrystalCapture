@@ -301,6 +301,73 @@ Client.prototype.flagReturned = function()
 	this.SendMessage(message);
 }
 
+Client.prototype.calculateLocalDoors = function(x,y,room)
+{
+	var queue = new Queue();
+	var set = {};
+	var walls = game.rooms[room].walls;
+	queue.enqueue([x,y]);
+	var returnValue = [];
+	while(!queue.isEmpty())
+	{
+		var point = queue.dequeue();
+		set[point]=true;
+		var left=true,right=true,up=true,down=true;
+		for(var i = 0; i < walls.length; i++)
+		{
+			if(walls[i].x==point[0]-32 && walls[i].y==point[1])
+			{
+				if(walls[i].door=="true"&&!set[[point[0]-32,point[1]]])
+				{
+					returnValue[returnValue.length] = walls[i];
+				}
+				left=false;
+			}
+			if(walls[i].x==point[0]+32 && walls[i].y==point[1])
+			{
+				if(walls[i].door=="true"&&!set[[point[0]+32,point[1]]])
+				{
+					returnValue[returnValue.length] = walls[i];
+				}
+				right=false;
+			}
+			if(walls[i].x==point[0] && walls[i].y==point[1]-32)
+			{
+				if(walls[i].door=="true"&&!set[[point[0],point[1]-32]])
+				{
+					returnValue[returnValue.length] = walls[i];
+				}
+				down=false;
+			}
+			if(walls[i].x==point[0] && walls[i].y==point[1]+32)
+			{
+				if(walls[i].door=="true"&&!set[[point[0],point[1]+32]])
+				{
+					returnValue[returnValue.length] = walls[i];;
+				}
+				up=false;
+			}
+		}
+		if(left&&!set[[point[0]-32,point[1]]])
+		{
+			queue.enqueue([point[0]-32,point[1]]);
+		}
+		if(right&&!set[[point[0]+32,point[1]]])
+		{
+			queue.enqueue([point[0]+32,point[1]]);
+		}
+		if(up&&!set[[point[0],point[1]+32]])
+		{
+			queue.enqueue([point[0],point[1]+32]);
+		}
+		if(down&&!set[[point[0],point[1]-32]])
+		{
+			queue.enqueue([point[0],point[1]-32]);
+		}
+	}
+	return returnValue;
+}
+
 Client.prototype.handleMessage = function(evt)
 {
 	var msg = JSON.parse(evt.data);
@@ -577,66 +644,17 @@ Client.prototype.handleMessage = function(evt)
 				}
 			}
 		}
-		var queue = new Queue();
-		var set = {};
-		var walls = game.rooms[msg.data.room2].walls;
-		queue.enqueue([msg.data.mat2X*32,msg.data.mat2Y*32]);
-		while(!queue.isEmpty())
+		var doors = this.calculateLocalDoors(msg.data.mat2X*32,msg.data.mat2Y*32,msg.data.room2);
+		for( int i = 0; i < doors.length; i++)
 		{
-			var point = queue.dequeue();
-			set[point]=true;
-			var left=true,right=true,up=true,down=true;
-			for(var i = 0; i < walls.length; i++)
-			{
-				if(walls[i].x==point[0]-32 && walls[i].y==point[1])
-				{
-					if(walls[i].door=="true"&&!set[[point[0]-32,point[1]]])
-					{
-						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
-					}
-					left=false;
-				}
-				if(walls[i].x==point[0]+32 && walls[i].y==point[1])
-				{
-					if(walls[i].door=="true"&&!set[[point[0]+32,point[1]]])
-					{
-						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
-					}
-					right=false;
-				}
-				if(walls[i].x==point[0] && walls[i].y==point[1]-32)
-				{
-					if(walls[i].door=="true"&&!set[[point[0],point[1]-32]])
-					{
-						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
-					}
-					down=false;
-				}
-				if(walls[i].x==point[0] && walls[i].y==point[1]+32)
-				{
-					if(walls[i].door=="true"&&!set[[point[0],point[1]+32]])
-					{
-						door1.connectedDoors[door1.connectedDoors.length]=walls[i];
-					}
-					up=false;
-				}
-			}
-			if(left&&!set[[point[0]-32,point[1]]])
-			{
-				queue.enqueue([point[0]-32,point[1]]);
-			}
-			if(right&&!set[[point[0]+32,point[1]]])
-			{
-				queue.enqueue([point[0]+32,point[1]]);
-			}
-			if(up&&!set[[point[0],point[1]+32]])
-			{
-				queue.enqueue([point[0],point[1]+32]);
-			}
-			if(down&&!set[[point[0],point[1]-32]])
-			{
-				queue.enqueue([point[0],point[1]-32]);
-			}
+			door1.connectedDoors[door1.connectedDoors.length]=doors[i];
+			doors[i].connectedDoors[doors[i].connectedDoors.length]=door1;
+		}
+		doors = this.calculateLocalDoors(msg.data.mat1X*32,msg.data.mat1Y*32,msg.data.room1);
+		for( int i = 0; i < doors.length; i++)
+		{
+			door2.connectedDoors[door2.connectedDoors.length]=doors[i];
+			doors[i].connectedDoors[doors[i].connectedDoors.length]=door2;
 		}
 	}
 	else

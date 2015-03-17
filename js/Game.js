@@ -249,6 +249,7 @@ Game.prototype.gameLoop = function ()
 				}
 			}
 			var flagCarRoom = -1;
+			var flagPos = [,];
 			if(main.playerTeam == "red")
 			{
 				if(game.redFlagCaptured)
@@ -258,6 +259,7 @@ Game.prototype.gameLoop = function ()
 						if(playerGameData[blueTeam[i]].flag)
 						{
 							flagCarRoom = playerGameData[blueTeam[i]].room;
+							flagPos = [(floor(playerGameData[blueTeam[i]].x/32)*32),(floor(playerGameData[blueTeam[i]].y/32)*32)];
 						}
 					}
 				}
@@ -270,12 +272,14 @@ Game.prototype.gameLoop = function ()
 							if(playerGameData[redTeam[i]].flag)
 							{
 								flagCarRoom = playerGameData[redTeam[i]].room;
+							flagPos = [(floor(playerGameData[redTeam[i]].x/32)*32),(floor(playerGameData[redTeam[i]].y/32)*32)];
 							}
 						}
 					}
 					else if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.blueFlag.room;
+						flagPos = [(floor(game.blueFlag.x/32)*32),(floor(game.blueFlag.y/32)*32)];
 					}
 				}
 			}
@@ -288,6 +292,7 @@ Game.prototype.gameLoop = function ()
 						if(playerGameData[redTeam[i]].flag)
 						{
 							flagCarRoom = playerGameData[redTeam[i]].room;
+							flagPos = [(floor(playerGameData[redTeam[i]].x/32)*32),(floor(playerGameData[redTeam[i]].y/32)*32)];
 						}
 					}
 				}
@@ -300,60 +305,75 @@ Game.prototype.gameLoop = function ()
 							if(playerGameData[blueTeam[i]].flag)
 							{
 								flagCarRoom = playerGameData[blueTeam[i]].room;
+								flagPos = [(floor(playerGameData[blueTeam[i]].x/32)*32),(floor(playerGameData[blueTeam[i]].y/32)*32)];
 							}
 						}
 					}
 					else if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.redFlag.room;
+						flagPos = [(floor(game.redFlag.x/32)*32),(floor(game.redFlag.y/32)*32)];
 					}
 				}
 			}
 			if(flagCarRoom!=-1)
 			{
-				queue = new Queue();
-				queue.enqueue(flagCarRoom);
-				set = {};
+				var doorsFlag = CLIENT.calculateLocalDoors(flagPos[0],flagPos[1],flagCarRoom);
+				var doorsPlayer = CLIENT.calculateLocalDoors((floor(game.player.x/32)*32),(floor(game.player.y/32)*32),game.player.room);
+				for(int i = 0; i < doorsFlag.length; i++)
+				{
+					doorsFlag[i].path = false;
+					doorsFlag[i].leadingDoor=null;
+					queue.enqueue(doorsFlag[i]);
+				}
+				var foundSet={};
+				for(int i = 0; i < doorsPlayer.length; i++)
+				{
+					foundSet[doorsPlayer[i]] = true;
+				}
+				var queue = new Queue();
+				var set = {};
 				var found = false;
 				while(!queue.isEmpty()&&!found)
 				{
-					var roomNum = queue.dequeue();
-					set[roomNum]=true;
-					if(roomNum==newPos.room)
+					var door = queue.dequeue();
+					set[door]=true;
+					//if(door.connectsTo[0]==newPos.room)
+					if(foundSet[doors[i]])
 					{
 						found=true;
-					}
-					var walls = game.rooms[roomNum].walls;
-					for(var i = 0; i < walls.length; i++)
-					{
-						if(walls[i].door=="true")
+						door.path=true;
+						var pathDoor = door;
+						while(pathDoor.leadingDoor!=null)
 						{
-							var newRoom = walls[i].connectsTo[0];
-							if(!set[newRoom])
+							pathDoor.path = true;
+							pathDoor = pathDoor.leadingDoor;
+						}
+					}
+					var doors = door.connectedDoors;
+					for(var i = 0; i < doors.length; i++)
+					{
+						if(!set[doors[i]])
+						{
+							doors[i].path = false;
+							doors[i].leadingDoor=door;
+							//if(doors[i].connectsTo[0]==newPos.room)
+							if(foundSet[doors[i]])
 							{
-								if(newRoom==newPos.room)
+								found=true;
+								doors[i].path=true;
+								var pathDoor = doors[i];
+								while(pathDoor.leadingDoor!=null)
 								{
-									found=true;
+									pathDoor.path = true;
+									pathDoor = pathDoor.leadingDoor;
 								}
-								game.rooms[newRoom].previous=roomNum;
-								queue.enqueue(newRoom);
 							}
+							queue.enqueue(doors[i]);
 						}
 					}
 				}
 			}
-			/*
-			game.rooms[newPos.room].checkRoomDist();
-			if(game.rooms[game.player.room].foundColorValue-5>game.rooms[newPos.room].foundColorValue)
-			{
-				game.rooms[newPos.room].foundColor = game.rooms[game.player.room].foundColor;
-				game.rooms[newPos.room].foundColorValue = game.rooms[game.player.room].foundColorValue-5;
-			}
-			else if(game.rooms[newPos.room].foundColorValue-5>game.rooms[game.player.room].foundColorValue)
-			{
-				game.rooms[game.player.room].foundColor = game.rooms[newPos.room].foundColor;
-				game.rooms[game.player.room].foundColorValue = game.rooms[newPos.room].foundColorValue-5;
-			}*/
 			game.player.room = newPos.room;
 		}
 		if(game.player.gotFlag)
