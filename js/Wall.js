@@ -1,5 +1,6 @@
-function Wall(x,y,imgNum)
+function Wall(x,y,room,imgNum)
 {
+	this.room = room;
 	this.x = x;
 	this.y = y;
 	this.w = 32;
@@ -40,7 +41,7 @@ Wall.prototype.draw = function(offSetX,offSetY, prev)
 	{
 		ctx.fillStyle=rgb(139,69,19);
 		ctx.drawImage(images.doors[0],this.x+offSetX,this.y+offSetY-16);
-		if(prev==this.connectsTo[0])
+		if(prev==this.connectsTo[0]||this.path)
 		{
 			ctx.drawImage(images.doors[2],this.x+offSetX,this.y+offSetY-16);
 		}
