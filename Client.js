@@ -305,7 +305,14 @@ Client.prototype.calculateLocalDoors = function(x,y,room)
 {
 	var queue = new Queue();
 	var set = {};
+	var wallSet = {};
+	var isWall = {};
 	var walls = game.rooms[room].walls;
+	for(var i = 0; i < walls.length; i++)
+	{
+		wallSet[[walls[i].x,walls[i].y]]=walls[i];
+		isWall[[walls[i].x,walls[i].y]]=true;
+	}
 	queue.enqueue([x,y]);
 	var returnValue = [];
 	while(!queue.isEmpty())
@@ -313,39 +320,40 @@ Client.prototype.calculateLocalDoors = function(x,y,room)
 		var point = queue.dequeue();
 		set[point]=true;
 		var left=true,right=true,up=true,down=true;
-		for(var i = 0; i < walls.length; i++)
+		if(isWall[[point[0]-32,point[1]]])
 		{
-			if(walls[i].x==point[0]-32 && walls[i].y==point[1])
+			left=false;
+			if(wallSet[[point[0]-32,point[1]]].door=="true"&&!set[[point[0]-32,point[1]]])
 			{
-				if(walls[i].door=="true"&&!set[[point[0]-32,point[1]]])
-				{
-					returnValue[returnValue.length] = walls[i];
-				}
-				left=false;
+				set[[point[0]-32,point[1]]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0]-32,point[1]]];
 			}
-			if(walls[i].x==point[0]+32 && walls[i].y==point[1])
+		}
+		if(isWall[[point[0]+32,point[1]]])
+		{
+			right=false;
+			if(wallSet[[point[0]+32,point[1]]].door=="true"&&!set[[point[0]+32,point[1]]])
 			{
-				if(walls[i].door=="true"&&!set[[point[0]+32,point[1]]])
-				{
-					returnValue[returnValue.length] = walls[i];
-				}
-				right=false;
+				set[[point[0]+32,point[1]]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0]+32,point[1]]];
 			}
-			if(walls[i].x==point[0] && walls[i].y==point[1]-32)
+		}
+		if(isWall[[point[0],point[1]-32]])
+		{
+			down=false;
+			if(wallSet[[point[0],point[1]-32]].door=="true"&&!set[[point[0],point[1]-32]])
 			{
-				if(walls[i].door=="true"&&!set[[point[0],point[1]-32]])
-				{
-					returnValue[returnValue.length] = walls[i];
-				}
-				down=false;
+				set[[point[0],point[1]-32]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0],point[1]-32]];
 			}
-			if(walls[i].x==point[0] && walls[i].y==point[1]+32)
+		}
+		if(isWall[[point[0],point[1]+32]])
+		{
+			up=false;
+			if(wallSet[[point[0],point[1]+32]].door=="true"&&!set[[point[0],point[1]+32]])
 			{
-				if(walls[i].door=="true"&&!set[[point[0],point[1]+32]])
-				{
-					returnValue[returnValue.length] = walls[i];;
-				}
-				up=false;
+				set[[point[0],point[1]+32]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0],point[1]+32]];
 			}
 		}
 		if(left&&!set[[point[0]-32,point[1]]])
@@ -622,7 +630,7 @@ Client.prototype.handleMessage = function(evt)
 			game.rooms[msg.data.room2].foundColorValue = msg.data.colorValue;
 			for(var i = 0; i < msg.data.newRoom.length;i++)
 			{
-				var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32,msg.data.newRoom[i][6]);
+				var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32,msg.data.room2,msg.data.newRoom[i][6]);
 				if(msg.data.newRoom[i][0]==msg.data.door2x&&msg.data.newRoom[i][1]==msg.data.door2y)
 				{
 					wall.door="true";
@@ -645,13 +653,13 @@ Client.prototype.handleMessage = function(evt)
 			}
 		}
 		var doors = this.calculateLocalDoors(msg.data.mat2X*32,msg.data.mat2Y*32,msg.data.room2);
-		for( int i = 0; i < doors.length; i++)
+		for(var i = 0; i < doors.length; i++)
 		{
 			door1.connectedDoors[door1.connectedDoors.length]=doors[i];
 			doors[i].connectedDoors[doors[i].connectedDoors.length]=door1;
 		}
 		doors = this.calculateLocalDoors(msg.data.mat1X*32,msg.data.mat1Y*32,msg.data.room1);
-		for( int i = 0; i < doors.length; i++)
+		for(var i = 0; i < doors.length; i++)
 		{
 			door2.connectedDoors[door2.connectedDoors.length]=doors[i];
 			doors[i].connectedDoors[doors[i].connectedDoors.length]=door2;

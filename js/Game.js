@@ -46,33 +46,33 @@ Game.prototype.CreateStartRooms=function()
 	for(var i = 0; i < 2; i++)
 	{
 		game.rooms[i] = new Room();
-		game.rooms[i].addWall(new Wall(0,0,1));
-		game.rooms[i].addWall(new Wall(32,0,9));
-		game.rooms[i].addWall(new Wall(64,0,9));
-		game.rooms[i].addWall(new Wall(96,0,9));
-		game.rooms[i].addWall(new Wall(128,0,9));
-		game.rooms[i].addWall(new Wall(160,0,9));
-		game.rooms[i].addWall(new Wall(192,0,0));
+		game.rooms[i].addWall(new Wall(0,0,i,1));
+		game.rooms[i].addWall(new Wall(32,0,i,9));
+		game.rooms[i].addWall(new Wall(64,0,i,9));
+		game.rooms[i].addWall(new Wall(96,0,i,9));
+		game.rooms[i].addWall(new Wall(128,0,i,9));
+		game.rooms[i].addWall(new Wall(160,0,i,9));
+		game.rooms[i].addWall(new Wall(192,0,i,0));
 		
-		game.rooms[i].addWall(new Wall(0,192,2));
-		game.rooms[i].addWall(new Wall(32,192,9));
-		game.rooms[i].addWall(new Wall(64,192,9));
-		game.rooms[i].addWall(new Wall(96,192,9));
-		game.rooms[i].addWall(new Wall(128,192,9));
-		game.rooms[i].addWall(new Wall(160,192,9));
-		game.rooms[i].addWall(new Wall(192,192,3));
+		game.rooms[i].addWall(new Wall(0,192,i,2));
+		game.rooms[i].addWall(new Wall(32,192,i,9));
+		game.rooms[i].addWall(new Wall(64,192,i,9));
+		game.rooms[i].addWall(new Wall(96,192,i,9));
+		game.rooms[i].addWall(new Wall(128,192,i,9));
+		game.rooms[i].addWall(new Wall(160,192,i,9));
+		game.rooms[i].addWall(new Wall(192,192,i,3));
 		
-		game.rooms[i].addWall(new Wall(192,32,10));
-		game.rooms[i].addWall(new Wall(192,64,10));
-		game.rooms[i].addWall(new Wall(192,96,10));
-		game.rooms[i].addWall(new Wall(192,128,10));
-		game.rooms[i].addWall(new Wall(192,160,10));
+		game.rooms[i].addWall(new Wall(192,32,i,10));
+		game.rooms[i].addWall(new Wall(192,64,i,10));
+		game.rooms[i].addWall(new Wall(192,96,i,10));
+		game.rooms[i].addWall(new Wall(192,128,i,10));
+		game.rooms[i].addWall(new Wall(192,160,i,10));
 		
-		game.rooms[i].addWall(new Wall(0,32,10));
-		game.rooms[i].addWall(new Wall(0,64,10));
-		game.rooms[i].addWall(new Wall(0,96,10));
-		game.rooms[i].addWall(new Wall(0,128,10));
-		game.rooms[i].addWall(new Wall(0,160,10));
+		game.rooms[i].addWall(new Wall(0,32,i,10));
+		game.rooms[i].addWall(new Wall(0,64,i,10));
+		game.rooms[i].addWall(new Wall(0,96,i,10));
+		game.rooms[i].addWall(new Wall(0,128,i,10));
+		game.rooms[i].addWall(new Wall(0,160,i,10));
 	}
 	game.rooms[0].oriColor="blue";
 	game.rooms[0].foundColor="blue";
@@ -259,7 +259,7 @@ Game.prototype.gameLoop = function ()
 						if(playerGameData[blueTeam[i]].flag)
 						{
 							flagCarRoom = playerGameData[blueTeam[i]].room;
-							flagPos = [(floor(playerGameData[blueTeam[i]].x/32)*32),(floor(playerGameData[blueTeam[i]].y/32)*32)];
+							flagPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
 						}
 					}
 				}
@@ -272,14 +272,14 @@ Game.prototype.gameLoop = function ()
 							if(playerGameData[redTeam[i]].flag)
 							{
 								flagCarRoom = playerGameData[redTeam[i]].room;
-							flagPos = [(floor(playerGameData[redTeam[i]].x/32)*32),(floor(playerGameData[redTeam[i]].y/32)*32)];
+								flagPos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
 							}
 						}
 					}
 					else if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.blueFlag.room;
-						flagPos = [(floor(game.blueFlag.x/32)*32),(floor(game.blueFlag.y/32)*32)];
+						flagPos = [(Math.floor((game.blueFlag.x+16)/32)*32),(Math.floor((game.blueFlag.y+16)/32)*32)];
 					}
 				}
 			}
@@ -292,7 +292,7 @@ Game.prototype.gameLoop = function ()
 						if(playerGameData[redTeam[i]].flag)
 						{
 							flagCarRoom = playerGameData[redTeam[i]].room;
-							flagPos = [(floor(playerGameData[redTeam[i]].x/32)*32),(floor(playerGameData[redTeam[i]].y/32)*32)];
+							flagPos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
 						}
 					}
 				}
@@ -305,41 +305,41 @@ Game.prototype.gameLoop = function ()
 							if(playerGameData[blueTeam[i]].flag)
 							{
 								flagCarRoom = playerGameData[blueTeam[i]].room;
-								flagPos = [(floor(playerGameData[blueTeam[i]].x/32)*32),(floor(playerGameData[blueTeam[i]].y/32)*32)];
+								flagPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
 							}
 						}
 					}
 					else if(!game.player.gotFlag)
 					{
 						flagCarRoom=game.redFlag.room;
-						flagPos = [(floor(game.redFlag.x/32)*32),(floor(game.redFlag.y/32)*32)];
+						flagPos = [(Math.floor((game.redFlag.x+16)/32)*32),(Math.floor((game.redFlag.y+16)/32)*32)];
 					}
 				}
 			}
 			if(flagCarRoom!=-1)
 			{
 				var doorsFlag = CLIENT.calculateLocalDoors(flagPos[0],flagPos[1],flagCarRoom);
-				var doorsPlayer = CLIENT.calculateLocalDoors((floor(game.player.x/32)*32),(floor(game.player.y/32)*32),game.player.room);
-				for(int i = 0; i < doorsFlag.length; i++)
+				var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+				var queue = new Queue();
+				for(var i = 0; i < doorsPlayer.length; i++)
 				{
-					doorsFlag[i].path = false;
-					doorsFlag[i].leadingDoor=null;
-					queue.enqueue(doorsFlag[i]);
+					doorsPlayer[i].path = false;
+					doorsPlayer[i].leadingDoor=null;
+					queue.enqueue(doorsPlayer[i]);
 				}
 				var foundSet={};
-				for(int i = 0; i < doorsPlayer.length; i++)
+				for(var i = 0; i < doorsFlag.length; i++)
 				{
-					foundSet[doorsPlayer[i]] = true;
+					foundSet[[doorsFlag[i].x,doorsFlag[i].y,doorsFlag[i].room]] = true;
 				}
-				var queue = new Queue();
 				var set = {};
 				var found = false;
 				while(!queue.isEmpty()&&!found)
 				{
 					var door = queue.dequeue();
-					set[door]=true;
+					set[[door.x,door.y,door.room]]=true;
 					//if(door.connectsTo[0]==newPos.room)
-					if(foundSet[doors[i]])
+					if(foundSet[[door.x,door.y,door.room]])
 					{
 						found=true;
 						door.path=true;
@@ -353,19 +353,19 @@ Game.prototype.gameLoop = function ()
 					var doors = door.connectedDoors;
 					for(var i = 0; i < doors.length; i++)
 					{
-						if(!set[doors[i]])
+						if(!set[[doors[i].x,doors[i].y,doors[i].room]])
 						{
 							doors[i].path = false;
 							doors[i].leadingDoor=door;
 							//if(doors[i].connectsTo[0]==newPos.room)
-							if(foundSet[doors[i]])
+							if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
 							{
 								found=true;
 								doors[i].path=true;
 								var pathDoor = doors[i];
 								while(pathDoor.leadingDoor!=null)
 								{
-									pathDoor.path = true;
+									pathDoor.leadingDoor.path = true;
 									pathDoor = pathDoor.leadingDoor;
 								}
 							}
