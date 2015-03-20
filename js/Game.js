@@ -342,13 +342,6 @@ Game.prototype.gameLoop = function ()
 					if(foundSet[[door.x,door.y,door.room]])
 					{
 						found=true;
-						door.path=true;
-						var pathDoor = door;
-						while(pathDoor.leadingDoor!=null)
-						{
-							pathDoor.path = true;
-							pathDoor = pathDoor.leadingDoor;
-						}
 					}
 					var doors = door.connectedDoors;
 					for(var i = 0; i < doors.length; i++)
