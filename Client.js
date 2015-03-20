@@ -9,7 +9,7 @@ function Client()
 	//var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
-	var host ='52.16.172.64'
+	var host ='52.16.233.189';
 	var port=8080;
 	this.me;
 
