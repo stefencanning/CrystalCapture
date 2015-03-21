@@ -13,14 +13,7 @@ function Client()
 	var port=8080;
 	this.me;
 
-
-	this.ws = new WebSocket("ws://" + host + ":" + port +'/wstest');
- 
-    this.ws.onmessage = function(evt) {CLIENT.handleMessage(evt); };
- 
-    this.ws.onclose = function(evt) { console.log("Connection close"); };
- 
-    this.ws.onopen = function(evt) { console.log('open connection'); };
+	CLIENT.connect(host,port);
 
 	
 	/*
@@ -64,6 +57,16 @@ function Client()
 	*/
 
 }
+Client.prototype.connect = function(host, port)
+{
+	CLIENT.ws = new WebSocket("ws://" + host + ":" + port +'/wstest');
+ 
+    CLIENT.ws.onmessage = function(evt) {CLIENT.handleMessage(evt); };
+ 
+    CLIENT.ws.onclose = function(evt) { console.log("Connection close"); CLIENT.connect(host,port); };
+ 
+    CLIENT.ws.onopen = function(evt) { console.log('open connection');};
+}
 
 function ajaxGet(theURL)
 {
@@ -78,18 +81,18 @@ function httpGet(theUrl)
 
     xmlHttp = new XMLHttpRequest();
 	xmlHttp.onload = function()
-					{
-						if(this.status == 200 &&
-						this.responseXML != null &&
-						this.responseXML.getElementById('test').textContent)
-						{
-							console.log(this.responseXML);
-							//processData(this.responseXML.getElementById('test').textContent);
-						}
-						else
-						{
-						}
-					};
+	{
+		if(this.status == 200 &&
+		this.responseXML != null &&
+		this.responseXML.getElementById('test').textContent)
+		{
+			console.log(this.responseXML);
+			//processData(this.responseXML.getElementById('test').textContent);
+		}
+		else
+		{
+		}
+	};
     xmlHttp.open( "GET", theUrl);
     xmlHttp.send();
     //return xmlHttp.responseText;
