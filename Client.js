@@ -1,18 +1,22 @@
-var main, CLIENT,images,sound;
+var main, CLIENT, images, sound;
 
 
 
 
 function Client()
 {
+	
+	console.log("creating client");
 	CLIENT = this;
+	console.log("assigned client");
 	//var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
 	var host ='52.16.233.189';
 	var port=8080;
-	this.me;
-
+	//this.me;
+	
+	console.log("connecting to server");
 	CLIENT.connect(host,port);
 
 	

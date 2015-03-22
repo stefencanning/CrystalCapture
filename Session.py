@@ -17,6 +17,7 @@ class Session:
 		self.hostID = 0
 		self.playerTeam={}
 		self.rooms={}
+		self.score={0,0}
 
 
 	def addPlayer(self, uniqueID):
@@ -115,12 +116,14 @@ class Session:
 				if(self.redCarrier==0):
 					self.blueCarrier=0
 					self.redCarrier=0
+					self.score[0]+=1
 					return True
 		if(team=="red"):
 			if(self.redCarrier==uniqueID):
 				if(self.blueCarrier==0):
 					self.blueCarrier=0
 					self.redCarrier=0
+					self.score[1]+=1
 					return True
 		return False
 		

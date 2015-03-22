@@ -22,7 +22,7 @@ Game.prototype.Initialise=function ()
 	}
 	if(main.playerTeam=="red")
 	{
-		game.player.room=1;
+		game.player.room=0;
 	}
 	game.blueFlagCapture=false;
 	game.redFlagCapture=false;
@@ -899,17 +899,17 @@ Game.prototype.Draw = function()
 	}
 	
 	ctx.fillStyle = rgb(255, 0, 0);
-	ctx.fillText(game.redPoints, 760, 50);
+	ctx.fillText(game.redPoints+"/3", 760, 50);
 	if(game.redFlagCaptured)
 	{
-		ctx.drawImage(images.redGrabbedCrystal,250,34);
+		ctx.drawImage(images.crystal[1][2],250,34);
 	}
 	
 	ctx.fillStyle = rgb(0, 0, 255);
-	ctx.fillText(game.bluePoints, 200, 50);
+	ctx.fillText(game.bluePoints+"/3", 200, 50);
 	if(game.blueFlagCaptured)
 	{
-		ctx.drawImage(images.blueGrabbedCrystal,710,34);
+		ctx.drawImage(images.crystal[1][2],710,34);
 	}
 	
 	ctx.fillStyle = rgb(0, 0, 0);

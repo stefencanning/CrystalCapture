@@ -141,6 +141,13 @@ class MessageHandler:
 		if(success):
 			for player in playerSession[uniqueID].players:
 				self.sendMessage(player,"flagCaptured",{"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
+			if(playerSession[uniqueID].score[0]==3):
+				for player in playerSession[uniqueID].players:
+					self.sendMessage(player,"gameOver",{"team":"blue"})
+			if(playerSession[uniqueID].score[1]==3):
+				for player in playerSession[uniqueID].players:
+					self.sendMessage(player,"gameOver",{"team":"red"})
+				
 				
 	def getWaitingGames(self,uniqueID):
 		sessionList = list()
@@ -247,5 +254,7 @@ app= tornado.web.Application([
 ])
  
 if __name__ == '__main__':
+	print("server starting")
 	app.listen(8080)
+	print("server started")
 	tornado.ioloop.IOLoop.instance().start()
