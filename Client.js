@@ -16,8 +16,7 @@ function Client()
 	var port=8080;
 	//this.me;
 	
-	console.log("connecting to server");
-	CLIENT.connect(host,port);
+	CLIENT.connectToServer(host,port);
 
 	
 	/*
@@ -61,13 +60,14 @@ function Client()
 	*/
 
 }
-Client.prototype.connect = function(host, port)
+Client.prototype.connectToServer = function(host, port)
 {
+	console.log("connecting to server");
 	CLIENT.ws = new WebSocket("ws://" + host + ":" + port +'/wstest');
  
     CLIENT.ws.onmessage = function(evt) {CLIENT.handleMessage(evt); };
  
-    CLIENT.ws.onclose = function(evt) { console.log("Connection close"); CLIENT.connect(host,port); };
+    CLIENT.ws.onclose = function(evt) { console.log("Connection close"); CLIENT.connectToServer(host,port); };
  
     CLIENT.ws.onopen = function(evt) { console.log('open connection');};
 }

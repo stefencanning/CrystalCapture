@@ -15,15 +15,11 @@ function Wall(x,y,room,imgNum)
 }
 
 
-Wall.prototype.drawFirst = function(offSetX,offSetY, prev)
+Wall.prototype.drawFirst = function(offSetX,offSetY)
 {
 	if(this.door=="true")
 	{
 		ctx.drawImage(images.doors[1],this.x+offSetX,this.y+offSetY+16);
-		if(prev==this.connectsTo[0])
-		{
-			//ctx.drawImage(images.doors[3],this.x+offSetX,this.y+offSetY+16);
-		}
 	}
 	else
 	{
@@ -32,7 +28,7 @@ Wall.prototype.drawFirst = function(offSetX,offSetY, prev)
 }
 
 
-Wall.prototype.draw = function(offSetX,offSetY, prev)
+Wall.prototype.draw = function(offSetX,offSetY)
 {
 	ctx.fillStyle=rgb(0,0,0);
 	//ctx.fillRect(this.x+offSetX,this.y+offSetY,this.w,this.h);	
@@ -41,9 +37,13 @@ Wall.prototype.draw = function(offSetX,offSetY, prev)
 	{
 		ctx.fillStyle=rgb(139,69,19);
 		ctx.drawImage(images.doors[0],this.x+offSetX,this.y+offSetY-16);
-		if(prev==this.connectsTo[0]||this.path)
+		if(this.bluePath)
 		{
-			ctx.drawImage(images.doors[2],this.x+offSetX,this.y+offSetY-16);
+			ctx.drawImage(images.crystal[0][2],this.x+offSetX,this.y+offSetY-16);
+		}
+		if(this.redPath)
+		{
+			ctx.drawImage(images.crystal[1][2],this.x+offSetX+16,this.y+offSetY-16);
 		}
 	}
 	else

@@ -76,11 +76,11 @@ Player.prototype.draw = function(offSetX,offSetY)
 	{
 		if(main.playerTeam=="blue")
 		{
-			ctx.drawImage(images.redGrabbedCrystal,Math.ceil(this.x+offSetX+8),Math.ceil(this.y+offSetY));
+			ctx.drawImage(images.crystal[0][2],Math.ceil(this.x+offSetX+8),Math.ceil(this.y+offSetY));
 		}
 		if(main.playerTeam=="red")
 		{
-			ctx.drawImage(images.blueGrabbedCrystal,Math.ceil(this.x+offSetX+8),Math.ceil(this.y+offSetY));
+			ctx.drawImage(images.crystal[1][2],Math.ceil(this.x+offSetX+8),Math.ceil(this.y+offSetY));
 		}
 	}
 }

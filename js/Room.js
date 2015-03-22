@@ -5,9 +5,6 @@ function Room()
 	this.oriColorValue=200;
 	this.foundColor="";
 	this.foundColorValue=200;
-	this.distBlue=-1;
-	this.distRed=-1;
-	this.previous=-1;
 }
 
 
@@ -20,7 +17,7 @@ Room.prototype.drawFirst = function(offSetX,offSetY)
 {
 	for(var i = 0; i < this.walls.length;i++)
 	{
-		this.walls[i].drawFirst(offSetX,offSetY,this.previous);
+		this.walls[i].drawFirst(offSetX,offSetY);
 	}
 }
 
@@ -29,7 +26,7 @@ Room.prototype.draw = function(offSetX,offSetY)
 {
 	for(var i = 0; i < this.walls.length;i++)
 	{
-		this.walls[i].draw(offSetX,offSetY,this.previous);
+		this.walls[i].draw(offSetX,offSetY);
 	}
 }
 
@@ -98,65 +95,6 @@ Room.prototype.checkInside=function(x,y)
 	return doorMat;
 }
 
-Room.prototype.checkRoomDist = function()
-{
-	for(var i = 0; i <this.walls.length;i++)
-	{
-		if(this.walls[i].door == "true")
-		{
-			if(game.rooms[this.walls[i].connectsTo[0]].distBlue != -1)
-			{
-				var dist = game.rooms[this.walls[i].connectsTo[0]].distBlue;
-				if(dist < this.distBlue-1||this.distBlue==-1)
-				{
-					this.distBlue=dist+1;
-					for(var j = 0; j < this.walls.length; j++)
-					{
-						if(this.walls[j].door == "true")
-						{
-							game.rooms[this.walls[j].connectsTo[0]].checkRoomDist();
-						}
-					}
-				}
-			}
-			if(game.rooms[this.walls[i].connectsTo[0]].distRed != -1)
-			{
-				var dist = game.rooms[this.walls[i].connectsTo[0]].distRed;
-				if(dist < this.distRed-1||this.distRed==-1)
-				{
-					this.distRed=dist+1;
-					for(var j = 0; j < this.walls.length; j++)
-					{
-						if(this.walls[j].door == "true")
-						{
-							game.rooms[this.walls[j].connectsTo[0]].checkRoomDist();
-						}
-					}
-				}
-			}
-			/*
-			if(this.distBlue != -1)
-			{
-				var dist = game.rooms[this.walls[i].connectsTo[0]].distBlue;
-				if(dist-1 > this.distBlue||dist==-1)
-				{
-					game.rooms[this.walls[i].connectsTo[0]].distBlue=this.distBlue+1;
-					game.rooms[this.walls[i].connectsTo[0]].checkRoomDist();
-				}
-			}
-			if(this.distRed != -1)
-			{
-				var dist = game.rooms[this.walls[i].connectsTo[0]].distRed;
-				if(dist-1> this.distRed||dist==-1)
-				{
-					game.rooms[this.walls[i].connectsTo[0]].distRed=this.distRed+1;
-					game.rooms[this.walls[i].connectsTo[0]].checkRoomDist();
-				}
-			}
-			*/
-		}
-	}
-}
 
 Room.prototype.checkCollision = function(object)
 {

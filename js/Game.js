@@ -22,7 +22,7 @@ Game.prototype.Initialise=function ()
 	}
 	if(main.playerTeam=="red")
 	{
-		game.player.room=0;
+		game.player.room=1;
 	}
 	game.blueFlagCapture=false;
 	game.redFlagCapture=false;
@@ -42,6 +42,8 @@ Game.prototype.Initialise=function ()
 
 Game.prototype.CreateStartRooms=function()
 {
+	game.distBlue=-1;
+	game.distRed=-1;
 	game.rooms = [];
 	for(var i = 0; i < 2; i++)
 	{
@@ -204,126 +206,52 @@ Game.prototype.gameLoop = function ()
 		var newPos = game.rooms[game.player.room].checkCollision(game.player);
 		if(newPos.roomChange)
 		{
-			var queue = new Queue();
-			queue.enqueue(0);
-			var set = {};
-			while(!queue.isEmpty())
+			var flagBlueRoom = -1;
+			var flagRedRoom = -1;
+			var flagBluePos = [,];
+			var flagRedPos = [,];
+			if(game.blueFlagCaptured)
 			{
-				var roomNum = queue.dequeue();
-				set[roomNum]=true;
-				game.rooms[roomNum].previous=-1;
-				var walls = game.rooms[roomNum].walls;
-				for(var i = 0; i < walls.length; i++)
+				for(var i =0; i < redTeam.length; i++)
 				{
-					if(walls[i].door=="true")
+					if(playerGameData[redTeam[i]].flag)
 					{
-						var newRoom = walls[i].connectsTo[0];
-						if(!set[newRoom])
-						{
-							game.rooms[newRoom].distBlue=game.rooms[roomNum].distBlue+1;
-							queue.enqueue(newRoom);
-						}
+						flagBlueRoom = playerGameData[redTeam[i]].room;
+						flagBluePos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
 					}
 				}
 			}
-			queue = new Queue();
-			queue.enqueue(1);
-			set = {};
-			while(!queue.isEmpty())
+			else
 			{
-				var roomNum = queue.dequeue();
-				set[roomNum]=true;
-				game.rooms[roomNum].previous=-1;
-				var walls = game.rooms[roomNum].walls;
-				for(var i = 0; i < walls.length; i++)
+				flagBlueRoom=game.blueFlag.room;
+				flagBluePos = [(Math.floor((game.blueFlag.x+16)/32)*32),(Math.floor((game.blueFlag.y+16)/32)*32)];
+			}
+			if(game.redFlagCaptured)
+			{
+				for(var i =0; i < blueTeam.length; i++)
 				{
-					if(walls[i].door=="true")
+					if(playerGameData[blueTeam[i]].flag)
 					{
-						var newRoom = walls[i].connectsTo[0];
-						if(!set[newRoom])
-						{
-							game.rooms[newRoom].distRed=game.rooms[roomNum].distRed+1;
-							queue.enqueue(newRoom);
-						}
+						flagRedRoom = playerGameData[blueTeam[i]].room;
+						flagRedPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
 					}
 				}
 			}
-			var flagCarRoom = -1;
-			var flagPos = [,];
-			if(main.playerTeam == "red")
+			else
 			{
-				if(game.redFlagCaptured)
-				{
-					for(var i =0; i < blueTeam.length; i++)
-					{
-						if(playerGameData[blueTeam[i]].flag)
-						{
-							flagCarRoom = playerGameData[blueTeam[i]].room;
-							flagPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
-						}
-					}
-				}
-				else
-				{
-					if(game.blueFlagCaptured)
-					{
-						for(var i =0; i < redTeam.length; i++)
-						{
-							if(playerGameData[redTeam[i]].flag)
-							{
-								flagCarRoom = playerGameData[redTeam[i]].room;
-								flagPos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
-							}
-						}
-					}
-					else if(!game.player.gotFlag)
-					{
-						flagCarRoom=game.blueFlag.room;
-						flagPos = [(Math.floor((game.blueFlag.x+16)/32)*32),(Math.floor((game.blueFlag.y+16)/32)*32)];
-					}
-				}
+				flagRedRoom=game.redFlag.room;
+				flagRedPos = [(Math.floor((game.redFlag.x+16)/32)*32),(Math.floor((game.redFlag.y+16)/32)*32)];
 			}
-			if(main.playerTeam == "blue")
+			game.distBlue=-1;
+			if(flagBlueRoom!=-1)
 			{
-				if(game.blueFlagCaptured)
-				{
-					for(var i =0; i < redTeam.length; i++)
-					{
-						if(playerGameData[redTeam[i]].flag)
-						{
-							flagCarRoom = playerGameData[redTeam[i]].room;
-							flagPos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
-						}
-					}
-				}
-				else
-				{
-					if(game.redFlagCaptured)
-					{
-						for(var i =0; i < blueTeam.length; i++)
-						{
-							if(playerGameData[blueTeam[i]].flag)
-							{
-								flagCarRoom = playerGameData[blueTeam[i]].room;
-								flagPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
-							}
-						}
-					}
-					else if(!game.player.gotFlag)
-					{
-						flagCarRoom=game.redFlag.room;
-						flagPos = [(Math.floor((game.redFlag.x+16)/32)*32),(Math.floor((game.redFlag.y+16)/32)*32)];
-					}
-				}
-			}
-			if(flagCarRoom!=-1)
-			{
-				var doorsFlag = CLIENT.calculateLocalDoors(flagPos[0],flagPos[1],flagCarRoom);
+				var doorsFlag = CLIENT.calculateLocalDoors(flagBluePos[0],flagBluePos[1],flagBlueRoom);
 				var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
 				var queue = new Queue();
+				var set = {};
 				for(var i = 0; i < doorsPlayer.length; i++)
 				{
-					doorsPlayer[i].path = false;
+					doorsPlayer[i].bluePath = false;
 					doorsPlayer[i].leadingDoor=null;
 					queue.enqueue(doorsPlayer[i]);
 					set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
@@ -333,7 +261,6 @@ Game.prototype.gameLoop = function ()
 				{
 					foundSet[[doorsFlag[i].x,doorsFlag[i].y,doorsFlag[i].room]] = true;
 				}
-				var set = {};
 				var found = false;
 				while(!queue.isEmpty()&&!found)
 				{
@@ -348,17 +275,75 @@ Game.prototype.gameLoop = function ()
 					{
 						if(!set[[doors[i].x,doors[i].y,doors[i].room]])
 						{
-							doors[i].path = false;
+							doors[i].bluePath = false;
 							doors[i].leadingDoor=door;
 							//if(doors[i].connectsTo[0]==newPos.room)
 							if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
 							{
 								found=true;
-								doors[i].path=true;
+								game.distBlue=0;
+								doors[i].bluePath=true;
 								var pathDoor = doors[i];
 								while(pathDoor.leadingDoor!=null)
 								{
-									pathDoor.leadingDoor.path = true;
+									game.distBlue+=1;
+									pathDoor.leadingDoor.bluePath = true;
+									pathDoor = pathDoor.leadingDoor;
+								}
+								break;
+							}
+							queue.enqueue(doors[i]);
+							set[[door.x,door.y,door.room]]=true;
+						}
+					}
+				}
+			}
+			game.distRed=-1;
+			if(flagRedRoom!=-1)
+			{
+				var doorsFlag = CLIENT.calculateLocalDoors(flagRedPos[0],flagRedPos[1],flagRedRoom);
+				var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+				var queue = new Queue();
+				var set = {};
+				for(var i = 0; i < doorsPlayer.length; i++)
+				{
+					doorsPlayer[i].redPath = false;
+					doorsPlayer[i].leadingDoor=null;
+					queue.enqueue(doorsPlayer[i]);
+					set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+				}
+				var foundSet={};
+				for(var i = 0; i < doorsFlag.length; i++)
+				{
+					foundSet[[doorsFlag[i].x,doorsFlag[i].y,doorsFlag[i].room]] = true;
+				}
+				var found = false;
+				while(!queue.isEmpty()&&!found)
+				{
+					var door = queue.dequeue();
+					//if(door.connectsTo[0]==newPos.room)
+					if(foundSet[[door.x,door.y,door.room]])
+					{
+						found=true;
+					}
+					var doors = door.connectedDoors;
+					for(var i = 0; i < doors.length; i++)
+					{
+						if(!set[[doors[i].x,doors[i].y,doors[i].room]])
+						{
+							doors[i].redPath = false;
+							doors[i].leadingDoor=door;
+							//if(doors[i].connectsTo[0]==newPos.room)
+							if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
+							{
+								found=true;
+								game.distRed=0;
+								doors[i].redPath=true;
+								var pathDoor = doors[i];
+								while(pathDoor.leadingDoor!=null)
+								{
+									game.distRed+=1;
+									pathDoor.leadingDoor.redPath = true;
 									pathDoor = pathDoor.leadingDoor;
 								}
 								break;
@@ -723,34 +708,6 @@ Game.prototype.Draw = function()
 	
 	ctx.clearRect(0,0,canvas.width, canvas.height)
 	
-	/*ctx.lineWidth=10;
-	if(game.rooms[game.player.room].oriColor=="red")
-	{
-		ctx.strokeStyle=rgb(255,255-game.rooms[game.player.room].oriColorValue,255-game.rooms[game.player.room].oriColorValue);
-	}
-	if(game.rooms[game.player.room].oriColor=="blue")
-	{
-		ctx.strokeStyle=rgb(255-game.rooms[game.player.room].oriColorValue,255-game.rooms[game.player.room].oriColorValue,255);
-	}
-	ctx.strokeRect(6,6,canvas.width-12, canvas.height-12);
-	
-	if(game.rooms[game.player.room].foundColor=="red")
-	{
-		ctx.strokeStyle=rgb(255,255-game.rooms[game.player.room].foundColorValue,255-game.rooms[game.player.room].foundColorValue);
-	}
-	if(game.rooms[game.player.room].foundColor=="blue")
-	{
-		ctx.strokeStyle=rgb(255-game.rooms[game.player.room].foundColorValue,255-game.rooms[game.player.room].foundColorValue,255);
-	}
-	ctx.strokeRect(18,18,canvas.width-36, canvas.height-36);
-	
-	ctx.lineWidth=2;
-	ctx.strokeStyle=rgb(0,0,0);
-	ctx.strokeRect(2,2,canvas.width-4, canvas.height-4);
-	ctx.strokeStyle=rgb(0,0,0);
-	ctx.strokeRect(12,12,canvas.width-24, canvas.height-24);
-	ctx.strokeStyle=rgb(0,0,0);
-	ctx.strokeRect(24,24,canvas.width-48, canvas.height-48);*/
 	
 	ctx.lineWidth=2;
 	ctx.strokeStyle=rgb(0,0,0);
@@ -887,15 +844,15 @@ Game.prototype.Draw = function()
 	
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="20px Lucida Console";
-	if(game.rooms[game.player.room].distBlue!=-1)
+	if(game.distBlue!=-1)
 	{
 		ctx.fillStyle = rgb(0, 0, 255);
-		ctx.fillText("blue base: "+game.rooms[game.player.room].distBlue, 100, 80);
+		ctx.fillText("blue base: "+game.distBlue, 100, 80);
 	}
-	if(game.rooms[game.player.room].distRed!=-1)
+	if(game.distRed!=-1)
 	{
 		ctx.fillStyle = rgb(255, 0, 0);
-		ctx.fillText("red base: "+game.rooms[game.player.room].distRed, 700, 80);
+		ctx.fillText("red base: "+game.distRed, 700, 80);
 	}
 	
 	ctx.fillStyle = rgb(255, 0, 0);
