@@ -3,8 +3,8 @@ function Bullet(x, y)
 {
 	this.x = x;
 	this.y = y;
-	this.w = 4;
-	this.h = 4;
+	this.w = 8;
+	this.h = 8;
 	this.team="";
 	this.room=0;
 	this.xSpeed=0;

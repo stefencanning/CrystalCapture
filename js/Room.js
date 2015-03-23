@@ -5,6 +5,8 @@ function Room()
 	this.oriColorValue=200;
 	this.foundColor="";
 	this.foundColorValue=200;
+	this.floorSet={};
+	this.floor=[];
 }
 
 
@@ -18,6 +20,10 @@ Room.prototype.drawFirst = function(offSetX,offSetY)
 	for(var i = 0; i < this.walls.length;i++)
 	{
 		this.walls[i].drawFirst(offSetX,offSetY);
+	}
+	for(var i = 0; i < this.floor.length;i++)
+	{
+		ctx.drawImage(images.walls[16],this.floor[i][0]+offSetX,this.floor[i][1]+offSetY);
 	}
 }
 

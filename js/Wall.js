@@ -8,6 +8,7 @@ function Wall(x,y,room,imgNum)
 	this.door="false";
 	this.connectsTo=[];
 	this.connectedDoors=[];
+	this.connectedDoorsSet={};
 	this.used=false;
 	this.imgNum=imgNum;
 	this.leadingDoor=null;
@@ -19,7 +20,8 @@ Wall.prototype.drawFirst = function(offSetX,offSetY)
 {
 	if(this.door=="true")
 	{
-		ctx.drawImage(images.doors[1],this.x+offSetX,this.y+offSetY+16);
+		//ctx.drawImage(images.doors[1],this.x+offSetX,this.y+offSetY+16);
+		ctx.drawImage(images.doors[2],this.x+offSetX,this.y+offSetY);
 	}
 	else
 	{
@@ -36,14 +38,15 @@ Wall.prototype.draw = function(offSetX,offSetY)
 	if(this.door=="true")
 	{
 		ctx.fillStyle=rgb(139,69,19);
-		ctx.drawImage(images.doors[0],this.x+offSetX,this.y+offSetY-16);
+		//ctx.drawImage(images.doors[0],this.x+offSetX,this.y+offSetY-16);
+		//ctx.drawImage(images.doors[2],this.x+offSetX,this.y+offSetY);
 		if(this.bluePath)
 		{
-			ctx.drawImage(images.crystal[0][2],this.x+offSetX,this.y+offSetY-16);
+			ctx.drawImage(images.crystal[1][2],this.x+offSetX,this.y+offSetY-16);
 		}
 		if(this.redPath)
 		{
-			ctx.drawImage(images.crystal[1][2],this.x+offSetX+16,this.y+offSetY-16);
+			ctx.drawImage(images.crystal[0][2],this.x+offSetX+16,this.y+offSetY-16);
 		}
 	}
 	else

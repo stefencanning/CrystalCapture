@@ -9,10 +9,10 @@ function Client()
 	console.log("creating client");
 	CLIENT = this;
 	console.log("assigned client");
-	//var host='149.153.102.40';
+	var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
-	var host ='52.16.233.189';
+	//var host ='52.16.233.189';
 	var port=8080;
 	//this.me;
 	
@@ -364,6 +364,11 @@ Client.prototype.calculateLocalDoors = function(x,y,room)
 		{
 			queue.enqueue([point[0],point[1]-32]);
 		}
+		if(!game.rooms[room].floorSet[point])
+		{
+			game.rooms[room].floorSet[point]=true;
+			game.rooms[room].floor[game.rooms[room].floor.length]=point;
+		}
 	}
 	return returnValue;
 }
@@ -644,22 +649,37 @@ Client.prototype.handleMessage = function(evt)
 				}
 			}
 		}
-		var doors = this.calculateLocalDoors(msg.data.mat2X*32,msg.data.mat2Y*32,msg.data.room2);
-		for(var i = 0; i < doors.length; i++)
+		var doors1 = CLIENT.calculateLocalDoors(msg.data.mat2X*32,msg.data.mat2Y*32,msg.data.room2);
+		var doors2 = CLIENT.calculateLocalDoors(msg.data.mat1X*32,msg.data.mat1Y*32,msg.data.room1);
+		for(var i = 0; i < doors1.length; i++)
 		{
-			door1.connectedDoors[door1.connectedDoors.length]=doors[i];
-			if(i==0)
+			door1.connectedDoors[door1.connectedDoors.length]=doors1[i];
+			door1.connectedDoorsSet[[doors1[i].x,doors1[i].y,doors1[i].room]]=true;
+			if(doors1[i]!=door2)
 			{
-				doors[i].connectedDoors[doors[i].connectedDoors.length]=door1;
+				for(var j = 0; j < doors1[i].connectedDoors.length; j++)
+				{
+					if(!doors1[i].connectedDoors[j].connectedDoorsSet[[door2.x,door2.y,door2.room]])
+					{
+						doors1[i].connectedDoors[j].connectedDoors[doors1[i].connectedDoors[j].connectedDoors.length]=door2;
+					}
+				}
 			}
 		}
-		doors = this.calculateLocalDoors(msg.data.mat1X*32,msg.data.mat1Y*32,msg.data.room1);
-		for(var i = 0; i < doors.length; i++)
+		for(var i = 0; i < doors2.length; i++)
 		{
-			door2.connectedDoors[door2.connectedDoors.length]=doors[i];
-			if(i==0)
+			door2.connectedDoors[door2.connectedDoors.length]=doors2[i];
+			//doors2[i].connectedDoors[doors2[i].connectedDoors.length]=door2;
+			door2.connectedDoorsSet[[doors2[i].x,doors2[i].y,doors2[i].room]]=true;
+			if(doors2[i]!=door1)
 			{
-				doors[i].connectedDoors[doors[i].connectedDoors.length]=door2;
+				for(var j = 0; j < doors2[i].connectedDoors.length; j++)
+				{
+					if(!doors2[i].connectedDoors[j].connectedDoorsSet[[door1.x,door1.y,door1.room]])
+					{
+						doors2[i].connectedDoors[j].connectedDoors[doors2[i].connectedDoors[j].connectedDoors.length]=door1;
+					}
+				}
 			}
 		}
 	}

@@ -41,6 +41,8 @@ Images.prototype.WallsImages = function()
 	}
 	images.walls[15]=new Image();
 	images.imagesToLoad[images.imagesToLoad.length]=[images.walls[15],"img/walls/wall.png"];
+	images.walls[16]=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.walls[16],"img/walls/floor.png"];
 	/*
 	images.walls[15].src="img/walls/wall.png";
 	while(!images.walls[15].complete){images.walls[15].src="img/walls/wall.png";}
@@ -51,7 +53,7 @@ Images.prototype.WallsImages = function()
 	
 	images.doors=[];
 	images.doors[0]=new Image();
-	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[0],"img/walls/doorTop2.png"];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[0],"img/walls/doorTop.png"];
 	/*
 	images.doors[0].src="img/walls/doorTop2.png";
 	while(!images.doors[0].complete){images.doors[0].src="img/walls/doorTop2.png";}
@@ -71,7 +73,7 @@ Images.prototype.WallsImages = function()
 	
 	
 	images.doors[2]=new Image();
-	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[2],"img/walls/doorTop4.png"];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[2],"img/walls/doorTop5.png"];
 	/*
 	images.doors[2].src="img/walls/doorTop4.png";
 	while(!images.doors[2].complete){images.doors[2].src="img/walls/doorTop4.png";}
@@ -79,15 +81,6 @@ Images.prototype.WallsImages = function()
 	images.bar.style.width=((images.currentCount/images.totalCount)*100)+'%';
 	*/
 	
-	
-	images.doors[3]=new Image();
-	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[3],"img/walls/doorSide2.png"];
-	/*
-	images.doors[3].src="img/walls/doorSide2.png";
-	while(!images.doors[3].complete){images.doors[3].src="img/walls/doorSide2.png";}
-	images.currentCount+=1;
-	images.bar.style.width=((images.currentCount/images.totalCount)*100)+'%';
-	*/
 }
 
 Images.prototype.BodyImages = function()

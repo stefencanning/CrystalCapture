@@ -42,8 +42,8 @@ class MessageHandler:
 			
 			#converts the unicode data that arrives into a dict
 			data = ast.literal_eval(data)
-			if(data['type']!="updatePlayer"):
-				print ('message received %s' %data)
+			#if(data['type']!="updatePlayer"):
+			#	print ('message received %s' %data)
 			#	a=0
 			#else:
 			

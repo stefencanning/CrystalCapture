@@ -17,7 +17,9 @@ class Session:
 		self.hostID = 0
 		self.playerTeam={}
 		self.rooms={}
-		self.score={0,0}
+		self.score={}
+		self.score[0]=0;
+		self.score[1]=0;
 
 
 	def addPlayer(self, uniqueID):

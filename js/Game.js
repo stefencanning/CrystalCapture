@@ -75,6 +75,7 @@ Game.prototype.CreateStartRooms=function()
 		game.rooms[i].addWall(new Wall(0,96,i,10));
 		game.rooms[i].addWall(new Wall(0,128,i,10));
 		game.rooms[i].addWall(new Wall(0,160,i,10));
+		CLIENT.calculateLocalDoors(96,96,i);
 	}
 	game.rooms[0].oriColor="blue";
 	game.rooms[0].foundColor="blue";
@@ -847,12 +848,12 @@ Game.prototype.Draw = function()
 	if(game.distBlue!=-1)
 	{
 		ctx.fillStyle = rgb(0, 0, 255);
-		ctx.fillText("blue base: "+game.distBlue, 100, 80);
+		ctx.fillText("blue crystal: "+game.distBlue, 100, 80);
 	}
 	if(game.distRed!=-1)
 	{
 		ctx.fillStyle = rgb(255, 0, 0);
-		ctx.fillText("red base: "+game.distRed, 700, 80);
+		ctx.fillText("red crystal: "+game.distRed, 700, 80);
 	}
 	
 	ctx.fillStyle = rgb(255, 0, 0);
