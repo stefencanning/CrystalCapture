@@ -38,6 +38,21 @@ class Session:
 		else:
 			result = False;
 		return result;
+		
+	def removePlayer(self, uniqueID):
+		result = False;
+		if(self.gameState == Session.WAITING_FOR_PLAYERS):
+			if(self.hostID == uniqueID):
+				result = True
+		if(self.playerTeam[uniqueID]=="blue"):
+			self.blue.remove(uniqueID)
+			self.players.remove(uniqueID)
+			self.playerTeam[uniqueID]=0
+		elif(self.playerTeam[uniqueID]=="red"):
+			self.red.remove(uniqueID)
+			self.players.remove(uniqueID)
+			self.playerTeam[uniqueID]=0
+		return result;
 
 	def startGame(self,uniqueID):
 		if(uniqueID == self.hostID):

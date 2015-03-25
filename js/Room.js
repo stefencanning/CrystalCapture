@@ -9,6 +9,17 @@ function Room()
 	this.floor=[];
 }
 
+Room.prototype.dealloc = function()
+{
+	for( var i = 0; i < this.walls.length; i++)
+	{
+		this.walls[i].dealloc();
+		this.walls[i]=0;
+	}
+	this.walls=0;
+	this.floorSet=0;
+	this.floor=0;
+}
 
 Room.prototype.addWall = function(wall)
 {

@@ -430,6 +430,33 @@ Client.prototype.handleMessage = function(evt)
 	}
 	else if(msg.type == "playerList")
 	{
+		for(var i = 0; i < redTeam.length; i++)
+		{
+			currentSession[redTeam[i]] = 0;
+			playerGameData[redTeam[i]]=0;
+			playerOutfit[redTeam[i]]=0;
+			redTeam[i] = 0;
+		}
+		for(var i = 0; i < blueTeam.length; i++)
+		{
+			currentSession[blueTeam[i]] = 0;
+			playerGameData[blueTeam[i]]=0;
+			playerOutfit[blueTeam[i]]=0;
+			blueTeam[i] = 0;
+		}
+		
+		currentSession=0;
+		playerGameData=0;
+		playerOutfit=0;
+		redTeam = 0;
+		blueTeam = 0;
+		
+		currentSession=[];
+		redTeam = [];
+		blueTeam = [];
+		playerGameData = [];
+		playerOutfit = [];
+		
 		for(var i = 0; i < msg.data.length;i++)
 		{
 			if(msg.data[i].team == "red")
@@ -460,11 +487,30 @@ Client.prototype.handleMessage = function(evt)
 	{
 		if(main.mode==GAMESELECT)
 		{
-			game= new Game();
+			game = new Game();
 			game.Initialise();
 			sound.stopSong(sound.songNumbers["menu"]);
 			sound.playSong(sound.songNumbers["walking"]);
 			main.mode=INGAME;
+		}
+	}
+	else if(msg.type == "gameOver")
+	{
+		if(main.mode==INGAME)
+		{
+			game.dealloc();
+			game = 0;
+			sound.stopSong(sound.songNumbers["walking"]);
+			sound.playSong(sound.songNumbers["menu"]);
+			for(var i = 0; i < matchmaking.gameList.length; i++)
+			{
+				matchmaking.gameList[i]=0;
+			}
+			matchmaking.gameList = 0;
+			matchmaking.gameList = [];
+			matchmaking.hosting = false;
+			matchmaking.ingame = false;
+			main.mode=GAMESELECT;
 		}
 	}
 	else if(msg.type == "updatePlayer")
@@ -649,36 +695,39 @@ Client.prototype.handleMessage = function(evt)
 				}
 			}
 		}
+		door1.pair=door2;
+		door2.pair=door1;
 		var doors1 = CLIENT.calculateLocalDoors(msg.data.mat2X*32,msg.data.mat2Y*32,msg.data.room2);
 		var doors2 = CLIENT.calculateLocalDoors(msg.data.mat1X*32,msg.data.mat1Y*32,msg.data.room1);
 		for(var i = 0; i < doors1.length; i++)
 		{
-			door1.connectedDoors[door1.connectedDoors.length]=doors1[i];
-			door1.connectedDoorsSet[[doors1[i].x,doors1[i].y,doors1[i].room]]=true;
-			if(doors1[i]!=door2)
+			if(doors1[i]!=door1)
 			{
-				for(var j = 0; j < doors1[i].connectedDoors.length; j++)
+				door1.connectedDoors[door1.connectedDoors.length]=doors1[i];
+				door1.connectedDoorsSet[[doors1[i].x,doors1[i].y,doors1[i].room]]=true;
+			}
+			if(doors1[i]!=door2&&doors1[i]!=door1)
+			{
+				if(!doors1[i].pair.connectedDoorsSet[[door2.x,door2.y,door2.room]])
 				{
-					if(!doors1[i].connectedDoors[j].connectedDoorsSet[[door2.x,door2.y,door2.room]])
-					{
-						doors1[i].connectedDoors[j].connectedDoors[doors1[i].connectedDoors[j].connectedDoors.length]=door2;
-					}
+					doors1[i].pair.connectedDoors[doors1[i].pair.connectedDoors.length]=door2;
+					doors1[i].pair.connectedDoorsSet[[door2.x,door2.y,door2.room]]=true;
 				}
 			}
 		}
 		for(var i = 0; i < doors2.length; i++)
 		{
-			door2.connectedDoors[door2.connectedDoors.length]=doors2[i];
-			//doors2[i].connectedDoors[doors2[i].connectedDoors.length]=door2;
-			door2.connectedDoorsSet[[doors2[i].x,doors2[i].y,doors2[i].room]]=true;
-			if(doors2[i]!=door1)
+			if(doors2[i]!=door2)
 			{
-				for(var j = 0; j < doors2[i].connectedDoors.length; j++)
+				door2.connectedDoors[door2.connectedDoors.length]=doors2[i];
+				door2.connectedDoorsSet[[doors2[i].x,doors2[i].y,doors2[i].room]]=true;
+			}
+			if(doors2[i]!=door1&&doors2[i]!=door2)
+			{
+				if(!doors2[i].pair.connectedDoorsSet[[door1.x,door1.y,door1.room]])
 				{
-					if(!doors2[i].connectedDoors[j].connectedDoorsSet[[door1.x,door1.y,door1.room]])
-					{
-						doors2[i].connectedDoors[j].connectedDoors[doors2[i].connectedDoors[j].connectedDoors.length]=door1;
-					}
+					doors2[i].pair.connectedDoors[doors2[i].pair.connectedDoors.length]=door1;
+					doors2[i].pair.connectedDoorsSet[[door1.x,door1.y,door1.room]]=true;
 				}
 			}
 		}

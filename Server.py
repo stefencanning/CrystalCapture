@@ -31,7 +31,19 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		
  
 	def on_close(self):
-	    print ("WebSocket closed")
+		for uniqueid,socket in playerConnections.items():
+			if socket == self:
+				s=playerSession[uniqueid]
+				if s:
+					if s.gameState == Session.WAITING_FOR_PLAYERS:
+						s.removePlayer(uniqueid)
+						for player in s.players:
+							messageHandler.getGamePlayers(player)
+					else:
+						success = playerSession[uniqueID].disconnectedPlayer(uniqueID)
+						if(success['success']):
+							for player in playerSession[uniqueID].players:
+								messageHandler.sendMessage(player,"flagDropped",success)
 
 class MessageHandler:
 	def __init__(self):
@@ -199,8 +211,9 @@ class MessageHandler:
 			s.playerOutfits[uniqueID]=outfit
 			self.sendMessage(uniqueID,"joinedGame",gameHostId)
 			playerSession[uniqueID] = s
-			self.joinedGame(uniqueID)
-			self.getGamePlayers(uniqueID)
+			#self.joinedGame(uniqueID)
+			for player in playerSession[uniqueID].players:
+				self.getGamePlayers(player)
 	
 	def getGamePlayers(self, uniqueID):
 		playerList = list()

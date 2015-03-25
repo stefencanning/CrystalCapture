@@ -39,6 +39,23 @@ Game.prototype.Initialise=function ()
 	game.timeSinceLastUpdate=0;
 	//game.fps=0;
 }
+Game.prototype.dealloc=function()
+{
+	for(var i = 0; i < game.rooms.length; i++)
+	{
+		game.rooms[i].dealloc();
+		game.rooms[i]=0;
+	}
+	game.rooms=0;
+	game.player=0;
+	game.keys=0;
+	game.blueFlag=0;
+	game.redFlag=0;
+	game.players=0;
+	game.bullets=0;
+}
+
+
 
 Game.prototype.CreateStartRooms=function()
 {
@@ -860,7 +877,7 @@ Game.prototype.Draw = function()
 	ctx.fillText(game.redPoints+"/3", 760, 50);
 	if(game.redFlagCaptured)
 	{
-		ctx.drawImage(images.crystal[1][2],250,34);
+		ctx.drawImage(images.crystal[0][2],250,34);
 	}
 	
 	ctx.fillStyle = rgb(0, 0, 255);

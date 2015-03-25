@@ -13,6 +13,18 @@ function Wall(x,y,room,imgNum)
 	this.imgNum=imgNum;
 	this.leadingDoor=null;
 	this.path=false;
+	this.pair=null;
+}
+
+Wall.prototype.dealloc = function()
+{
+	this.room=0;
+	this.connectsTo=0;
+	this.connectedDoors=0;
+	this.connectedDoorsSet=0;
+	this.imgNum=0;
+	this.leadingDoor=0;
+	this.path=0;
 }
 
 
