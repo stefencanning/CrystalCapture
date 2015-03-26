@@ -98,6 +98,23 @@ Main.prototype.initCanvas = function()
 	canvas.focus()
 }
 
+Main.prototype.gameOver = function()
+{
+	game.dealloc();
+	game = 0;
+	sound.stopSong(sound.songNumbers["walking"]);
+	sound.playSong(sound.songNumbers["menu"]);
+	for(var i = 0; i < matchmaking.gameList.length; i++)
+	{
+		matchmaking.gameList[i]=0;
+	}
+	matchmaking.gameList = 0;
+	matchmaking.gameList = [];
+	matchmaking.hosting = false;
+	matchmaking.ingame = false;
+	main.mode=GAMESELECT;
+}
+
 
 Main.prototype.mainLoop = function ()
 {

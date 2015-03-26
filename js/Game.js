@@ -2,6 +2,9 @@
 var keys;
 function Game ()
 {
+	this.PLAYING=0;
+	this.VICTORY=1;
+	this.DEFEAT=2;
 }
 
 Game.prototype.SetUp=function()
@@ -10,6 +13,7 @@ Game.prototype.SetUp=function()
 
 Game.prototype.Initialise=function ()
 {
+	game.state=game.PLAYING;
 	game.CreateStartRooms();
 	game.keys = {"w":false,
 	"a":false,
@@ -110,477 +114,480 @@ Game.prototype.initCanvas=function ()
 Game.prototype.gameLoop = function () 
 {
 	var curTime=new Date();
-	//game.fps=1/((curTime.getTime()-time.getTime())/1000);
-	if(game.player.dead)
+	if(game.state==game.PLAYING)
 	{
-		game.player.respawnTimer-=curTime.getTime()-time.getTime();
-		if(game.player.respawnTimer<=0)
+		//game.fps=1/((curTime.getTime()-time.getTime())/1000);
+		if(game.player.dead)
 		{
-			game.player.dead=false;
-			game.player.setPos(96,96);
-		}
-	}
-	else
-	{
-		if(game.keys["w"])
-		{
-			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
-			if(game.player.gotFlag)
+			game.player.respawnTimer-=curTime.getTime()-time.getTime();
+			if(game.player.respawnTimer<=0)
 			{
-				dist/=2;
-				if(main.playerPerk==1)
-				{
-					dist*=main.perkStrength[main.playerPerk];
-				}
+				game.player.dead=false;
+				game.player.setPos(96,96);
 			}
-			game.player.y-=(dist*((curTime.getTime()-time.getTime())/1000));
-			game.player.rotation=3;
-		}
-		if(game.keys["s"])
-		{
-			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
-			if(game.player.gotFlag)
-			{
-				dist/=2;
-				if(main.playerPerk==1)
-				{
-					dist*=main.perkStrength[main.playerPerk];
-				}
-			}
-			game.player.y+=(dist*((curTime.getTime()-time.getTime())/1000));
-			game.player.rotation=0;
-		}
-		if(game.keys["a"])
-		{
-			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
-			if(game.player.gotFlag)
-			{
-				dist/=2;
-				if(main.playerPerk==1)
-				{
-					dist*=main.perkStrength[main.playerPerk];
-				}
-			}
-			game.player.x-=(dist*((curTime.getTime()-time.getTime())/1000));
-			game.player.rotation=1;
-		}
-		if(game.keys["d"])
-		{
-			var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
-			if(game.player.gotFlag)
-			{
-				dist/=2;
-				if(main.playerPerk==1)
-				{
-					dist*=main.perkStrength[main.playerPerk];
-				}
-			}
-			game.player.x+=(dist*((curTime.getTime()-time.getTime())/1000));
-			game.player.rotation=2;
-		}
-		if(game.keys["w"]||game.keys["s"]||game.keys["a"]||game.keys["d"])
-		{
-			main.frameTime+=curTime-time;
 		}
 		else
 		{
-			if(main.frame==0)
-				main.frame=1;
-			if(main.frame==2)
-				main.frame=3;
-		}
-		if(game.keys["space"])
-		{
-			if(game.player.fireTime<=0)
+			if(game.keys["w"])
 			{
-				var xDif = mousePos["x"]-(canvas.width/2);
-				var yDif = mousePos["y"]-(canvas.height/2);
-				var length = Math.sqrt((xDif*xDif)+(yDif*yDif));
-				xDif/=length;
-				yDif/=length;
-				var poisDmg=0;
-				if(main.playerPerk==2)
+				var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+				if(game.player.gotFlag)
 				{
-					poisDmg=main.perkStrength[main.playerPerk];
+					dist/=2;
+					if(main.playerPerk==1)
+					{
+						dist*=main.perkStrength[main.playerPerk];
+					}
 				}
-				if(main.playerGun==1)
+				game.player.y-=(dist*((curTime.getTime()-time.getTime())/1000));
+				game.player.rotation=3;
+			}
+			if(game.keys["s"])
+			{
+				var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+				if(game.player.gotFlag)
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+					dist/=2;
+					if(main.playerPerk==1)
+					{
+						dist*=main.perkStrength[main.playerPerk];
+					}
+				}
+				game.player.y+=(dist*((curTime.getTime()-time.getTime())/1000));
+				game.player.rotation=0;
+			}
+			if(game.keys["a"])
+			{
+				var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+				if(game.player.gotFlag)
+				{
+					dist/=2;
+					if(main.playerPerk==1)
+					{
+						dist*=main.perkStrength[main.playerPerk];
+					}
+				}
+				game.player.x-=(dist*((curTime.getTime()-time.getTime())/1000));
+				game.player.rotation=1;
+			}
+			if(game.keys["d"])
+			{
+				var dist = (main.playerSpeed*(main.playerSpeedScaling/10));
+				if(game.player.gotFlag)
+				{
+					dist/=2;
+					if(main.playerPerk==1)
+					{
+						dist*=main.perkStrength[main.playerPerk];
+					}
+				}
+				game.player.x+=(dist*((curTime.getTime()-time.getTime())/1000));
+				game.player.rotation=2;
+			}
+			if(game.keys["w"]||game.keys["s"]||game.keys["a"]||game.keys["d"])
+			{
+				main.frameTime+=curTime-time;
+			}
+			else
+			{
+				if(main.frame==0)
+					main.frame=1;
+				if(main.frame==2)
+					main.frame=3;
+			}
+			if(game.keys["space"])
+			{
+				if(game.player.fireTime<=0)
+				{
+					var xDif = mousePos["x"]-(canvas.width/2);
+					var yDif = mousePos["y"]-(canvas.height/2);
+					var length = Math.sqrt((xDif*xDif)+(yDif*yDif));
+					xDif/=length;
+					yDif/=length;
+					var poisDmg=0;
+					if(main.playerPerk==2)
+					{
+						poisDmg=main.perkStrength[main.playerPerk];
+					}
+					if(main.playerGun==1)
+					{
+						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+					}
+					else
+					{
+						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+					}
+					game.player.fireTime=main.gunReload[main.playerGun];
+				}
+			}
+			if(game.player.doorTime>0)
+				game.player.doorTime-=curTime.getTime()-time.getTime();
+			if(game.player.fireTime>0)
+				game.player.fireTime-=curTime.getTime()-time.getTime();
+			var newPos = game.rooms[game.player.room].checkCollision(game.player);
+			if(newPos.roomChange)
+			{
+				var flagBlueRoom = -1;
+				var flagRedRoom = -1;
+				var flagBluePos = [,];
+				var flagRedPos = [,];
+				if(game.blueFlagCaptured)
+				{
+					for(var i =0; i < redTeam.length; i++)
+					{
+						if(playerGameData[redTeam[i]].flag)
+						{
+							flagBlueRoom = playerGameData[redTeam[i]].room;
+							flagBluePos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
+						}
+					}
 				}
 				else
 				{
-					CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+					flagBlueRoom=game.blueFlag.room;
+					flagBluePos = [(Math.floor((game.blueFlag.x+16)/32)*32),(Math.floor((game.blueFlag.y+16)/32)*32)];
 				}
-				game.player.fireTime=main.gunReload[main.playerGun];
-			}
-		}
-		if(game.player.doorTime>0)
-			game.player.doorTime-=curTime.getTime()-time.getTime();
-		if(game.player.fireTime>0)
-			game.player.fireTime-=curTime.getTime()-time.getTime();
-		var newPos = game.rooms[game.player.room].checkCollision(game.player);
-		if(newPos.roomChange)
-		{
-			var flagBlueRoom = -1;
-			var flagRedRoom = -1;
-			var flagBluePos = [,];
-			var flagRedPos = [,];
-			if(game.blueFlagCaptured)
-			{
-				for(var i =0; i < redTeam.length; i++)
+				if(game.redFlagCaptured)
 				{
-					if(playerGameData[redTeam[i]].flag)
+					for(var i =0; i < blueTeam.length; i++)
 					{
-						flagBlueRoom = playerGameData[redTeam[i]].room;
-						flagBluePos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
-					}
-				}
-			}
-			else
-			{
-				flagBlueRoom=game.blueFlag.room;
-				flagBluePos = [(Math.floor((game.blueFlag.x+16)/32)*32),(Math.floor((game.blueFlag.y+16)/32)*32)];
-			}
-			if(game.redFlagCaptured)
-			{
-				for(var i =0; i < blueTeam.length; i++)
-				{
-					if(playerGameData[blueTeam[i]].flag)
-					{
-						flagRedRoom = playerGameData[blueTeam[i]].room;
-						flagRedPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
-					}
-				}
-			}
-			else
-			{
-				flagRedRoom=game.redFlag.room;
-				flagRedPos = [(Math.floor((game.redFlag.x+16)/32)*32),(Math.floor((game.redFlag.y+16)/32)*32)];
-			}
-			game.distBlue=-1;
-			if(flagBlueRoom!=-1)
-			{
-				var doorsFlag = CLIENT.calculateLocalDoors(flagBluePos[0],flagBluePos[1],flagBlueRoom);
-				var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
-				var queue = new Queue();
-				var set = {};
-				for(var i = 0; i < doorsPlayer.length; i++)
-				{
-					doorsPlayer[i].bluePath = false;
-					doorsPlayer[i].leadingDoor=null;
-					queue.enqueue(doorsPlayer[i]);
-					set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
-				}
-				var foundSet={};
-				for(var i = 0; i < doorsFlag.length; i++)
-				{
-					foundSet[[doorsFlag[i].x,doorsFlag[i].y,doorsFlag[i].room]] = true;
-				}
-				var found = false;
-				while(!queue.isEmpty()&&!found)
-				{
-					var door = queue.dequeue();
-					//if(door.connectsTo[0]==newPos.room)
-					if(foundSet[[door.x,door.y,door.room]])
-					{
-						found=true;
-					}
-					var doors = door.connectedDoors;
-					for(var i = 0; i < doors.length; i++)
-					{
-						if(!set[[doors[i].x,doors[i].y,doors[i].room]])
+						if(playerGameData[blueTeam[i]].flag)
 						{
-							doors[i].bluePath = false;
-							doors[i].leadingDoor=door;
-							//if(doors[i].connectsTo[0]==newPos.room)
-							if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
+							flagRedRoom = playerGameData[blueTeam[i]].room;
+							flagRedPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
+						}
+					}
+				}
+				else
+				{
+					flagRedRoom=game.redFlag.room;
+					flagRedPos = [(Math.floor((game.redFlag.x+16)/32)*32),(Math.floor((game.redFlag.y+16)/32)*32)];
+				}
+				game.distBlue=-1;
+				if(flagBlueRoom!=-1)
+				{
+					var doorsFlag = CLIENT.calculateLocalDoors(flagBluePos[0],flagBluePos[1],flagBlueRoom);
+					var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+					var queue = new Queue();
+					var set = {};
+					for(var i = 0; i < doorsPlayer.length; i++)
+					{
+						doorsPlayer[i].bluePath = false;
+						doorsPlayer[i].leadingDoor=null;
+						queue.enqueue(doorsPlayer[i]);
+						set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+					}
+					var foundSet={};
+					for(var i = 0; i < doorsFlag.length; i++)
+					{
+						foundSet[[doorsFlag[i].x,doorsFlag[i].y,doorsFlag[i].room]] = true;
+					}
+					var found = false;
+					while(!queue.isEmpty()&&!found)
+					{
+						var door = queue.dequeue();
+						//if(door.connectsTo[0]==newPos.room)
+						if(foundSet[[door.x,door.y,door.room]])
+						{
+							found=true;
+						}
+						var doors = door.connectedDoors;
+						for(var i = 0; i < doors.length; i++)
+						{
+							if(!set[[doors[i].x,doors[i].y,doors[i].room]])
 							{
-								found=true;
-								game.distBlue=0;
-								doors[i].bluePath=true;
-								var pathDoor = doors[i];
-								while(pathDoor.leadingDoor!=null)
+								doors[i].bluePath = false;
+								doors[i].leadingDoor=door;
+								//if(doors[i].connectsTo[0]==newPos.room)
+								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
 								{
-									game.distBlue+=1;
-									pathDoor.leadingDoor.bluePath = true;
-									pathDoor = pathDoor.leadingDoor;
+									found=true;
+									game.distBlue=0;
+									doors[i].bluePath=true;
+									var pathDoor = doors[i];
+									while(pathDoor.leadingDoor!=null)
+									{
+										game.distBlue+=1;
+										pathDoor.leadingDoor.bluePath = true;
+										pathDoor = pathDoor.leadingDoor;
+									}
+									break;
 								}
-								break;
+								queue.enqueue(doors[i]);
+								set[[door.x,door.y,door.room]]=true;
 							}
-							queue.enqueue(doors[i]);
-							set[[door.x,door.y,door.room]]=true;
+						}
+					}
+				}
+				game.distRed=-1;
+				if(flagRedRoom!=-1)
+				{
+					var doorsFlag = CLIENT.calculateLocalDoors(flagRedPos[0],flagRedPos[1],flagRedRoom);
+					var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+					var queue = new Queue();
+					var set = {};
+					for(var i = 0; i < doorsPlayer.length; i++)
+					{
+						doorsPlayer[i].redPath = false;
+						doorsPlayer[i].leadingDoor=null;
+						queue.enqueue(doorsPlayer[i]);
+						set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+					}
+					var foundSet={};
+					for(var i = 0; i < doorsFlag.length; i++)
+					{
+						foundSet[[doorsFlag[i].x,doorsFlag[i].y,doorsFlag[i].room]] = true;
+					}
+					var found = false;
+					while(!queue.isEmpty()&&!found)
+					{
+						var door = queue.dequeue();
+						//if(door.connectsTo[0]==newPos.room)
+						if(foundSet[[door.x,door.y,door.room]])
+						{
+							found=true;
+						}
+						var doors = door.connectedDoors;
+						for(var i = 0; i < doors.length; i++)
+						{
+							if(!set[[doors[i].x,doors[i].y,doors[i].room]])
+							{
+								doors[i].redPath = false;
+								doors[i].leadingDoor=door;
+								//if(doors[i].connectsTo[0]==newPos.room)
+								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
+								{
+									found=true;
+									game.distRed=0;
+									doors[i].redPath=true;
+									var pathDoor = doors[i];
+									while(pathDoor.leadingDoor!=null)
+									{
+										game.distRed+=1;
+										pathDoor.leadingDoor.redPath = true;
+										pathDoor = pathDoor.leadingDoor;
+									}
+									break;
+								}
+								queue.enqueue(doors[i]);
+								set[[door.x,door.y,door.room]]=true;
+							}
+						}
+					}
+				}
+				game.player.room = newPos.room;
+			}
+			if(game.player.gotFlag)
+			{
+				sound.stopSong(sound.songNumbers["enemy"]);
+				sound.stopSong(sound.songNumbers["walking"]);
+				sound.playSong(sound.songNumbers["flag"]);
+			}
+			else
+			{
+				sound.stopSong(sound.songNumbers["flag"]);
+				sound.stopSong(sound.songNumbers["enemy"]);
+				sound.playSong(sound.songNumbers["walking"]);
+				
+				if(main.playerTeam == "blue")
+				{
+					for(var i =0; i < redTeam.length; i++)
+					{
+						if(playerGameData[redTeam[i]].room == game.player.room)
+						{
+							sound.playSong(sound.songNumbers["enemy"]);
+							sound.stopSong(sound.songNumbers["walking"]);
+						}
+					}
+				}
+				else if(main.playerTeam == "red")
+				{
+					for(var i =0; i < blueTeam.length; i++)
+					{
+						if(playerGameData[blueTeam[i]].room == game.player.room)
+						{
+							sound.playSong(sound.songNumbers["enemy"]);
+							sound.stopSong(sound.songNumbers["walking"]);
 						}
 					}
 				}
 			}
-			game.distRed=-1;
-			if(flagRedRoom!=-1)
-			{
-				var doorsFlag = CLIENT.calculateLocalDoors(flagRedPos[0],flagRedPos[1],flagRedRoom);
-				var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
-				var queue = new Queue();
-				var set = {};
-				for(var i = 0; i < doorsPlayer.length; i++)
-				{
-					doorsPlayer[i].redPath = false;
-					doorsPlayer[i].leadingDoor=null;
-					queue.enqueue(doorsPlayer[i]);
-					set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
-				}
-				var foundSet={};
-				for(var i = 0; i < doorsFlag.length; i++)
-				{
-					foundSet[[doorsFlag[i].x,doorsFlag[i].y,doorsFlag[i].room]] = true;
-				}
-				var found = false;
-				while(!queue.isEmpty()&&!found)
-				{
-					var door = queue.dequeue();
-					//if(door.connectsTo[0]==newPos.room)
-					if(foundSet[[door.x,door.y,door.room]])
-					{
-						found=true;
-					}
-					var doors = door.connectedDoors;
-					for(var i = 0; i < doors.length; i++)
-					{
-						if(!set[[doors[i].x,doors[i].y,doors[i].room]])
-						{
-							doors[i].redPath = false;
-							doors[i].leadingDoor=door;
-							//if(doors[i].connectsTo[0]==newPos.room)
-							if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
-							{
-								found=true;
-								game.distRed=0;
-								doors[i].redPath=true;
-								var pathDoor = doors[i];
-								while(pathDoor.leadingDoor!=null)
-								{
-									game.distRed+=1;
-									pathDoor.leadingDoor.redPath = true;
-									pathDoor = pathDoor.leadingDoor;
-								}
-								break;
-							}
-							queue.enqueue(doors[i]);
-							set[[door.x,door.y,door.room]]=true;
-						}
-					}
-				}
-			}
-			game.player.room = newPos.room;
-		}
-		if(game.player.gotFlag)
-		{
-			sound.stopSong(sound.songNumbers["enemy"]);
-			sound.stopSong(sound.songNumbers["walking"]);
-			sound.playSong(sound.songNumbers["flag"]);
-		}
-		else
-		{
-			sound.stopSong(sound.songNumbers["flag"]);
-			sound.stopSong(sound.songNumbers["enemy"]);
-			sound.playSong(sound.songNumbers["walking"]);
 			
+			game.player.x = newPos.x;
+			game.player.y = newPos.y;
 			if(main.playerTeam == "blue")
 			{
-				for(var i =0; i < redTeam.length; i++)
+				var flag = game.redFlag;
+				if(game.player.room==flag.room)
 				{
-					if(playerGameData[redTeam[i]].room == game.player.room)
+					if(game.player.x+game.player.w>flag.x
+					&&game.player.x<flag.x+flag.w
+					&&game.player.y+game.player.h>flag.y
+					&&game.player.y<flag.y+flag.h)
+					if(!game.redFlagCaptured)
 					{
-						sound.playSong(sound.songNumbers["enemy"]);
-						sound.stopSong(sound.songNumbers["walking"]);
+						CLIENT.grabFlag();
 					}
 				}
-			}
-			else if(main.playerTeam == "red")
-			{
-				for(var i =0; i < blueTeam.length; i++)
+				var flag = game.blueFlag;
+				if(game.player.room==flag.room)
 				{
-					if(playerGameData[blueTeam[i]].room == game.player.room)
-					{
-						sound.playSong(sound.songNumbers["enemy"]);
-						sound.stopSong(sound.songNumbers["walking"]);
-					}
-				}
-			}
-		}
-		
-		game.player.x = newPos.x;
-		game.player.y = newPos.y;
-		if(main.playerTeam == "blue")
-		{
-			var flag = game.redFlag;
-			if(game.player.room==flag.room)
-			{
-				if(game.player.x+game.player.w>flag.x
-				&&game.player.x<flag.x+flag.w
-				&&game.player.y+game.player.h>flag.y
-				&&game.player.y<flag.y+flag.h)
-				if(!game.redFlagCaptured)
-				{
-					CLIENT.grabFlag();
-				}
-			}
-			var flag = game.blueFlag;
-			if(game.player.room==flag.room)
-			{
-				if(game.player.x+game.player.w>flag.x
-				&&game.player.x<flag.x+flag.w
-				&&game.player.y+game.player.h>flag.y
-				&&game.player.y<flag.y+flag.h)
-				{
-					if(!game.blueFlagCaptured)
-					{
-						if(flag.x!=game.blueCapturePoint[0]||flag.y!=game.blueCapturePoint[1]||flag.room!=game.blueCapturePoint[2])
-						{
-							CLIENT.flagReturned();
-						}
-					}
-				}
-			}
-			if(game.player.room==game.blueCapturePoint[2])
-			{
-				if(game.player.gotFlag==1)
-				{
-					if(game.player.x+game.player.w>game.blueCapturePoint[0]
-					&&game.player.x<game.blueCapturePoint[0]+game.player.w
-					&&game.player.y+game.player.h>game.blueCapturePoint[1]
-					&&game.player.y<game.blueCapturePoint[1]+game.player.h)
+					if(game.player.x+game.player.w>flag.x
+					&&game.player.x<flag.x+flag.w
+					&&game.player.y+game.player.h>flag.y
+					&&game.player.y<flag.y+flag.h)
 					{
 						if(!game.blueFlagCaptured)
 						{
-							if(game.blueFlag.x==game.blueCapturePoint[0]&&game.blueFlag.y==game.blueCapturePoint[1]&&game.blueFlag.room==game.blueCapturePoint[2])
+							if(flag.x!=game.blueCapturePoint[0]||flag.y!=game.blueCapturePoint[1]||flag.room!=game.blueCapturePoint[2])
 							{
-								CLIENT.captureFlag();
+								CLIENT.flagReturned();
+							}
+						}
+					}
+				}
+				if(game.player.room==game.blueCapturePoint[2])
+				{
+					if(game.player.gotFlag==1)
+					{
+						if(game.player.x+game.player.w>game.blueCapturePoint[0]
+						&&game.player.x<game.blueCapturePoint[0]+game.player.w
+						&&game.player.y+game.player.h>game.blueCapturePoint[1]
+						&&game.player.y<game.blueCapturePoint[1]+game.player.h)
+						{
+							if(!game.blueFlagCaptured)
+							{
+								if(game.blueFlag.x==game.blueCapturePoint[0]&&game.blueFlag.y==game.blueCapturePoint[1]&&game.blueFlag.room==game.blueCapturePoint[2])
+								{
+									CLIENT.captureFlag();
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-		if(main.playerTeam == "red")
-		{
-			var flag = game.blueFlag;
-			if(game.player.room==flag.room)
+			if(main.playerTeam == "red")
 			{
-				if(game.player.x+game.player.w>flag.x
-				&&game.player.x<flag.x+flag.w
-				&&game.player.y+game.player.h>flag.y
-				&&game.player.y<flag.y+flag.h)
-				if(!game.blueFlagCaptured)
+				var flag = game.blueFlag;
+				if(game.player.room==flag.room)
 				{
-					CLIENT.grabFlag();
-				}
-			}
-			var flag = game.redFlag;
-			if(game.player.room==flag.room)
-			{
-				if(game.player.x+game.player.w>flag.x
-				&&game.player.x<flag.x+flag.w
-				&&game.player.y+game.player.h>flag.y
-				&&game.player.y<flag.y+flag.h)
-				{
-					if(!game.redFlagCaptured)
+					if(game.player.x+game.player.w>flag.x
+					&&game.player.x<flag.x+flag.w
+					&&game.player.y+game.player.h>flag.y
+					&&game.player.y<flag.y+flag.h)
+					if(!game.blueFlagCaptured)
 					{
-						if(flag.x!=game.redCapturePoint[0]||flag.y!=game.redCapturePoint[1]||flag.room!=game.redCapturePoint[2])
-						{
-							CLIENT.flagReturned();
-						}
+						CLIENT.grabFlag();
 					}
 				}
-			}
-			if(game.player.room==game.redCapturePoint[2])
-			{
-				if(game.player.gotFlag==1)
+				var flag = game.redFlag;
+				if(game.player.room==flag.room)
 				{
-					if(game.player.x+game.player.w>game.redCapturePoint[0]
-					&&game.player.x<game.redCapturePoint[0]+game.player.w
-					&&game.player.y+game.player.h>game.redCapturePoint[1]
-					&&game.player.y<game.redCapturePoint[1]+game.player.h)
+					if(game.player.x+game.player.w>flag.x
+					&&game.player.x<flag.x+flag.w
+					&&game.player.y+game.player.h>flag.y
+					&&game.player.y<flag.y+flag.h)
 					{
 						if(!game.redFlagCaptured)
 						{
-							if(game.redFlag.x==game.redCapturePoint[0]&&game.redFlag.y==game.redCapturePoint[1]&&game.redFlag.room==game.redCapturePoint[2])
+							if(flag.x!=game.redCapturePoint[0]||flag.y!=game.redCapturePoint[1]||flag.room!=game.redCapturePoint[2])
 							{
-								CLIENT.captureFlag();
+								CLIENT.flagReturned();
+							}
+						}
+					}
+				}
+				if(game.player.room==game.redCapturePoint[2])
+				{
+					if(game.player.gotFlag==1)
+					{
+						if(game.player.x+game.player.w>game.redCapturePoint[0]
+						&&game.player.x<game.redCapturePoint[0]+game.player.w
+						&&game.player.y+game.player.h>game.redCapturePoint[1]
+						&&game.player.y<game.redCapturePoint[1]+game.player.h)
+						{
+							if(!game.redFlagCaptured)
+							{
+								if(game.redFlag.x==game.redCapturePoint[0]&&game.redFlag.y==game.redCapturePoint[1]&&game.redFlag.room==game.redCapturePoint[2])
+								{
+									CLIENT.captureFlag();
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-	}
-	for( var i = 0; i < game.bullets.length;i++)
-	{
-		if(game.bullets[i] != null)
+		for( var i = 0; i < game.bullets.length;i++)
 		{
-			game.bullets[i].update(((curTime.getTime()-time.getTime())/1000));
-			if(game.bullets[i].room == game.player.room)
+			if(game.bullets[i] != null)
 			{
+				game.bullets[i].update(((curTime.getTime()-time.getTime())/1000));
+				if(game.bullets[i].room == game.player.room)
+				{
+					if(game.bullets[i] != null)
+					{
+						if(game.bullets[i].team!=main.playerTeam)
+						{
+							if(game.player.x+game.player.w>game.bullets[i].x
+							&&game.player.x<game.bullets[i].x+game.bullets[i].w
+							&&game.player.y+game.player.h>game.bullets[i].y
+							&&game.player.y<game.bullets[i].y+game.bullets[i].h)
+							{
+								game.player.health-=game.bullets[i].damage;
+								game.player.poisoned+=game.bullets[i].poisonDamage;
+								game.player.poisonTime=game.player.poisonMaxTime;
+								game.bullets[i] = null;
+							}
+						}
+					}
+				}
 				if(game.bullets[i] != null)
 				{
-					if(game.bullets[i].team!=main.playerTeam)
+					if(game.rooms[game.bullets[i].room].checkCollide(game.bullets[i]))
 					{
-						if(game.player.x+game.player.w>game.bullets[i].x
-						&&game.player.x<game.bullets[i].x+game.bullets[i].w
-						&&game.player.y+game.player.h>game.bullets[i].y
-						&&game.player.y<game.bullets[i].y+game.bullets[i].h)
-						{
-							game.player.health-=game.bullets[i].damage;
-							game.player.poisoned+=game.bullets[i].poisonDamage;
-							game.player.poisonTime=game.player.poisonMaxTime;
-							game.bullets[i] = null;
-						}
+						game.bullets[i] = null;
 					}
 				}
-			}
-			if(game.bullets[i] != null)
-			{
-				if(game.rooms[game.bullets[i].room].checkCollide(game.bullets[i]))
+				if(game.bullets[i] != null)
 				{
-					game.bullets[i] = null;
-				}
-			}
-			if(game.bullets[i] != null)
-			{
-				if(game.bullets[i].team=="blue")
-				{
-					for(var j = 0; j < redTeam.length;j++)
+					if(game.bullets[i].team=="blue")
 					{
-						if(playerGameData[redTeam[j]]!=0&&game.bullets[i] != null)
+						for(var j = 0; j < redTeam.length;j++)
 						{
-							if(playerGameData[redTeam[j]].room==game.bullets[i].room)
+							if(playerGameData[redTeam[j]]!=0&&game.bullets[i] != null)
 							{
-								if(playerGameData[redTeam[j]].x+game.player.w>game.bullets[i].x
-								&&playerGameData[redTeam[j]].x<game.bullets[i].x+game.bullets[i].w
-								&&playerGameData[redTeam[j]].y+game.player.h>game.bullets[i].y
-								&&playerGameData[redTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+								if(playerGameData[redTeam[j]].room==game.bullets[i].room)
 								{
-									game.bullets[i] = null;
+									if(playerGameData[redTeam[j]].x+game.player.w>game.bullets[i].x
+									&&playerGameData[redTeam[j]].x<game.bullets[i].x+game.bullets[i].w
+									&&playerGameData[redTeam[j]].y+game.player.h>game.bullets[i].y
+									&&playerGameData[redTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+									{
+										game.bullets[i] = null;
+									}
 								}
 							}
 						}
 					}
-				}
-				else
-				{
-					for(var j = 0; j < blueTeam.length;j++)
+					else
 					{
-						if(playerGameData[blueTeam[j]]!=0&&game.bullets[i] != null)
+						for(var j = 0; j < blueTeam.length;j++)
 						{
-							if(playerGameData[blueTeam[j]].room==game.bullets[i].room)
+							if(playerGameData[blueTeam[j]]!=0&&game.bullets[i] != null)
 							{
-								if(playerGameData[blueTeam[j]].x+game.player.w>game.bullets[i].x
-								&&playerGameData[blueTeam[j]].x<game.bullets[i].x+game.bullets[i].w
-								&&playerGameData[blueTeam[j]].y+game.player.h>game.bullets[i].y
-								&&playerGameData[blueTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+								if(playerGameData[blueTeam[j]].room==game.bullets[i].room)
 								{
-									game.bullets[i] = null;
+									if(playerGameData[blueTeam[j]].x+game.player.w>game.bullets[i].x
+									&&playerGameData[blueTeam[j]].x<game.bullets[i].x+game.bullets[i].w
+									&&playerGameData[blueTeam[j]].y+game.player.h>game.bullets[i].y
+									&&playerGameData[blueTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+									{
+										game.bullets[i] = null;
+									}
 								}
 							}
 						}
@@ -588,47 +595,47 @@ Game.prototype.gameLoop = function ()
 				}
 			}
 		}
-	}
-	if(game.player.poisonTime>0)
-	{
-		game.player.poisonTime-=curTime.getTime()-time.getTime();
-		damage=(game.player.poisoned/game.player.poisonMaxTime)*Math.min((curTime.getTime()-time.getTime()),game.player.poisonTime);
-		game.player.health-=Math.max(damage,(damage/100)*game.player.health);
-		game.player.poisoned-=damage;
-	}
-	if(game.player.health<=0)
-	{
-		sound.stopSong(sound.songNumbers["enemy"]);
-		sound.stopSong(sound.songNumbers["walking"]);
-		sound.stopSong(sound.songNumbers["flag"]);
-		CLIENT.playerDied();
-		game.player.setPos(-32,-32);
-		game.player.dead=true;
-		game.player.respawnTimer=1000;
-		game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
-		if(main.playerTeam=="blue")
+		if(game.player.poisonTime>0)
 		{
-			game.player.room=0;
+			game.player.poisonTime-=curTime.getTime()-time.getTime();
+			damage=(game.player.poisoned/game.player.poisonMaxTime)*Math.min((curTime.getTime()-time.getTime()),game.player.poisonTime);
+			game.player.health-=Math.max(damage,(damage/100)*game.player.health);
+			game.player.poisoned-=damage;
 		}
-		if(main.playerTeam=="red")
+		if(game.player.health<=0)
 		{
-			game.player.room=1;
+			sound.stopSong(sound.songNumbers["enemy"]);
+			sound.stopSong(sound.songNumbers["walking"]);
+			sound.stopSong(sound.songNumbers["flag"]);
+			CLIENT.playerDied();
+			game.player.setPos(-32,-32);
+			game.player.dead=true;
+			game.player.respawnTimer=1000;
+			game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
+			if(main.playerTeam=="blue")
+			{
+				game.player.room=0;
+			}
+			if(main.playerTeam=="red")
+			{
+				game.player.room=1;
+			}
 		}
-	}
-	if(main.playerPerk==0)
-	{
-		game.player.health+=((main.playerMaxHealth*(main.playerHealthScaling/10))*(main.perkStrength[main.playerPerk]/100))*((curTime.getTime()-time.getTime())/1000);
-	}
-	if(game.player.health>(main.playerMaxHealth*(main.playerHealthScaling/10)))
-	{
-		game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
-	}
-	game.timeSinceLastUpdate+=curTime.getTime()-time.getTime();
-	if(game.timeSinceLastUpdate>1000/30)
-	{
-		game.timeSinceLastUpdate=0;
-		var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room,"frame":main.frame};
-		CLIENT.updatePlayer(msg);
+		if(main.playerPerk==0)
+		{
+			game.player.health+=((main.playerMaxHealth*(main.playerHealthScaling/10))*(main.perkStrength[main.playerPerk]/100))*((curTime.getTime()-time.getTime())/1000);
+		}
+		if(game.player.health>(main.playerMaxHealth*(main.playerHealthScaling/10)))
+		{
+			game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
+		}
+		game.timeSinceLastUpdate+=curTime.getTime()-time.getTime();
+		if(game.timeSinceLastUpdate>1000/30)
+		{
+			game.timeSinceLastUpdate=0;
+			var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room,"frame":main.frame};
+			CLIENT.updatePlayer(msg);
+		}
 	}
 	game.Draw();
 }
@@ -643,7 +650,7 @@ Game.prototype.onMouseMove = function(e)
 
 Game.prototype.onMouseClick = function(e)
 {
-	if(!game.player.dead)
+	if(!game.player.dead && game.state==game.PLAYING)
 	{
 		var offSetX = -game.player.x-(game.player.w/2)+(canvas.width/2);
 		var offSetY = -game.player.y-(game.player.h/2)+(canvas.height/2);
@@ -657,6 +664,13 @@ Game.prototype.onMouseClick = function(e)
 		inGamePos.y/=32;
 		inGamePos.y=Math.floor(inGamePos.y);
 		CLIENT.createDoor(inGamePos.x,inGamePos.y,game.player.room);
+	}
+	else
+	{
+		if(e.x>(canvas.width/2)-(270/2)&&e.x<(canvas.width/2)+(270/2)&&e.y>(canvas.height/2)-(77/2)&&e.y<(canvas.height/2)+(77/2))
+		{
+			main.gameOver();
+		}
 	}
 }
 
@@ -900,6 +914,14 @@ Game.prototype.Draw = function()
 	ctx.fillText("kill enemies", 700, 260);
 	ctx.fillText("keep your crystal safe", 700, 280);
 	//ctx.fillText("fps: "+game.fps, 700, 300);
+	if(game.state==game.VICTORY)
+	{
+		ctx.drawImage(images.victory,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
+	}
+	else if(game.state==game.DEFEAT)
+	{
+		ctx.drawImage(images.defeat,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
+	}
 	
 }
 

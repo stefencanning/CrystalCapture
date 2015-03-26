@@ -134,6 +134,11 @@ Images.prototype.BodyImages = function()
 
 Images.prototype.CrystalImages = function()
 {
+	images.victory=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.victory,"img/crystal/victory.png"];
+	images.defeat=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.defeat,"img/crystal/defeat.png"];
+	
 	images.crystal = [];
 	
 	strColour="red";

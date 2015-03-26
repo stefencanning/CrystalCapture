@@ -9,10 +9,10 @@ function Client()
 	console.log("creating client");
 	CLIENT = this;
 	console.log("assigned client");
-	var host='149.153.102.40';
+	//var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
-	//var host ='52.16.233.189';
+	var host ='52.17.85.187';
 	var port=8080;
 	//this.me;
 	
@@ -498,19 +498,14 @@ Client.prototype.handleMessage = function(evt)
 	{
 		if(main.mode==INGAME)
 		{
-			game.dealloc();
-			game = 0;
-			sound.stopSong(sound.songNumbers["walking"]);
-			sound.playSong(sound.songNumbers["menu"]);
-			for(var i = 0; i < matchmaking.gameList.length; i++)
+			if(msg.data.team==main.playerTeam)
 			{
-				matchmaking.gameList[i]=0;
+				game.state=game.VICTORY;
 			}
-			matchmaking.gameList = 0;
-			matchmaking.gameList = [];
-			matchmaking.hosting = false;
-			matchmaking.ingame = false;
-			main.mode=GAMESELECT;
+			else
+			{
+				game.state=game.DEFEAT;
+			}
 		}
 	}
 	else if(msg.type == "updatePlayer")

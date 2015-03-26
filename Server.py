@@ -31,19 +31,25 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		
  
 	def on_close(self):
-		for uniqueid,socket in playerConnections.items():
-			if socket == self:
-				s=playerSession[uniqueid]
-				if s:
-					if s.gameState == Session.WAITING_FOR_PLAYERS:
-						s.removePlayer(uniqueid)
-						for player in s.players:
-							messageHandler.getGamePlayers(player)
-					else:
-						success = playerSession[uniqueID].disconnectedPlayer(uniqueID)
-						if(success['success']):
-							for player in playerSession[uniqueID].players:
-								messageHandler.sendMessage(player,"flagDropped",success)
+		print ("WebSocket closed")
+		print ("from %s" %self.request.remote_ip)
+		try:
+			for uniqueid,socket in playerConnections.items():
+				if socket == self:
+					if uniqueid in playerSession:
+						s=playerSession[uniqueid]
+						if s.gameState == Session.WAITING_FOR_PLAYERS:
+							s.removePlayer(uniqueid)
+							for player in s.players:
+								messageHandler.getGamePlayers(player)
+						else:
+							success = playerSession[uniqueID].disconnectedPlayer(uniqueID)
+							if(success['success']):
+								for player in playerSession[uniqueID].players:
+									messageHandler.sendMessage(player,"flagDropped",success)
+		except:
+			print("no session")
+
 
 class MessageHandler:
 	def __init__(self):

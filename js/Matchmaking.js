@@ -86,6 +86,7 @@ Matchmaking.prototype.Draw = function()
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
 	ctx.fillStyle = rgb(0, 0, 0);
+	ctx.strokeStyle=rgb(0,0,255);
 	ctx.font="20px Lucida Console";
 	if(!matchmaking.ingame)
 	{

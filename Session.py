@@ -91,7 +91,7 @@ class Session:
 					connectData={"success":False}
 					roomCheckCounter = 0
 					while(connectData['success']==False and roomCheckCounter<20):
-						num = random.randint(10,len(self.rooms)-1)
+						num = random.randint(2,len(self.rooms)-1)
 						connectData = self.rooms[num].addDoor(0);
 						roomCheckCounter+=1
 					if(connectData['success']==True):
