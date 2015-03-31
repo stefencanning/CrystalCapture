@@ -14,6 +14,7 @@ Game.prototype.SetUp=function()
 Game.prototype.Initialise=function ()
 {
 	game.state=game.PLAYING;
+	game.gravePositions=[];
 	game.CreateStartRooms();
 	game.keys = {"w":false,
 	"a":false,
@@ -41,7 +42,6 @@ Game.prototype.Initialise=function ()
 	game.players=[];
 	game.bullets=[];
 	game.timeSinceLastUpdate=0;
-	game.gravePositions=[];
 	//game.fps=0;
 }
 Game.prototype.dealloc=function()
