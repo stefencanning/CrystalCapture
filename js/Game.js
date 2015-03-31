@@ -41,11 +41,12 @@ Game.prototype.Initialise=function ()
 	game.players=[];
 	game.bullets=[];
 	game.timeSinceLastUpdate=0;
+	game.gravePositions=[];
 	//game.fps=0;
 }
 Game.prototype.dealloc=function()
 {
-	for(var i = 0; i < game.rooms.length; i++)
+	for(var i = -1; i < game.rooms.length; i++)
 	{
 		game.rooms[i].dealloc();
 		game.rooms[i]=0;
@@ -66,7 +67,7 @@ Game.prototype.CreateStartRooms=function()
 	game.distBlue=-1;
 	game.distRed=-1;
 	game.rooms = [];
-	for(var i = 0; i < 2; i++)
+	for(var i = -1; i < 2; i++)
 	{
 		game.rooms[i] = new Room();
 		game.rooms[i].addWall(new Wall(0,0,i,1));
@@ -96,6 +97,7 @@ Game.prototype.CreateStartRooms=function()
 		game.rooms[i].addWall(new Wall(0,96,i,10));
 		game.rooms[i].addWall(new Wall(0,128,i,10));
 		game.rooms[i].addWall(new Wall(0,160,i,10));
+		game.gravePositions[i]=[];
 		CLIENT.calculateLocalDoors(96,96,i);
 	}
 	game.rooms[0].oriColor="blue";
@@ -124,6 +126,14 @@ Game.prototype.gameLoop = function ()
 			{
 				game.player.dead=false;
 				game.player.setPos(96,96);
+				if(main.playerTeam=="blue")
+				{
+					game.player.room=0;
+				}
+				if(main.playerTeam=="red")
+				{
+					game.player.room=1;
+				}
 			}
 		}
 		else
@@ -608,18 +618,11 @@ Game.prototype.gameLoop = function ()
 			sound.stopSong(sound.songNumbers["walking"]);
 			sound.stopSong(sound.songNumbers["flag"]);
 			CLIENT.playerDied();
-			game.player.setPos(-32,-32);
+			game.player.setPos(32+(Math.random()%96),32+(Math.random()%96));
 			game.player.dead=true;
 			game.player.respawnTimer=1000;
 			game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
-			if(main.playerTeam=="blue")
-			{
-				game.player.room=0;
-			}
-			if(main.playerTeam=="red")
-			{
-				game.player.room=1;
-			}
+			game.player.room=-1;
 		}
 		if(main.playerPerk==0)
 		{
@@ -667,7 +670,7 @@ Game.prototype.onMouseClick = function(e)
 	}
 	else
 	{
-		if(e.x>(canvas.width/2)-(270/2)&&e.x<(canvas.width/2)+(270/2)&&e.y>(canvas.height/2)-(77/2)&&e.y<(canvas.height/2)+(77/2))
+		if(e.x>(canvas.width/2)-(270/2)&&e.x<(canvas.width/2)+(270/2)&&e.y>(canvas.height/2)-(77/2)&&e.y<(canvas.height/2)+(77/2)&&game.state!=game.PLAYING)
 		{
 			main.gameOver();
 		}
@@ -749,6 +752,10 @@ Game.prototype.Draw = function()
 	var offSetY = Math.floor(-game.player.y-(game.player.h/2)+(canvas.height/2));
 	
 	game.rooms[game.player.room].drawFirst(offSetX,offSetY);
+	for(var i = 0; i < game.gravePositions[game.player.room].length; i++)
+	{
+		ctx.drawImage(images.grave,game.gravePositions[game.player.room][i][0]+offSetX,game.gravePositions[game.player.room][i][1]+offSetY);
+	}
 	if(game.player.room==game.redCapturePoint[2])
 	{
 		ctx.drawImage(images.crystal[0][1],game.redCapturePoint[0]+offSetX,game.redCapturePoint[1]+offSetY-32);
@@ -768,7 +775,14 @@ Game.prototype.Draw = function()
 					
 					ctx.fillStyle=rgb(0,0,0);
 					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x-1+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-11+offSetY),game.player.w+2,7);
-					ctx.fillStyle=rgb(0,0,255);	
+					if(main.playerTeam=="blue")
+					{
+						ctx.fillStyle=rgb(0,0,255);	
+					}
+					else
+					{
+						ctx.fillStyle=rgb(255,0,0);	
+					}
 					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-10+offSetY),game.player.w*(playerGameData[blueTeam[i]].health/(main.playerMaxHealth*(playerOutfit[blueTeam[i]].playerHealthScaling/10))),5);
 					
 					//ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,game.player.w,game.player.h);
@@ -809,7 +823,14 @@ Game.prototype.Draw = function()
 				{
 					ctx.fillStyle=rgb(0,0,0);
 					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x-1+offSetX),Math.ceil(playerGameData[redTeam[i]].y-11+offSetY),game.player.w+2,7);
-					ctx.fillStyle = rgb(255, 0, 0);
+					if(main.playerTeam=="red")
+					{
+						ctx.fillStyle=rgb(204,204,0);	
+					}
+					else
+					{
+						ctx.fillStyle=rgb(255,0,0);	
+					}
 					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y-10+offSetY),game.player.w*(playerGameData[redTeam[i]].health/(main.playerMaxHealth*(playerOutfit[redTeam[i]].playerHealthScaling/10))),5);
 					
 					//ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,game.player.w,game.player.h);
@@ -884,17 +905,17 @@ Game.prototype.Draw = function()
 	if(game.distRed!=-1)
 	{
 		ctx.fillStyle = rgb(255, 0, 0);
-		ctx.fillText("red crystal: "+game.distRed, 700, 80);
+		ctx.fillText("yellow crystal: "+game.distRed, 700, 80);
 	}
 	
-	ctx.fillStyle = rgb(255, 0, 0);
+	ctx.fillStyle = rgb(204,204,0);
 	ctx.fillText(game.redPoints+"/3", 760, 50);
 	if(game.redFlagCaptured)
 	{
 		ctx.drawImage(images.crystal[0][2],250,34);
 	}
 	
-	ctx.fillStyle = rgb(0, 0, 255);
+	ctx.fillStyle = rgb(0,0,255);
 	ctx.fillText(game.bluePoints+"/3", 200, 50);
 	if(game.blueFlagCaptured)
 	{

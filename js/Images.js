@@ -74,6 +74,8 @@ Images.prototype.WallsImages = function()
 	
 	images.doors[2]=new Image();
 	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[2],"img/walls/doorTop5.png"];
+	images.grave=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.grave,"img/walls/grave.png"];
 	/*
 	images.doors[2].src="img/walls/doorTop4.png";
 	while(!images.doors[2].complete){images.doors[2].src="img/walls/doorTop4.png";}
@@ -141,7 +143,7 @@ Images.prototype.CrystalImages = function()
 	
 	images.crystal = [];
 	
-	strColour="red";
+	strColour="yellow";
 	for(i=0;i<2;i++)
 	{
 		images.crystal[i]=[];

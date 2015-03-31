@@ -117,8 +117,8 @@ Matchmaking.prototype.Draw = function()
 		{
 			ctx.fillText(currentSession[blueTeam[i]], 22, 73+i*25);
 		}
-		ctx.fillStyle = rgb(255, 0, 0);
-		ctx.fillText("Red Team", 460, 48);
+		ctx.fillStyle = rgb(204,204,0);
+		ctx.fillText("Yellow Team", 460, 48);
 		for(var i = 0; i < redTeam.length;i++)
 		{
 			ctx.fillText(currentSession[redTeam[i]], 462, 73+i*25);

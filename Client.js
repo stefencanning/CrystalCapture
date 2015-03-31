@@ -512,6 +512,11 @@ Client.prototype.handleMessage = function(evt)
 	{
 		if(msg.data.uniqueID!=this.uniqueID)
 		{
+			if(playerGameData[msg.data.uniqueID].room!=-1&&msg.data.update.room==-1)
+			{
+				var len = game.gravePositions[playerGameData[msg.data.uniqueID].room].length;
+				game.gravePositions[playerGameData[msg.data.uniqueID].room][len]=[playerGameData[msg.data.uniqueID].x,playerGameData[msg.data.uniqueID].y];
+			}
 			playerGameData[msg.data.uniqueID] = msg.data.update;
 		}
 	}
@@ -666,6 +671,7 @@ Client.prototype.handleMessage = function(evt)
 			game.rooms[msg.data.room2].oriColorValue = msg.data.colorValue;
 			game.rooms[msg.data.room2].foundColor = msg.data.color;
 			game.rooms[msg.data.room2].foundColorValue = msg.data.colorValue;
+			game.gravePositions[msg.data.room2]=[];
 			for(var i = 0; i < msg.data.newRoom.length;i++)
 			{
 				var wall = new Wall(msg.data.newRoom[i][0]*32,msg.data.newRoom[i][1]*32,msg.data.room2,msg.data.newRoom[i][6]);
