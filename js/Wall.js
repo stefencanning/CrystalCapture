@@ -37,7 +37,14 @@ Wall.prototype.drawFirst = function(offSetX,offSetY)
 	}
 	else
 	{
-		ctx.drawImage(images.walls[15],this.x+offSetX,this.y+offSetY+16);
+		if(this.room==-1)
+		{
+			ctx.drawImage(images.wallCrack,this.x+offSetX,this.y+offSetY+16);
+		}
+		else
+		{
+			ctx.drawImage(images.wall,this.x+offSetX,this.y+offSetY+16);
+		}
 	}
 }
 

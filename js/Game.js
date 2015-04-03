@@ -67,9 +67,41 @@ Game.prototype.CreateStartRooms=function()
 	game.distBlue=-1;
 	game.distRed=-1;
 	game.rooms = [];
-	for(var i = -1; i < 2; i++)
+	
+	game.rooms[-1] = new Room(-1);
+	game.rooms[-1].addWall(new Wall(0,0,-1,16));
+	game.rooms[-1].addWall(new Wall(32,0,-1,19));
+	game.rooms[-1].addWall(new Wall(64,0,-1,19));
+	game.rooms[-1].addWall(new Wall(96,0,-1,19));
+	game.rooms[-1].addWall(new Wall(128,0,-1,19));
+	game.rooms[-1].addWall(new Wall(160,0,-1,19));
+	game.rooms[-1].addWall(new Wall(192,0,-1,15));
+	
+	game.rooms[-1].addWall(new Wall(0,192,-1,17));
+	game.rooms[-1].addWall(new Wall(32,192,-1,19));
+	game.rooms[-1].addWall(new Wall(64,192,-1,19));
+	game.rooms[-1].addWall(new Wall(96,192,-1,19));
+	game.rooms[-1].addWall(new Wall(128,192,-1,19));
+	game.rooms[-1].addWall(new Wall(160,192,-1,19));
+	game.rooms[-1].addWall(new Wall(192,192,-1,18));
+	
+	game.rooms[-1].addWall(new Wall(192,32,-1,20));
+	game.rooms[-1].addWall(new Wall(192,64,-1,20));
+	game.rooms[-1].addWall(new Wall(192,96,-1,20));
+	game.rooms[-1].addWall(new Wall(192,128,-1,20));
+	game.rooms[-1].addWall(new Wall(192,160,-1,20));
+	
+	game.rooms[-1].addWall(new Wall(0,32,-1,20));
+	game.rooms[-1].addWall(new Wall(0,64,-1,20));
+	game.rooms[-1].addWall(new Wall(0,96,-1,20));
+	game.rooms[-1].addWall(new Wall(0,128,-1,20));
+	game.rooms[-1].addWall(new Wall(0,160,-1,20));
+	game.gravePositions[-1]=[];
+	CLIENT.calculateLocalDoors(96,96,-1);
+		
+	for(var i = 0; i < 2; i++)
 	{
-		game.rooms[i] = new Room();
+		game.rooms[i] = new Room(i);
 		game.rooms[i].addWall(new Wall(0,0,i,1));
 		game.rooms[i].addWall(new Wall(32,0,i,9));
 		game.rooms[i].addWall(new Wall(64,0,i,9));
@@ -620,7 +652,7 @@ Game.prototype.gameLoop = function ()
 			CLIENT.playerDied();
 			game.player.setPos(32+(Math.random()%96),32+(Math.random()%96));
 			game.player.dead=true;
-			game.player.respawnTimer=1000;
+			game.player.respawnTimer=2000;
 			game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
 			game.player.room=-1;
 		}

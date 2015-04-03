@@ -29,7 +29,7 @@ Images.prototype.Initialise = function()
 Images.prototype.WallsImages = function()
 {
 	images.walls=[];
-	for(var i = 0; i < 15; i++)
+	for(var i = 0; i < 21; i++)
 	{
 		images.walls[i]=new Image();
 		images.imagesToLoad[images.imagesToLoad.length]=[images.walls[i],"img/walls/"+i+".png"];
@@ -39,10 +39,14 @@ Images.prototype.WallsImages = function()
 		images.currentCount+=1;
 		images.bar.style.width=((images.currentCount/images.totalCount)*100)+'%';*/
 	}
-	images.walls[15]=new Image();
-	images.imagesToLoad[images.imagesToLoad.length]=[images.walls[15],"img/walls/wall.png"];
-	images.walls[16]=new Image();
-	images.imagesToLoad[images.imagesToLoad.length]=[images.walls[16],"img/walls/floor.png"];
+	images.wall=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.wall,"img/walls/wall.png"];
+	images.wallCrack=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.wallCrack,"img/walls/wall2.png"];
+	images.floor=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.floor,"img/walls/floor.png"];
+	images.floorLava=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.floorLava,"img/walls/floorLava.png"];
 	/*
 	images.walls[15].src="img/walls/wall.png";
 	while(!images.walls[15].complete){images.walls[15].src="img/walls/wall.png";}
@@ -75,7 +79,7 @@ Images.prototype.WallsImages = function()
 	images.doors[2]=new Image();
 	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[2],"img/walls/doorTop5.png"];
 	images.grave=new Image();
-	images.imagesToLoad[images.imagesToLoad.length]=[images.grave,"img/walls/grave.png"];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.grave,"img/walls/mossGrave.png"];
 	/*
 	images.doors[2].src="img/walls/doorTop4.png";
 	while(!images.doors[2].complete){images.doors[2].src="img/walls/doorTop4.png";}

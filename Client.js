@@ -666,7 +666,7 @@ Client.prototype.handleMessage = function(evt)
 		}
 		else
 		{
-			game.rooms[msg.data.room2] = new Room();
+			game.rooms[msg.data.room2] = new Room(msg.data.room2);
 			game.rooms[msg.data.room2].oriColor = msg.data.color;
 			game.rooms[msg.data.room2].oriColorValue = msg.data.colorValue;
 			game.rooms[msg.data.room2].foundColor = msg.data.color;

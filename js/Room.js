@@ -1,5 +1,6 @@
-function Room()
+function Room(num)
 {
+	this.roomNum = num;
 	this.walls = [];
 	this.oriColor="";
 	this.oriColorValue=200;
@@ -34,7 +35,14 @@ Room.prototype.drawFirst = function(offSetX,offSetY)
 	}
 	for(var i = 0; i < this.floor.length;i++)
 	{
-		ctx.drawImage(images.walls[16],this.floor[i][0]+offSetX,this.floor[i][1]+offSetY);
+		if(this.roomNum==-1)
+		{
+			ctx.drawImage(images.floorLava,this.floor[i][0]+offSetX,this.floor[i][1]+offSetY);
+		}
+		else
+		{
+			ctx.drawImage(images.floor,this.floor[i][0]+offSetX,this.floor[i][1]+offSetY);
+		}
 	}
 }
 
