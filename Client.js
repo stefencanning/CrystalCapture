@@ -515,7 +515,7 @@ Client.prototype.handleMessage = function(evt)
 			if(playerGameData[msg.data.uniqueID].room!=-1&&msg.data.update.room==-1)
 			{
 				var len = game.gravePositions[playerGameData[msg.data.uniqueID].room].length;
-				game.gravePositions[playerGameData[msg.data.uniqueID].room][len]=[playerGameData[msg.data.uniqueID].x,playerGameData[msg.data.uniqueID].y];
+				game.gravePositions[playerGameData[msg.data.uniqueID].room][len]=[playerGameData[msg.data.uniqueID].x-6,playerGameData[msg.data.uniqueID].y-6];
 			}
 			playerGameData[msg.data.uniqueID] = msg.data.update;
 		}

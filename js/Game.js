@@ -646,11 +646,15 @@ Game.prototype.gameLoop = function ()
 		}
 		if(game.player.health<=0)
 		{
+			var len = game.gravePositions[game.player.room].length;
+			game.gravePositions[game.player.room][len]=[game.player.x-6,game.player.y-6];
 			sound.stopSong(sound.songNumbers["enemy"]);
 			sound.stopSong(sound.songNumbers["walking"]);
 			sound.stopSong(sound.songNumbers["flag"]);
 			CLIENT.playerDied();
-			game.player.setPos(32+(Math.random()%96),32+(Math.random()%96));
+			var x = Math.random()%96;
+			var y = Math.random()%96;
+			game.player.setPos(32+x,32+y);
 			game.player.dead=true;
 			game.player.respawnTimer=2000;
 			game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
@@ -936,7 +940,7 @@ Game.prototype.Draw = function()
 	}
 	if(game.distRed!=-1)
 	{
-		ctx.fillStyle = rgb(255, 0, 0);
+		ctx.fillStyle = rgb(204, 204, 0);
 		ctx.fillText("yellow crystal: "+game.distRed, 700, 80);
 	}
 	
