@@ -47,6 +47,7 @@ function Client()
 	
 	sound = new Sound();
 	sound.Initialise();
+	sound.loadSounds();
 	/*
 	addEventListener("click", function(e)
 	{
@@ -492,6 +493,7 @@ Client.prototype.handleMessage = function(evt)
 			sound.stopSong(sound.songNumbers["menu"]);
 			sound.playSong(sound.songNumbers["walking"]);
 			main.mode=INGAME;
+			sound.playVoice(sound.voiceNumbers["start"]);
 		}
 	}
 	else if(msg.type == "gameOver")
@@ -500,10 +502,12 @@ Client.prototype.handleMessage = function(evt)
 		{
 			if(msg.data.team==main.playerTeam)
 			{
+				sound.playVoice(sound.voiceNumbers["victorious"]);
 				game.state=game.VICTORY;
 			}
 			else
 			{
+				sound.playVoice(sound.voiceNumbers["defeated"]);
 				game.state=game.DEFEAT;
 			}
 		}
@@ -561,6 +565,7 @@ Client.prototype.handleMessage = function(evt)
 		}
 		if(msg.data.team == "red")
 		{
+			sound.playVoice(sound.voiceNumbers["bDropped"]);
 			game.blueFlagCaptured = false;
 			game.blueFlag.room=msg.data.room;
 			game.blueFlag.x=msg.data.x;
@@ -568,6 +573,7 @@ Client.prototype.handleMessage = function(evt)
 		}
 		if(msg.data.team == "blue")
 		{
+			sound.playVoice(sound.voiceNumbers["yDropped"]);
 			game.redFlagCaptured = false;
 			game.redFlag.room=msg.data.room;
 			game.redFlag.x=msg.data.x;
@@ -582,10 +588,12 @@ Client.prototype.handleMessage = function(evt)
 		}
 		if(msg.data.team == "red")
 		{
+			sound.playVoice(sound.voiceNumbers["bStolen"]);
 			game.blueFlagCaptured = true;
 		}
 		if(msg.data.team == "blue")
 		{
+			sound.playVoice(sound.voiceNumbers["yStolen"]);
 			game.redFlagCaptured = true;
 		}
 	}
@@ -594,6 +602,7 @@ Client.prototype.handleMessage = function(evt)
 		game.player.gotFlag = 0;
 		if(msg.data.team == "red")
 		{
+			sound.playVoice(sound.voiceNumbers["bCaptured"]);
 			game.redPoints+=1;
 			game.blueFlagCaptured = false;
 			game.redFlagCaptured = false;
@@ -606,6 +615,7 @@ Client.prototype.handleMessage = function(evt)
 		}
 		if(msg.data.team == "blue")
 		{
+			sound.playVoice(sound.voiceNumbers["yCaptured"]);
 			game.bluePoints+=1;
 			game.blueFlagCaptured = false;
 			game.redFlagCaptured = false;
@@ -625,12 +635,14 @@ Client.prototype.handleMessage = function(evt)
 		}*/
 		if(msg.data.team == "red")
 		{
+			sound.playVoice(sound.voiceNumbers["yReturned"]);
 			game.redFlag.x=game.redCapturePoint[0];
 			game.redFlag.y=game.redCapturePoint[1];
 			game.redFlag.room=game.redCapturePoint[2];
 		}
 		if(msg.data.team == "blue")
 		{
+			sound.playVoice(sound.voiceNumbers["bReturned"]);
 			game.blueFlag.x=game.blueCapturePoint[0];
 			game.blueFlag.y=game.blueCapturePoint[1];
 			game.blueFlag.room=game.blueCapturePoint[2];

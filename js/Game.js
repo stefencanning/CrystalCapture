@@ -646,6 +646,7 @@ Game.prototype.gameLoop = function ()
 		}
 		if(game.player.health<=0)
 		{
+			sound.playVoice(sound.voiceNumbers["slain"]);
 			var len = game.gravePositions[game.player.room].length;
 			game.gravePositions[game.player.room][len]=[game.player.x-6,game.player.y-6];
 			sound.stopSong(sound.songNumbers["enemy"]);

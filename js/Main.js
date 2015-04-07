@@ -1,5 +1,5 @@
-var game, menu, ctx, matchmaking, player, charCust;//,images;
-var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3;
+var game,tutorial, menu, ctx, matchmaking, player, charCust;//,images;
+var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3,TUTORIAL=4;
 var currentSession=[];
 var redTeam = [];
 var blueTeam = [];
@@ -100,8 +100,16 @@ Main.prototype.initCanvas = function()
 
 Main.prototype.gameOver = function()
 {
-	game.dealloc();
-	game = 0;
+	if(game!=0)
+	{
+		game.dealloc();
+		game = 0;
+	}
+	else if(tutorial!=0)
+	{
+		tutorial.dealloc();
+		tutorial = 0;
+	}
 	sound.stopSong(sound.songNumbers["walking"]);
 	sound.playSong(sound.songNumbers["menu"]);
 	for(var i = 0; i < matchmaking.gameList.length; i++)
@@ -124,6 +132,7 @@ Main.prototype.mainLoop = function ()
 		main.frameTime=0;
 		main.frame=(main.frame+1)%4;
 	}
+	
 	if(main.mode == GAMESELECT)
 	{
 		matchmaking.Loop();
@@ -140,6 +149,10 @@ Main.prototype.mainLoop = function ()
 	{
 		main.frameTime+=curTime-time;
 		charCust.Loop();
+	}
+	else if(main.mode == TUTORIAL)
+	{
+		tutorial.gameLoop();
 	}
 	sound.update((curTime.getTime()-time.getTime())/1000);
 	time = new Date();
@@ -163,6 +176,10 @@ function onMouseMove(e)
 	{
 		menu.onMouseMove(mousePos);
 	}
+	else if(main.mode == TUTORIAL)
+	{
+		tutorial.onMouseMove(mousePos);
+	}
 }
 
 function onDoubleClick(e)
@@ -181,6 +198,10 @@ function onDoubleClick(e)
 	else if(main.mode == MENU)
 	{
 		menu.onDoubleClick(clickPos);
+	}
+	else if(main.mode == TUTORIAL)
+	{
+		tutorial.onDoubleClick(clickPos);
 	}
 }
 
@@ -205,6 +226,10 @@ function onMouseClick(e)
 	{
 		charCust.onMouseClick(clickPos);
 	}
+	else if(main.mode == TUTORIAL)
+	{
+		tutorial.onMouseClick(clickPos);
+	}
 }
 
 function onContextMenu(e)
@@ -225,6 +250,10 @@ function onContextMenu(e)
 	{
 		menu.onContextMenu(clickPos);
 	}
+	else if(main.mode == TUTORIAL)
+	{
+		tutorial.onContextMenu(clickPos);
+	}
 	return false;
 }
 
@@ -242,6 +271,10 @@ function onKeyPress(e)
 	{
 		menu.onKeyPress(e);
 	}
+	else if(main.mode == TUTORIAL)
+	{
+		tutorial.onKeyPress(e);
+	}
 }
 function onKeyUp(e)
 {
@@ -256,5 +289,9 @@ function onKeyUp(e)
 	else if(main.mode == MENU)
 	{
 		menu.onKeyUp(e);
+	}
+	else if(main.mode == TUTORIAL)
+	{
+		tutorial.onKeyUp(e);
 	}
 }

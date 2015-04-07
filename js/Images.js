@@ -23,7 +23,6 @@ Images.prototype.Initialise = function()
 	images.CrystalImages();
 	images.BeardImages();
 	images.WallsImages();
-	images.loadImages();
 }
 
 Images.prototype.WallsImages = function()
@@ -241,7 +240,7 @@ Images.prototype.ClothesImages = function()
 
 Images.prototype.loadImages = function()
 {
-	images.bar.style.width=((images.currentIndex/images.imagesToLoad.length)*100)+'%';
+	images.bar.style.width=(((sound.currentIndex+images.currentIndex)/(sound.soundsToLoad.length+images.imagesToLoad.length))*100)+'%';
 	if (images.imagesToLoad.length == 0 || images.imagesToLoad.length == images.currentIndex)
 	{
 		images.bar.style.backgroundColor="green";
