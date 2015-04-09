@@ -12,7 +12,7 @@ function Client()
 	//var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
-	var host ='52.17.62.219';
+	var host ='52.16.138.50';
 	var port=8080;
 	//this.me;
 	
@@ -710,6 +710,9 @@ Client.prototype.handleMessage = function(evt)
 		}
 		door1.pair=door2;
 		door2.pair=door1;
+		CLIENT.connectingDoors(msg.data.room1);
+		CLIENT.connectingDoors(msg.data.room2);
+		/*
 		var doors1 = CLIENT.calculateLocalDoors(msg.data.mat2X*32,msg.data.mat2Y*32,msg.data.room2);
 		var doors2 = CLIENT.calculateLocalDoors(msg.data.mat1X*32,msg.data.mat1Y*32,msg.data.room1);
 		for(var i = 0; i < doors1.length; i++)
@@ -744,6 +747,7 @@ Client.prototype.handleMessage = function(evt)
 				}
 			}
 		}
+		*/
 	}
 	else
 	{
@@ -752,4 +756,27 @@ Client.prototype.handleMessage = function(evt)
 	console.log("msg: "+ msg);
 	}
 
+}
+
+Client.prototype.connectingDoors = function(room)
+{
+	for(var wallNum =0; wallNum < game.rooms[room].walls.length; wallNum++)
+	{
+		if(game.rooms[room].walls[wallNum].door == "true")
+		{
+			var pair = game.rooms[room].walls[wallNum].pair;
+			var doors = CLIENT.calculateLocalDoors(pair.connectsTo[1],pair.connectsTo[2],pair.connectsTo[0]);
+			for(var i = 0; i < doors.length; i++)
+			{
+				if(doors[i]!=pair)
+				{
+					if(!pair.connectedDoorsSet[[doors[i].x,doors[i].y,doors[i].room]])
+					{
+						pair.connectedDoors[pair.connectedDoors.length]=doors[i];
+						pair.connectedDoorsSet[[doors[i].x,doors[i].y,doors[i].room]]=true;
+					}
+				}
+			}
+		}
+	}
 }
