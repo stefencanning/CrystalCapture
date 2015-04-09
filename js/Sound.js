@@ -140,6 +140,7 @@ Sound.prototype.update = function(timeElapsed)
 	}
 }
 
+
 Sound.prototype.loadSounds = function()
 {
 	images.bar.style.width=(((sound.currentIndex+images.currentIndex)/(sound.soundsToLoad.length+images.imagesToLoad.length))*100)+'%';
@@ -152,14 +153,6 @@ Sound.prototype.loadSounds = function()
 	currentsound.oncanplaythrough = function(e)
 	{
 		sound.currentIndex+=1;
-		sound.loadSounds();
-	}
-	currentsound.onstalled = function(e)
-	{
-		sound.loadSounds();
-	}
-	currentsound.onsuspend = function(e)
-	{
 		sound.loadSounds();
 	}
 	currentsound.src=sound.soundsToLoad[sound.currentIndex][1];
