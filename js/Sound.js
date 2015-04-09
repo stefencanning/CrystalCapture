@@ -73,7 +73,7 @@ Sound.prototype.playVoice = function(voiceNum)
 		{
 			sound.voices[voiceNum].loop = false;
 		}
-		sound.voices[voiceNum].volume=0.8;
+		sound.voices[voiceNum].volume=1;
 		sound.voices[voiceNum].play();
 	}
 }
@@ -122,9 +122,9 @@ Sound.prototype.update = function(timeElapsed)
 		if(sound.songState[i]=="starting")
 		{
 			sound.songs[i].volume=Math.min(sound.songs[i].volume+1*timeElapsed/5,1);
-			if(sound.songs[i].volume>=0.8)
+			if(sound.songs[i].volume>=0.6)
 			{
-				sound.songs[i].volume=0.8;
+				sound.songs[i].volume=0.6;
 				sound.songState[i]="playing";
 			}
 		}

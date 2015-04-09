@@ -709,6 +709,9 @@ Game.prototype.onMouseClick = function(e)
 	{
 		if(e.x>(canvas.width/2)-(270/2)&&e.x<(canvas.width/2)+(270/2)&&e.y>(canvas.height/2)-(77/2)&&e.y<(canvas.height/2)+(77/2)&&game.state!=game.PLAYING)
 		{
+			sound.stopSong(sound.songNumbers["enemy"]);
+			sound.stopSong(sound.songNumbers["walking"]);
+			sound.stopSong(sound.songNumbers["flag"]);
 			main.gameOver();
 		}
 	}

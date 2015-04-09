@@ -764,11 +764,12 @@ Client.prototype.connectingDoors = function(room)
 	{
 		if(game.rooms[room].walls[wallNum].door == "true")
 		{
-			var pair = game.rooms[room].walls[wallNum].pair;
+			var door = game.rooms[room].walls[wallNum];
+			var pair = door.pair;
 			var doors = CLIENT.calculateLocalDoors(pair.connectsTo[1],pair.connectsTo[2],pair.connectsTo[0]);
 			for(var i = 0; i < doors.length; i++)
 			{
-				if(doors[i]!=pair)
+				if(doors[i]!=pair&&doors[i]!=door)
 				{
 					if(!pair.connectedDoorsSet[[doors[i].x,doors[i].y,doors[i].room]])
 					{
