@@ -149,7 +149,7 @@ Sound.prototype.loadSounds = function()
 		return false;
 	}
 	currentsound = sound.soundsToLoad[sound.currentIndex][0];
-	currentsound.onloadeddata = function(e)
+	currentsound.oncanplaythrough = function(e)
 	{
 		sound.currentIndex+=1;
 		sound.loadSounds();
