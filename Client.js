@@ -12,7 +12,7 @@ function Client()
 	//var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
-	var host ='52.16.138.50';
+	var host ='52.16.2.15';
 	var port=8080;
 	//this.me;
 	
@@ -769,7 +769,7 @@ Client.prototype.connectingDoors = function(room)
 			var doors = CLIENT.calculateLocalDoors(pair.connectsTo[1],pair.connectsTo[2],pair.connectsTo[0]);
 			for(var i = 0; i < doors.length; i++)
 			{
-				if(doors[i]!=pair&&doors[i]!=door)
+				if(doors[i]!=pair)
 				{
 					if(!pair.connectedDoorsSet[[doors[i].x,doors[i].y,doors[i].room]])
 					{

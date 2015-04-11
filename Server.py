@@ -1,4 +1,7 @@
 from tornado import websocket, web, ioloop, httpserver
+import sys
+import os
+import base64
 import tornado
 import ast #to convert unicode type to dict type
 from Session import Session
@@ -53,6 +56,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 class MessageHandler:
 	def __init__(self):
+		self.imgNum=0
 		pass
 
 	def handleIncomingMsg(self, data, socket):
@@ -111,6 +115,23 @@ class MessageHandler:
 			self.playerDied(data)
 		elif type == "flagReturned":
 			self.flagReturned(data)
+		elif type == "screenShot":
+			string = data['data']
+			th = open("textData.txt",'w')
+			th.write(string)
+			th.close()
+			b64file = open("textData.txt", 'rb').read()
+			imgData = base64.b64decode(b64file)
+			fname = "images/imageToSave"+str(self.imgNum)
+			fext = '.png'
+			
+			imgFile = open(fname + fext, 'wb')
+			imgFile.write(imgData)
+			imgFile.close()
+			#fh = open("imageToSave"+str(self.imgNum)+".png", "wb")
+			#fh.write(base64.b64decode(string))
+			#fh.close()
+			self.imgNum+=1
 		else:
 			msg = 'Error reading game request. Please make sure message type is either join, updateState, or...'
 			message={'type':'error', "data":msg}

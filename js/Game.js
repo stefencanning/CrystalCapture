@@ -42,6 +42,8 @@ Game.prototype.Initialise=function ()
 	game.players=[];
 	game.bullets=[];
 	game.timeSinceLastUpdate=0;
+	game.imageSave=0;
+	game.imgNum=0;
 	//game.fps=0;
 }
 Game.prototype.dealloc=function()
@@ -374,7 +376,7 @@ Game.prototype.gameLoop = function ()
 					for(var i = 0; i < doorsPlayer.length; i++)
 					{
 						doorsPlayer[i].redPath = false;
-						doorsPlayer[i].leadingDoor=null;
+						doorsPlayer[i].leadingDoor=-1;
 						queue.enqueue(doorsPlayer[i]);
 						set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
 					}
@@ -406,7 +408,7 @@ Game.prototype.gameLoop = function ()
 									game.distRed=0;
 									doors[i].redPath=true;
 									var pathDoor = doors[i];
-									while(pathDoor.leadingDoor!=null)
+									while(pathDoor.leadingDoor!=-1)
 									{
 										game.distRed+=1;
 										pathDoor.leadingDoor.redPath = true;
@@ -653,8 +655,8 @@ Game.prototype.gameLoop = function ()
 			sound.stopSong(sound.songNumbers["walking"]);
 			sound.stopSong(sound.songNumbers["flag"]);
 			CLIENT.playerDied();
-			var x = Math.random()%96;
-			var y = Math.random()%96;
+			var x = (Math.random()*1000)%96;
+			var y = (Math.random()*1000)%96;
 			game.player.setPos(32+x,32+y);
 			game.player.dead=true;
 			game.player.respawnTimer=2000;
@@ -676,8 +678,31 @@ Game.prototype.gameLoop = function ()
 			var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room,"frame":main.frame};
 			CLIENT.updatePlayer(msg);
 		}
+		game.imageSave+=curTime.getTime()-time.getTime();
+		if(game.imageSave>=5000)
+		{
+			//game.dlCanvas();
+			game.imageSave=0;
+			
+			var dataURL = canvas.toDataURL("image/png");
+			dataURL = dataURL.replace(/^data:image\/png;base64,/, "");
+			console.log(dataURL);
+			var messageObject = {"type":"screenShot","data":dataURL};
+			var message = JSON.stringify(messageObject);
+			CLIENT.SendMessage(message);
+			game.imageSave=0;
+		}
 	}
 	game.Draw();
+}
+Game.prototype.dlCanvas = function()
+{
+    var dt = canvas.toDataURL('image/png');
+	var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+
+	window.location.href=dt.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+    //this.href = dt.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
 }
 
 Game.prototype.onDoubleClick = function(e)
@@ -961,7 +986,7 @@ Game.prototype.Draw = function()
 	{
 		ctx.drawImage(images.crystal[1][2],710,34);
 	}
-	
+	/*
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="16px Lucida Console";
 	ctx.fillText("hints:", 700, 100);
@@ -975,6 +1000,7 @@ Game.prototype.Draw = function()
 	ctx.fillText("kill enemies", 700, 260);
 	ctx.fillText("keep your crystal safe", 700, 280);
 	//ctx.fillText("fps: "+game.fps, 700, 300);
+	*/
 	if(game.state==game.VICTORY)
 	{
 		ctx.drawImage(images.victory,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
@@ -984,6 +1010,9 @@ Game.prototype.Draw = function()
 		ctx.drawImage(images.defeat,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
 	}
 	
+	ctx.lineWidth=2;
+	ctx.strokeStyle=rgb(0,0,0);
+	ctx.strokeRect(0,0,canvas.width, canvas.height);
 }
 
 

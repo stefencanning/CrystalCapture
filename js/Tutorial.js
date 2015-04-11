@@ -701,8 +701,8 @@ Tutorial.prototype.gameLoop = function ()
 					tutorial.redFlag.y=tutorial.player.y;
 				}
 			}
-			var x = Math.random()%96;
-			var y = Math.random()%96;
+			var x = (Math.random()*1000)%96;
+			var y = (Math.random()*1000)%96;
 			tutorial.player.setPos(32+x,32+y);
 			tutorial.player.dead=true;
 			tutorial.player.respawnTimer=2000;
