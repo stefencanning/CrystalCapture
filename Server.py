@@ -56,7 +56,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 class MessageHandler:
 	def __init__(self):
-		self.imgNum=0
 		pass
 
 	def handleIncomingMsg(self, data, socket):
@@ -117,21 +116,9 @@ class MessageHandler:
 			self.flagReturned(data)
 		elif type == "screenShot":
 			string = data['data']
-			th = open("textData.txt",'w')
+			th = open(str(playerSession[data['uniqueID']].hostID)+".txt",'a')
 			th.write(string)
 			th.close()
-			b64file = open("textData.txt", 'rb').read()
-			imgData = base64.b64decode(b64file)
-			fname = "images/imageToSave"+str(self.imgNum)
-			fext = '.png'
-			
-			imgFile = open(fname + fext, 'wb')
-			imgFile.write(imgData)
-			imgFile.close()
-			#fh = open("imageToSave"+str(self.imgNum)+".png", "wb")
-			#fh.write(base64.b64decode(string))
-			#fh.close()
-			self.imgNum+=1
 		else:
 			msg = 'Error reading game request. Please make sure message type is either join, updateState, or...'
 			message={'type':'error', "data":msg}
@@ -183,10 +170,26 @@ class MessageHandler:
 			if(playerSession[uniqueID].score[0]==3):
 				for player in playerSession[uniqueID].players:
 					self.sendMessage(player,"gameOver",{"team":"blue"})
+				self.saveImages(uniqueID)
 			if(playerSession[uniqueID].score[1]==3):
 				for player in playerSession[uniqueID].players:
 					self.sendMessage(player,"gameOver",{"team":"red"})
-				
+				self.saveImages(uniqueID)
+	
+	def saveImages(self,uniqueID):
+		#b64file = open(str(playerSession[data['uniqueID']].hostID)+".txt", 'rb').read()
+		gameHost = str(playerSession[data['uniqueID']].hostID)
+		file = open(gameHost+".txt", 'rb')
+		imgNum=0
+		for line in file:
+			imgData = base64.b64decode(line)
+			fname = "images/"+gameHost+str(self.imgNum)
+			fext = '.png'
+			
+			imgFile = open(fname + fext, 'wb')
+			imgFile.write(imgData)
+			imgFile.close()
+			imgNum+=1
 				
 	def getWaitingGames(self,uniqueID):
 		sessionList = list()
@@ -228,6 +231,9 @@ class MessageHandler:
 			s.playerOutfits[uniqueID]=outfit
 			self.sendMessage(uniqueID,"joinedGame",uniqueID)
 			playerSession[uniqueID] = s
+			th = open(str(playerSession[uniqueID].hostID)+".txt",'w')
+			th.write("")
+			th.close()
 			self.joinedGame(uniqueID)
 			self.getGamePlayers(uniqueID)
 		

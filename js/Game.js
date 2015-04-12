@@ -160,6 +160,7 @@ Game.prototype.gameLoop = function ()
 			{
 				game.player.dead=false;
 				game.player.setPos(96,96);
+				game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
 				if(main.playerTeam=="blue")
 				{
 					game.player.room=0;
@@ -662,6 +663,8 @@ Game.prototype.gameLoop = function ()
 			game.player.respawnTimer=2000;
 			game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
 			game.player.room=-1;
+			game.player.poisonTime=0
+			game.player.poisoned=0
 		}
 		if(main.playerPerk==0)
 		{
@@ -678,20 +681,20 @@ Game.prototype.gameLoop = function ()
 			var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room,"frame":main.frame};
 			CLIENT.updatePlayer(msg);
 		}
-		game.imageSave+=curTime.getTime()-time.getTime();
-		if(game.imageSave>=5000)
-		{
-			//game.dlCanvas();
-			game.imageSave=0;
-			
-			var dataURL = canvas.toDataURL("image/png");
-			dataURL = dataURL.replace(/^data:image\/png;base64,/, "");
-			console.log(dataURL);
-			var messageObject = {"type":"screenShot","data":dataURL};
-			var message = JSON.stringify(messageObject);
-			CLIENT.SendMessage(message);
-			game.imageSave=0;
-		}
+	}
+	game.imageSave+=curTime.getTime()-time.getTime();
+	if(game.imageSave>=5000)
+	{
+		//game.dlCanvas();
+		game.imageSave=0;
+		
+		var dataURL = canvas.toDataURL("image/png");
+		dataURL = dataURL.replace(/^data:image\/png;base64,/, "");
+		console.log(dataURL);
+		var messageObject = {"type":"screenShot","data":dataURL,"uniqueID":CLIENT.uniqueID};
+		var message = JSON.stringify(messageObject);
+		CLIENT.SendMessage(message);
+		game.imageSave=0;
 	}
 	game.Draw();
 }
