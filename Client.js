@@ -12,7 +12,7 @@ function Client()
 	//var host='149.153.102.40';
 	//var host='192.168.0.18';
 	//var host='46.7.218.244';
-	var host ='52.16.2.15';
+	var host ='52.17.64.113';
 	var port=8080;
 	//this.me;
 	
@@ -59,7 +59,43 @@ function Client()
 		}
 	}, false);
 	*/
+	(function()
+	{
+		var hidden = "hidden";
 
+		// Standards:
+		if (hidden in document)
+			document.addEventListener("visibilitychange", onchange);
+		else if ((hidden = "mozHidden") in document)
+			document.addEventListener("mozvisibilitychange", onchange);
+		else if ((hidden = "webkitHidden") in document)
+			document.addEventListener("webkitvisibilitychange", onchange);
+		else if ((hidden = "msHidden") in document)
+			document.addEventListener("msvisibilitychange", onchange);
+		// IE 9 and lower:
+		if ("onfocusin" in document)
+			document.onfocusin = document.onfocusout = onchange;
+		// All others:
+		window.onpageshow = window.onpagehide= window.onfocus = window.onblur = onchange;
+
+		function onchange (evt)
+		{
+			var v = "visible", h = "hidden",
+				evtMap = {
+					focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
+				};
+
+			evt = evt || window.event;
+			if (evt.type in evtMap)
+				document.body.className = evtMap[evt.type];
+			else
+				document.body.className = this[hidden] ? "hidden" : "visible";
+		}
+
+		// set the initial state (but only if browser supports the Page Visibility API)
+		if( document[hidden] !== undefined )
+			onchange({type: document[hidden] ? "blur" : "focus"});
+	})();
 }
 Client.prototype.connectToServer = function(host, port)
 {
@@ -72,6 +108,8 @@ Client.prototype.connectToServer = function(host, port)
  
     CLIENT.ws.onopen = function(evt) { console.log('open connection');};
 }
+
+
 
 function ajaxGet(theURL)
 {

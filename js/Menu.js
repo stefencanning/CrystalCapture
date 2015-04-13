@@ -5,9 +5,10 @@ function Menu()
 Menu.prototype.Initialise = function()
 {
 	menu.options =[];
-	menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Matchmaking",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();}];
+	var center = canvas.width/2;
+	menu.options[menu.options.length]=[center-((("Matchmaking").length/2)*11),5+(menu.options.length*25),"Matchmaking",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();}];
 	//menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Character Customisation",function () { charCust= new CharCust();charCust.Initialise();main.mode=CHARCUST;}];
-	menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Quit",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
+	menu.options[menu.options.length]=[center-((("Quit").length/2)*11),5+(menu.options.length*25),"Quit",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
 }
 
 Menu.prototype.Loop = function () 
@@ -20,9 +21,8 @@ Menu.prototype.Draw = function()
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
 	ctx.fillStyle = rgb(0, 0, 0);
-	ctx.font="20px Lucida Console";
+	ctx.font="bold 20px Courier";
 	ctx.strokeStyle=rgb(0,0,255);
-	
 	for(var i = 0; i < menu.options.length;i++)
 	{
 		var temp = menu.options[i];

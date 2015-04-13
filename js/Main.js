@@ -13,6 +13,7 @@ var time=0;
 function Main()
 {
 	main=this;
+	main.initCanvas();
 	main.playerTeam="";
 	
 	//player look
@@ -58,7 +59,6 @@ function Main()
 	menu.Initialise();*/
 	//matchmaking= new Matchmaking();	
 	//matchmaking.Initialise();
-	main.initCanvas();
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 	
 	
@@ -74,9 +74,15 @@ function Main()
 Main.prototype.initCanvas = function()
 {
 	canvas = document.createElement('canvas'); 
+	div = document.createElement('div');
 	canvas.onContextMenu="return false";
+	canvas.style.marginLeft = "auto";
+	canvas.style.marginRight = "auto";
+	div.style.textAlign="center";
 	ctx = canvas.getContext('2d');	
-	document.body.appendChild(canvas);
+	document.body.appendChild(div);
+	div.appendChild(canvas);
+	//document.body.appendChild(canvas);
 	//set canvas to size of the screen.
 	canvas.width = 960; 
 	canvas.height = 540;

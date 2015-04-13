@@ -149,6 +149,14 @@ Game.prototype.initCanvas=function ()
 
 Game.prototype.gameLoop = function () 
 {
+	if(document.body.className=="hidden")
+	{
+		game.keys["w"] = false;
+		game.keys["s"] = false;
+		game.keys["a"] = false;
+		game.keys["d"] = false;
+		game.keys["space"] = false;
+	}
 	var curTime=new Date();
 	if(game.state==game.PLAYING)
 	{
@@ -893,7 +901,7 @@ Game.prototype.Draw = function()
 					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x-1+offSetX),Math.ceil(playerGameData[redTeam[i]].y-11+offSetY),game.player.w+2,7);
 					if(main.playerTeam=="red")
 					{
-						ctx.fillStyle=rgb(204,204,0);	
+						ctx.fillStyle=rgb(255,165,0);	
 					}
 					else
 					{
@@ -964,7 +972,7 @@ Game.prototype.Draw = function()
 	
 	
 	ctx.fillStyle = rgb(0, 0, 0);
-	ctx.font="20px Lucida Console";
+	ctx.font="bold 20px Courier";
 	if(game.distBlue!=-1)
 	{
 		ctx.fillStyle = rgb(0, 0, 255);
@@ -972,11 +980,11 @@ Game.prototype.Draw = function()
 	}
 	if(game.distRed!=-1)
 	{
-		ctx.fillStyle = rgb(204, 204, 0);
+		ctx.fillStyle = rgb(255,165,0);
 		ctx.fillText("yellow crystal: "+game.distRed, 700, 80);
 	}
 	
-	ctx.fillStyle = rgb(204,204,0);
+	ctx.fillStyle = rgb(255,165,0);
 	ctx.fillText(game.redPoints+"/3", 760, 50);
 	if(game.redFlagCaptured)
 	{

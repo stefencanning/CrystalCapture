@@ -12,11 +12,15 @@ Images.prototype.Initialise = function()
 	images.currentIndex=0;
 	images.border = document.createElement('div'); 
 	images.border.id="progress";
+	images.border.style.textAlign="center";
+	images.border.style.marginLeft="auto";
+	images.border.style.marginRight="auto";
 	images.bar = document.createElement('div'); 
 	images.bar.id="bar";
 	images.bar.style.width=("0%");
+	images.bar.style.textAlign="center";
 	images.border.appendChild(images.bar);
-	document.body.appendChild(images.border);
+	document.getElementById('div').appendChild(images.border);
 	images.BodyImages();
 	images.HairImages();
 	images.ClothesImages();
@@ -244,17 +248,17 @@ Images.prototype.loadImages = function()
 	if (images.imagesToLoad.length == 0 || images.imagesToLoad.length == images.currentIndex)
 	{
 		images.bar.style.backgroundColor="green";
-		document.body.removeChild(images.border);
+		document.getElementById('div').removeChild(images.border);
 		p1Button = document.createElement('input');
 		p1Button.type="button";
 		p1Button.id="button";
 		p1Button.value="Submit";
+		document.getElementById('div').appendChild(document.createElement('br'));
 		p1Button.addEventListener('click', function(){ 
 			if(document.getElementById('firstname').value!="")
 			{
 				this.style.background+='#00FF00';
 				CLIENT.connect(document.getElementById('firstname').value);
-				document.body.appendChild(document.createElement('br'));
 				main = new Main();
 				//ajaxGet("http://54.77.161.217:8000/getUsers");
 				sound.playSong(sound.songNumbers["menu"]);
@@ -266,7 +270,7 @@ Images.prototype.loadImages = function()
 				//document.getElementById('button').value="sags";
 			}
 		}, false);
-		document.body.appendChild(p1Button);
+		document.getElementById('div').appendChild(p1Button);
 		return false;
 	}
 	// your top code

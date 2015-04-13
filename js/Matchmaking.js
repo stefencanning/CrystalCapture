@@ -22,12 +22,12 @@ Matchmaking.prototype.Loop = function ()
 
 Matchmaking.prototype.onDoubleClick = function(e)
 {
+	var center = canvas.width/2;
 	if(!matchmaking.ingame)
 	{
-		var xPos=20,yPos,width,height=20;
+		var xPos=center-200,yPos,width=400,height=20;
 		for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
-			width=10+(matchmaking.gameList[i].hostName.toString().length*12+5)+(matchmaking.gameList[i].count.toString().length*12+5)
 			yPos=30+i*25;
 			if(e.x>=xPos&&e.x<=xPos+width&&e.y>=yPos&&e.y<=yPos+height)
 			{
@@ -71,7 +71,7 @@ Matchmaking.prototype.onKeyPress = function(e)
 	//S
 	if (e.keyCode == 83) 
 	{
-		if(matchmaking.hosting && matchmaking.ingame)
+		if(matchmaking.ingame)
 		{
 			CLIENT.startGame();
 		}
@@ -87,10 +87,12 @@ Matchmaking.prototype.Draw = function()
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.strokeStyle=rgb(0,0,255);
-	ctx.font="20px Lucida Console";
+	ctx.font="bold 20px Courier";
+	var center = canvas.width/2;
 	if(!matchmaking.ingame)
 	{
-		ctx.fillText("search for games   ('C' to create a lobby, 'R' to refresh game list)", 20, 23);
+		var text ="search for games   ('C' to create a lobby, 'R' to refresh game list)"; 
+		ctx.fillText(text, center-((text.length/2)*11), 23);
 		/*for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
 			ctx.fillText(matchmaking.gameList[i].hostName, 20, 45+i*25);
@@ -98,9 +100,9 @@ Matchmaking.prototype.Draw = function()
 		}*/
 		for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
-			ctx.strokeRect(20,30+(i*25),10+(matchmaking.gameList[i].hostName.toString().length*12+5)+(matchmaking.gameList[i].count.toString().length*12+5),20);
-			ctx.fillText(matchmaking.gameList[i].hostName, 22, 48+(i*25));
-			ctx.fillText(matchmaking.gameList[i].count, 30+(matchmaking.gameList[i].hostName.toString().length*12+5), 48+(i*25));
+			ctx.strokeRect(center-200,31+(i*25),400,20);
+			ctx.fillText(matchmaking.gameList[i].hostName, center-199, 48+(i*25));
+			ctx.fillText(matchmaking.gameList[i].count, center+194-((matchmaking.gameList[i].count.toString().length/2)*11), 48+(i*25));
 		}
 	}
 	else
@@ -110,18 +112,18 @@ Matchmaking.prototype.Draw = function()
 		{
 			 str ="game lobby   ('S' to start game)";
 		}
-		ctx.fillText(str, 20, 23);
+		ctx.fillText(str, center-((str.length/2)*11), 23);
 		ctx.fillStyle = rgb(0, 0, 255);
-		ctx.fillText("Blue Team", 20, 48);
+		ctx.fillText("Blue Team", center-259-((("Blue Team").length/2)*11), 48);
 		for(var i = 0; i < blueTeam.length;i++)
 		{
-			ctx.fillText(currentSession[blueTeam[i]], 22, 73+i*25);
+			ctx.fillText(currentSession[blueTeam[i]], center-259-(((currentSession[blueTeam[i]]).length/2)*11), 73+i*25);
 		}
-		ctx.fillStyle = rgb(204,204,0);
-		ctx.fillText("Yellow Team", 460, 48);
+		ctx.fillStyle = rgb(255,165,0);
+		ctx.fillText("Yellow Team", center+254-((("Yellow Team").length/2)*11), 48);
 		for(var i = 0; i < redTeam.length;i++)
 		{
-			ctx.fillText(currentSession[redTeam[i]], 462, 73+i*25);
+			ctx.fillText(currentSession[redTeam[i]], center+254-(((currentSession[redTeam[i]]).length/2)*11), 73+i*25);
 		}
 	}
 }
