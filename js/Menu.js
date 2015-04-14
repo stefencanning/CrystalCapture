@@ -20,14 +20,18 @@ Menu.prototype.Draw = function()
 {
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
-	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="bold 20px Courier";
-	ctx.strokeStyle=rgb(0,0,255);
 	for(var i = 0; i < menu.options.length;i++)
 	{
 		var temp = menu.options[i];
+		var gradient=ctx.createLinearGradient(temp[0],temp[1],temp[0]+temp[2].length*12+5,temp[1]+20);
+		gradient.addColorStop("0",rgb(0, 0, 255));
+		gradient.addColorStop("1.0",rgb(255,165,0));
+		ctx.strokeStyle=gradient;
+		ctx.fillStyle = gradient;
 		ctx.strokeRect(temp[0],temp[1],temp[2].length*12+5,20);
 		ctx.fillText(temp[2], temp[0]+2, temp[1]+18);
+		gradient=0;
 	}
 	/*ctx.strokeRect(20,5,"Matchmaking".length*12+5,20);
 	ctx.fillText("Matchmaking", 22, 23);

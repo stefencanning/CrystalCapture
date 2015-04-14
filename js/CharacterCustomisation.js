@@ -24,11 +24,17 @@ CharCust.prototype.Loop = function ()
 
 CharCust.prototype.Draw = function()
 {
+	var center = canvas.width/2;
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="bold 20px Courier";
 	ctx.strokeStyle=rgb(0,0,255);
+	var gradient=ctx.createLinearGradient(center-25,50,center+25,200);
+	gradient.addColorStop("0",rgb(0, 0, 255));
+	gradient.addColorStop("1.0",rgb(255,165,0));
+	ctx.strokeStyle=gradient;
+	ctx.fillStyle = gradient;
 	
 	for(var i = 0; i < charCust.options.length; i++)
 	{

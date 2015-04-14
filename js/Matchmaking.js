@@ -100,9 +100,15 @@ Matchmaking.prototype.Draw = function()
 		}*/
 		for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
+			var gradient=ctx.createLinearGradient(center-200,31+(i*25),center+200,31+(i*25)+20);
+			gradient.addColorStop("0",rgb(0, 0, 255));
+			gradient.addColorStop("1.0",rgb(255,165,0));
+			ctx.strokeStyle=gradient;
+			ctx.fillStyle = gradient;
 			ctx.strokeRect(center-200,31+(i*25),400,20);
 			ctx.fillText(matchmaking.gameList[i].hostName, center-199, 48+(i*25));
 			ctx.fillText(matchmaking.gameList[i].count, center+194-((matchmaking.gameList[i].count.toString().length/2)*11), 48+(i*25));
+			gradient=0;
 		}
 	}
 	else
