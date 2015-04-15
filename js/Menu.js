@@ -6,12 +6,12 @@ Menu.prototype.Initialise = function()
 {
 	menu.options =[];
 	var center = canvas.width/2;
-	menu.options[menu.options.length]=[center-((("Matchmaking").length/2)*11),5+(menu.options.length*25),"Matchmaking",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();}];
+	menu.options[menu.options.length]=[center-((("Matchmaking").length/2)*11),50+(menu.options.length*50),"Matchmaking",function () { main.mode=GAMESELECT;CLIENT.getGames();}];
 	//menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Character Customisation",function () { charCust= new CharCust();charCust.Initialise();main.mode=CHARCUST;}];
-	menu.options[menu.options.length]=[center-((("Quit").length/2)*11),5+(menu.options.length*25),"Quit",function () { matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;}];
+	menu.options[menu.options.length]=[center-((("Character Customisation").length/2)*11),50+(menu.options.length*50),"Character Customisation",function () { main.mode=CHARCUST;}];
 }
 
-Menu.prototype.Loop = function () 
+Menu.prototype.Loop = function ()
 {
 	menu.Draw();
 }
@@ -33,6 +33,9 @@ Menu.prototype.Draw = function()
 		ctx.fillText(temp[2], temp[0]+2, temp[1]+18);
 		gradient=0;
 	}
+	ctx.lineWidth=2;
+	ctx.strokeStyle=rgb(0,0,0);
+	ctx.strokeRect(0,0,canvas.width, canvas.height);
 	/*ctx.strokeRect(20,5,"Matchmaking".length*12+5,20);
 	ctx.fillText("Matchmaking", 22, 23);
 	

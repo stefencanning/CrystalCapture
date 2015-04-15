@@ -157,7 +157,7 @@ Game.prototype.gameLoop = function ()
 		game.keys["d"] = false;
 		game.keys["space"] = false;
 	}
-	var curTime=new Date();
+	curTime=new Date();
 	if(game.state==game.PLAYING)
 	{
 		//game.fps=1/((curTime.getTime()-time.getTime())/1000);
@@ -690,20 +690,6 @@ Game.prototype.gameLoop = function ()
 			CLIENT.updatePlayer(msg);
 		}
 	}
-	game.imageSave+=curTime.getTime()-time.getTime();
-	if(game.imageSave>=5000)
-	{
-		//game.dlCanvas();
-		game.imageSave=0;
-		
-		var dataURL = canvas.toDataURL("image/png");
-		dataURL = dataURL.replace(/^data:image\/png;base64,/, "");
-		console.log(dataURL);
-		var messageObject = {"type":"screenShot","data":dataURL,"uniqueID":CLIENT.uniqueID};
-		var message = JSON.stringify(messageObject);
-		CLIENT.SendMessage(message);
-		game.imageSave=0;
-	}
 	game.Draw();
 }
 Game.prototype.dlCanvas = function()
@@ -822,7 +808,6 @@ Game.prototype.Draw = function()
 	
 	ctx.lineWidth=2;
 	ctx.strokeStyle=rgb(0,0,0);
-	ctx.strokeRect(0,0,canvas.width, canvas.height);
 	
 	var offSetX = Math.floor(-game.player.x-(game.player.w/2)+(canvas.width/2));
 	var offSetY = Math.floor(-game.player.y-(game.player.h/2)+(canvas.height/2));
@@ -970,6 +955,29 @@ Game.prototype.Draw = function()
 	
 	game.rooms[game.player.room].draw(offSetX,offSetY);
 	
+	if(game.state==game.VICTORY)
+	{
+		ctx.drawImage(images.victory,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
+	}
+	else if(game.state==game.DEFEAT)
+	{
+		ctx.drawImage(images.defeat,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
+	}
+	
+	game.imageSave+=curTime.getTime()-time.getTime();
+	if(game.imageSave>=5000)
+	{
+		//game.dlCanvas();
+		game.imageSave=0;
+		
+		var dataURL = canvas.toDataURL("image/png");
+		dataURL = dataURL.replace(/^data:image\/png;base64,/, "");
+		//console.log(dataURL);
+		var messageObject = {"type":"screenShot","data":dataURL,"uniqueID":CLIENT.uniqueID};
+		var message = JSON.stringify(messageObject);
+		CLIENT.SendMessage(message);
+		game.imageSave=0;
+	}
 	
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="bold 20px Courier";
@@ -1012,14 +1020,6 @@ Game.prototype.Draw = function()
 	ctx.fillText("keep your crystal safe", 700, 280);
 	//ctx.fillText("fps: "+game.fps, 700, 300);
 	*/
-	if(game.state==game.VICTORY)
-	{
-		ctx.drawImage(images.victory,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
-	}
-	else if(game.state==game.DEFEAT)
-	{
-		ctx.drawImage(images.defeat,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
-	}
 	
 	ctx.lineWidth=2;
 	ctx.strokeStyle=rgb(0,0,0);

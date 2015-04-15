@@ -132,5 +132,8 @@ Matchmaking.prototype.Draw = function()
 			ctx.fillText(currentSession[redTeam[i]], center+254-(((currentSession[redTeam[i]]).length/2)*11), 73+i*25);
 		}
 	}
+	ctx.lineWidth=2;
+	ctx.strokeStyle=rgb(0,0,0);
+	ctx.strokeRect(0,0,canvas.width, canvas.height);
 }
 	

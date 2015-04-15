@@ -86,7 +86,6 @@ class Session:
 		if(success['success']==True):
 			if(len(self.rooms) > 15):
 				num = random.randint(0,3)
-				print("rand num for room was: %s" %num)
 				if(num == 0):
 					connectData={"success":False}
 					roomCheckCounter = 0
@@ -95,7 +94,6 @@ class Session:
 						connectData = self.rooms[num].addDoor(0);
 						roomCheckCounter+=1
 					if(connectData['success']==True):
-						print("room to connect was: %s" %num)
 						return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"mat1X":success['matX'],"mat1Y":success['matY'],"mat2X":connectData['matX'],"mat2Y":connectData['matY']}#,"newRoom":self.rooms[num].walls
 			num = len(self.rooms)
 			self.rooms[num] = Room()
@@ -105,14 +103,12 @@ class Session:
 			self.rooms[num].colorValue = max(0,self.rooms[data['room']].colorValue-5)
 			connectData = self.rooms[num].addDoor(0);
 			if(connectData['success']==True):
-				print("room to connect was: %s" %num)
 				return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"newRoom":self.rooms[num].walls,"color":self.rooms[num].color,"colorValue":self.rooms[num].colorValue,"mat1X":success['matX'],"mat1Y":success['matY'],"mat2X":connectData['matX'],"mat2Y":connectData['matY']}
 			else:
 				self.rooms = {key: value for key, value in self.rooms.items() if value != self.rooms[num]}
 				while(connectData['success']==False):
 					num = random.randint(0,len(self.rooms)-1)
 					connectData = self.rooms[num].addDoor(0);
-				print("room to connect was: %s" %num)
 				return {"success":True,"room1":data['room'],"door1x":data['x'],"door1y":data['y'],"room2":num,"door2x":connectData['x'],"door2y":connectData['y'],"mat1X":success['matX'],"mat1Y":success['matY'],"mat2X":connectData['matX'],"mat2Y":connectData['matY']}#,"newRoom":self.rooms[num].walls
 		return {"success":False}
 

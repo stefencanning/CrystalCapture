@@ -245,7 +245,7 @@ Images.prototype.ClothesImages = function()
 Images.prototype.loadImages = function()
 {
 	images.bar.style.width=(((sound.currentIndex+images.currentIndex)/(sound.soundsToLoad.length+images.imagesToLoad.length))*100)+'%';
-	if (images.imagesToLoad.length == 0 || images.imagesToLoad.length == images.currentIndex)
+	if (images.imagesToLoad.length == 0 || images.imagesToLoad.length <= images.currentIndex)
 	{
 		images.bar.style.backgroundColor="green";
 		document.getElementById('div').removeChild(images.border);
@@ -254,7 +254,8 @@ Images.prototype.loadImages = function()
 		p1Button.id="button";
 		p1Button.value="Submit";
 		document.getElementById('div').appendChild(document.createElement('br'));
-		p1Button.addEventListener('click', function(){ 
+		p1Button.addEventListener('click', function()
+		{ 
 			if(document.getElementById('firstname').value!="")
 			{
 				this.style.background+='#00FF00';

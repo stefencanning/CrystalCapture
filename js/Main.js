@@ -50,6 +50,10 @@ function Main()
 	main.frameTime=0;
 	charCust= new CharCust();
 	charCust.Initialise();
+	matchmaking= new Matchmaking();
+	matchmaking.Initialise();
+	menu = new Menu();
+	menu.Initialise();
 	main.mode=CHARCUST;
 	//images = new Images();
 	//images.Initialise();
@@ -126,7 +130,7 @@ Main.prototype.gameOver = function()
 	matchmaking.gameList = [];
 	matchmaking.hosting = false;
 	matchmaking.ingame = false;
-	main.mode=GAMESELECT;
+	main.mode=MENU;
 }
 
 

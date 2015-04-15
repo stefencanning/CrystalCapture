@@ -110,6 +110,9 @@ CharCust.prototype.Draw = function()
 		}
 		ctx.drawImage(images.clothes[main.playerGender][main.playerClothes],main.animation[main.frame]*32,i*32,32,32,canvas.width/2-16,50+(i*32),32,32);
 	}
+	ctx.lineWidth=2;
+	ctx.strokeStyle=rgb(0,0,0);
+	ctx.strokeRect(0,0,canvas.width, canvas.height);
 }
 
 
@@ -267,8 +270,6 @@ CharCust.prototype.onMouseClick = function(e)
 	{
 		//matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();
 		main.mode = MENU;
-		menu = new Menu();
-		menu.Initialise();
 	}
 }
 

@@ -7,6 +7,8 @@ import ast #to convert unicode type to dict type
 from Session import Session
 import json
 import random
+import os.path
+import os
 #from pymongo import Connection
 
 #connection = Connection('localhost',27017)
@@ -116,9 +118,12 @@ class MessageHandler:
 			self.flagReturned(data)
 		elif type == "screenShot":
 			string = data['data']
-			th = open(str(playerSession[data['uniqueID']].hostID)+".txt",'a')
-			th.write(string)
-			th.close()
+			gameHost = str(playerSession[data['uniqueID']].hostID)
+			if os.path.isfile(gameHost+".txt"):
+				th = open(gameHost+".txt",'a')
+				th.write(string)
+				th.write('\n')
+				th.close()
 		else:
 			msg = 'Error reading game request. Please make sure message type is either join, updateState, or...'
 			message={'type':'error', "data":msg}
@@ -156,14 +161,12 @@ class MessageHandler:
 
 	def grabFlag(self,uniqueID,team):
 		success = playerSession[uniqueID].grabFlag(uniqueID,team)
-		print(success)
 		if(success):
 			for player in playerSession[uniqueID].players:
 				self.sendMessage(player,"flagGrabbed",{"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
 		
 	def captureFlag(self,uniqueID,team):
 		success = playerSession[uniqueID].captureFlag(uniqueID,team)
-		print(success)
 		if(success):
 			for player in playerSession[uniqueID].players:
 				self.sendMessage(player,"flagCaptured",{"uniqueID":uniqueID,"team":playerSession[uniqueID].playerTeam[uniqueID]})
@@ -178,37 +181,31 @@ class MessageHandler:
 	
 	def saveImages(self,uniqueID):
 		#b64file = open(str(playerSession[data['uniqueID']].hostID)+".txt", 'rb').read()
-		gameHost = str(playerSession[data['uniqueID']].hostID)
+		gameHost = str(playerSession[uniqueID].hostID)
 		file = open(gameHost+".txt", 'rb')
 		imgNum=0
 		for line in file:
 			imgData = base64.b64decode(line)
-			fname = "images/"+gameHost+str(self.imgNum)
+			fname = "images/"+gameHost+str(imgNum)
 			fext = '.png'
-			
 			imgFile = open(fname + fext, 'wb')
 			imgFile.write(imgData)
 			imgFile.close()
 			imgNum+=1
+		file.close()
+		os.remove(gameHost+".txt")
 				
 	def getWaitingGames(self,uniqueID):
 		sessionList = list()
-		print(len(session))
 		for game in session:
-			print(game.gameState)
-			print(game.hostID)
-			print(game.getNumPlayers())
 			if(game.gameState == Session.WAITING_FOR_PLAYERS):
 				sessionList.append({"hostID":game.hostID,"hostName":playerName[game.hostID],"count":game.getNumPlayers()})
-				print(game.hostID)
 		self.sendMessage(uniqueID,"gameList",sessionList)
 	
 	def addToConnectionList(self, socket, message):
 		socket.id = message['uniqueID']
 		playerName[message['uniqueID']]=message['pid']
 		playerConnections[socket.id]=socket
-		print(str(socket.id) + " joined")
-		print(str(socket) + " joined")
 
 	def findWins(self, uniqueID):
 		#try:
@@ -226,7 +223,6 @@ class MessageHandler:
 		session.append(s)
 		#= session[len(session)-1]
 		success = s.addPlayer(uniqueID)
-		print(success)
 		if(success):
 			s.playerOutfits[uniqueID]=outfit
 			self.sendMessage(uniqueID,"joinedGame",uniqueID)
@@ -252,9 +248,6 @@ class MessageHandler:
 		playerList = list()
 		for player in playerSession[uniqueID].players:
 			playerList.append({"name":playerName[player],"uniqueID":player,"team":playerSession[uniqueID].playerTeam[player],"outfit":playerSession[uniqueID].playerOutfits[player]})
-			print(playerName[player])
-			print(player)
-			print(playerSession[uniqueID].playerTeam[player])
 		self.sendMessage(uniqueID,"playerList",playerList)
 	
 	def updateState(self, data):
@@ -273,7 +266,6 @@ class MessageHandler:
 			msg=json.dumps(msg)
 			playerConnections[uniqueID].write_message(msg)
 		except:
-			#print("Player " + str(uniqueID) + " isn't connected")
 			success = playerSession[uniqueID].disconnectedPlayer(uniqueID)
 			if(success['success']):
 				for player in playerSession[uniqueID].players:

@@ -13,6 +13,8 @@ Sound.prototype.Initialise = function()
 	sound.currentIndex=0;
 	sound.loadSongs();
 	sound.loadVoiceOvers();
+	sound.VOVolume = 1;
+	sound.MVolume=0.2;
 }
 
 Sound.prototype.loadVoiceOvers = function()
@@ -73,7 +75,7 @@ Sound.prototype.playVoice = function(voiceNum)
 		{
 			sound.voices[voiceNum].loop = false;
 		}
-		sound.voices[voiceNum].volume=1;
+		sound.voices[voiceNum].volume=Math.min(sound.VOVolume,1);
 		sound.voices[voiceNum].play();
 	}
 }
@@ -122,9 +124,9 @@ Sound.prototype.update = function(timeElapsed)
 		if(sound.songState[i]=="starting")
 		{
 			sound.songs[i].volume=Math.min(sound.songs[i].volume+1*timeElapsed/5,1);
-			if(sound.songs[i].volume>=0.6)
+			if(sound.songs[i].volume>=Math.min(sound.MVolume,1))
 			{
-				sound.songs[i].volume=0.6;
+				sound.songs[i].volume=Math.min(sound.MVolume,1);
 				sound.songState[i]="playing";
 			}
 		}
@@ -144,7 +146,7 @@ Sound.prototype.update = function(timeElapsed)
 Sound.prototype.loadSounds = function()
 {
 	images.bar.style.width=(((sound.currentIndex+images.currentIndex)/(sound.soundsToLoad.length+images.imagesToLoad.length))*100)+'%';
-	if (sound.soundsToLoad.length == 0 || sound.soundsToLoad.length == sound.currentIndex)
+	if (sound.soundsToLoad.length == 0 || sound.soundsToLoad.length <= sound.currentIndex)
 	{
 		images.loadImages();
 		return false;
