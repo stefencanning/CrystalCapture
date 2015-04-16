@@ -13,6 +13,7 @@ Sound.prototype.Initialise = function()
 	sound.currentIndex=0;
 	sound.loadSongs();
 	sound.loadVoiceOvers();
+	sound.MasterVolume=1;
 	sound.VOVolume = 1;
 	sound.MVolume=0.2;
 }
@@ -75,7 +76,7 @@ Sound.prototype.playVoice = function(voiceNum)
 		{
 			sound.voices[voiceNum].loop = false;
 		}
-		sound.voices[voiceNum].volume=Math.min(sound.VOVolume,1);
+		sound.voices[voiceNum].volume=Math.min(sound.VOVolume,1)*sound.MasterVolume;
 		sound.voices[voiceNum].play();
 	}
 }
@@ -124,10 +125,21 @@ Sound.prototype.update = function(timeElapsed)
 		if(sound.songState[i]=="starting")
 		{
 			sound.songs[i].volume=Math.min(sound.songs[i].volume+1*timeElapsed/5,1);
-			if(sound.songs[i].volume>=Math.min(sound.MVolume,1))
+			if(sound.songs[i].volume>=Math.min(sound.MVolume,1)*sound.MasterVolume)
 			{
-				sound.songs[i].volume=Math.min(sound.MVolume,1);
+				sound.songs[i].volume=Math.min(sound.MVolume,1)*sound.MasterVolume;
 				sound.songState[i]="playing";
+			}
+		}
+		if(sound.songState[i]=="playing")
+		{
+			if(sound.songs[i].volume>Math.min(sound.MVolume,1)*sound.MasterVolume)
+			{
+				sound.songs[i].volume=Math.min(sound.MVolume,1)*sound.MasterVolume;
+			}
+			if(sound.songs[i].volume<Math.min(sound.MVolume,1)*sound.MasterVolume)
+			{
+				sound.songs[i].volume=Math.min(sound.MVolume,1)*sound.MasterVolume;
 			}
 		}
 		if(sound.songState[i]=="stopping")

@@ -1,5 +1,5 @@
-var game,tutorial, menu, ctx, matchmaking, player, charCust;//,images;
-var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3,TUTORIAL=4;
+var game,tutorial, menu, ctx, matchmaking, player, charCust, options;//,images;
+var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3,TUTORIAL=4,OPTIONS=5;
 var currentSession=[];
 var redTeam = [];
 var blueTeam = [];
@@ -54,6 +54,8 @@ function Main()
 	matchmaking.Initialise();
 	menu = new Menu();
 	menu.Initialise();
+	options = new Options();
+	options.Initialise();
 	main.mode=CHARCUST;
 	//images = new Images();
 	//images.Initialise();
@@ -101,6 +103,7 @@ Main.prototype.initCanvas = function()
 	canvas.addEventListener("click", onMouseClick,true);
 	canvas.addEventListener("dblclick", onDoubleClick,true);
 	canvas.addEventListener("mousemove", onMouseMove,true);
+	canvas.addEventListener("mousedown", onMouseDown,true);
 	document.body.addEventListener('touchmove', function (ev) { ev.preventDefault();});
 	//document.body.addEventListener('ondblclick', function (ev) { ev.preventDefault();});
 	document.body.addEventListener('oncontextmenu', function (ev) { ev.preventDefault();});
@@ -149,7 +152,7 @@ Main.prototype.mainLoop = function ()
 	}
 	else if(main.mode == INGAME)
 	{
-		game.gameLoop();
+		game.Loop();
 	}
 	else if(main.mode == MENU)
 	{
@@ -162,7 +165,11 @@ Main.prototype.mainLoop = function ()
 	}
 	else if(main.mode == TUTORIAL)
 	{
-		tutorial.gameLoop();
+		tutorial.Loop();
+	}
+	else if(main.mode == OPTIONS)
+	{
+		options.Loop();
 	}
 	sound.update((curTime.getTime()-time.getTime())/1000);
 	time = new Date();
@@ -190,6 +197,10 @@ function onMouseMove(e)
 	{
 		tutorial.onMouseMove(mousePos);
 	}
+	else if(main.mode == OPTIONS)
+	{
+		options.onMouseMove(mousePos);
+	}
 }
 
 function onDoubleClick(e)
@@ -212,6 +223,10 @@ function onDoubleClick(e)
 	else if(main.mode == TUTORIAL)
 	{
 		tutorial.onDoubleClick(clickPos);
+	}
+	else if(main.mode == OPTIONS)
+	{
+		options.onDoubleClick(clickPos);
 	}
 }
 
@@ -240,6 +255,41 @@ function onMouseClick(e)
 	{
 		tutorial.onMouseClick(clickPos);
 	}
+	else if(main.mode == OPTIONS)
+	{
+		options.onMouseClick(clickPos);
+	}
+}
+
+function onMouseDown(e)
+{
+	var clickPos=[];
+	clickPos["x"]=e.pageX-canvas.offsetLeft;
+	clickPos["y"]=e.pageY-canvas.offsetTop;
+	if(main.mode == GAMESELECT)
+	{
+		//matchmaking.onMouseClick(clickPos);
+	}
+	else if(main.mode == INGAME)
+	{
+		//game.onMouseClick(clickPos);
+	}
+	else if(main.mode == MENU)
+	{
+		//menu.onMouseClick(clickPos);
+	}
+	else if(main.mode == CHARCUST)
+	{
+		//charCust.onMouseClick(clickPos);
+	}
+	else if(main.mode == TUTORIAL)
+	{
+		//tutorial.onMouseClick(clickPos);
+	}
+	else if(main.mode == OPTIONS)
+	{
+		options.onMouseDown(clickPos);
+	}
 }
 
 function onContextMenu(e)
@@ -264,6 +314,10 @@ function onContextMenu(e)
 	{
 		tutorial.onContextMenu(clickPos);
 	}
+	else if(main.mode == OPTIONS)
+	{
+		options.onContextMenu(clickPos);
+	}
 	return false;
 }
 
@@ -285,6 +339,10 @@ function onKeyPress(e)
 	{
 		tutorial.onKeyPress(e);
 	}
+	else if(main.mode == OPTIONS)
+	{
+		options.onKeyPress(e);
+	}
 }
 function onKeyUp(e)
 {
@@ -303,5 +361,9 @@ function onKeyUp(e)
 	else if(main.mode == TUTORIAL)
 	{
 		tutorial.onKeyUp(e);
+	}
+	else if(main.mode == OPTIONS)
+	{
+		options.onKeyUp(e);
 	}
 }

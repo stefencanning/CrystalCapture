@@ -144,7 +144,7 @@ Tutorial.prototype.initCanvas=function ()
 }
 
 
-Tutorial.prototype.gameLoop = function () 
+Tutorial.prototype.Loop = function () 
 {
 	var curTime=new Date();
 	if(tutorial.state==tutorial.PLAYING)
