@@ -21,9 +21,32 @@
 <script src='http://ajax.aspnetcdn.com/ajax/mobileservices/MobileServices.Web-1.1.2.min.js'></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/progress.css">
+<style>
+body  {
+    background-image: url("img/fypBackground.png");
+    background-color: #cccccc;
+    background-position: 0px 0px; 
+    -webkit-animation: mymove 20s infinite;  /* Chrome, Safari, Opera */
+    -webkit-animation-timing-function: linear;  /* Chrome, Safari, Opera */
+    animation: mymove 20s infinite;
+    animation-timing-function: linear;
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes mymove {
+    from {background-position: 0% 0%;}
+    to {background-position: 200% 0%;}
+}
+
+/* Standard syntax */
+@keyframes mymove {
+    from {background-position: 0% 0%;}
+    to {background-position: 200% 0%;}
+}
+</style>
 <head>
 <meta charset="utf-8">
 </head>
+<body>
 <div id="div" style="text-align:center">
 <img src="img/CrystalCaptureBanner.png">
 </br>
@@ -31,11 +54,11 @@
 <input type="text" id="firstname"></input>
 <script src="Client.js"> </script>
 </div>
-
-
+</body>
 
 <script>
 c = new Client();
+
 </script>
 
 

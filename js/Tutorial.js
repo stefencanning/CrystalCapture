@@ -569,7 +569,7 @@ Tutorial.prototype.Loop = function ()
 									if(tutorial.bluePoints==3)
 									{
 										tutorial.hints[10][1]=1;
-										tutorial.hints[11]=1;
+										tutorial.hints[11][1]=1;
 										sound.playVoice(sound.voiceNumbers["victorious"]);
 										tutorial.state=tutorial.VICTORY;
 									}
@@ -887,7 +887,9 @@ Tutorial.prototype.onKeyUp = function(e)
 Tutorial.prototype.Draw = function()
 {
 	
-	ctx.clearRect(0,0,canvas.width, canvas.height)
+	ctx.clearRect(0,0,canvas.width, canvas.height);
+	ctx.fillStyle=rgb(160,160,160);
+	ctx.fillRect(0,0,canvas.width, canvas.height);
 	
 	
 	ctx.lineWidth=2;

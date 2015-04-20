@@ -66,7 +66,8 @@ function Main()
 	//matchmaking= new Matchmaking();	
 	//matchmaking.Initialise();
 	ctx.clearRect(0,0,canvas.width, canvas.height);
-	
+	ctx.fillStyle = "rgba(160, 160, 160, 0.6)";
+	ctx.fillRect(0,0,canvas.width, canvas.height);
 	
 	//img = [new Image(),new Image()];
 	//img[0].src = 'img/dancer1.png';

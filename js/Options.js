@@ -31,7 +31,7 @@ Options.prototype.Loop = function ()
 			{
 				var val = mousePos.x-options.barX;
 				val = val/options.width;
-				temp[3](val);
+				temp[3](Math.max(0,Math.min(val,1)));
 			}
 		}
 	}
@@ -41,6 +41,8 @@ Options.prototype.Loop = function ()
 Options.prototype.Draw = function()
 {
 	ctx.clearRect(0,0,canvas.width, canvas.height);
+	ctx.fillStyle = "rgba(160, 160, 160, 0.6)";
+	ctx.fillRect(0,0,canvas.width, canvas.height);
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
 	ctx.font="bold 20px Courier";
 	for(var i = 0; i < options.options.length;i++)
