@@ -55,6 +55,7 @@ Tutorial.prototype.Initialise=function ()
 	tutorial.hints[tutorial.hints.length]=["bring crystal to base",0 ];
 	tutorial.hints[tutorial.hints.length]=["left-click to shoot", 0];
 	tutorial.hints[tutorial.hints.length]=["kill enemies",0 ];
+	tutorial.hints[tutorial.hints.length]=["capture the crystal 3 times", 0];
 	tutorial.hints[tutorial.hints.length]=["keep your crystal safe", 0];
 	//tutorial.fps=0;
 }
@@ -567,6 +568,8 @@ Tutorial.prototype.Loop = function ()
 									}
 									if(tutorial.bluePoints==3)
 									{
+										tutorial.hints[10][1]=1;
+										tutorial.hints[11]=1;
 										sound.playVoice(sound.voiceNumbers["victorious"]);
 										tutorial.state=tutorial.VICTORY;
 									}
@@ -1079,11 +1082,11 @@ Tutorial.prototype.Draw = function()
 	for(var i = 0; i < tutorial.hints.length; i++)
 	{
 		ctx.fillStyle = rgb(0, 0, 0);
-		ctx.fillText(tutorial.hints[i][0], 700, start+(i*20));
+		ctx.fillText(tutorial.hints[i][0], 660, start+(i*20));
 		if(tutorial.hints[i][1])
 		{
 			ctx.fillStyle = rgb(0, 150, 0);
-			ctx.fillText("done!", 700+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
+			ctx.fillText("done!", 660+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
 		}
 	}
 	//ctx.fillText("fps: "+tutorial.fps, 700, 300);
