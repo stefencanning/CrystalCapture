@@ -1,4 +1,4 @@
-var game,tutorial, menu, ctx, matchmaking, player, charCust, options;//,images;
+var game=0,tutorial=0, menu, ctx, matchmaking, player, charCust, options;//,images;
 var GAMESELECT=0,INGAME=1,MENU=2,CHARCUST=3,TUTORIAL=4,OPTIONS=5;
 var currentSession=[];
 var redTeam = [];
@@ -124,6 +124,8 @@ Main.prototype.gameOver = function()
 		tutorial = 0;
 	}
 	sound.stopSong(sound.songNumbers["walking"]);
+	sound.stopSong(sound.songNumbers["enemy"]);
+	sound.stopSong(sound.songNumbers["flag"]);
 	sound.playSong(sound.songNumbers["menu"]);
 	for(var i = 0; i < matchmaking.gameList.length; i++)
 	{

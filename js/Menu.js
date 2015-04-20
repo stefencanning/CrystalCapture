@@ -7,6 +7,14 @@ Menu.prototype.Initialise = function()
 	menu.options =[];
 	var center = canvas.width/2;
 	menu.options[menu.options.length]=[center-((("Matchmaking").length/2)*11),50+(menu.options.length*50),"Matchmaking",function () { main.mode=GAMESELECT;CLIENT.getGames();}];
+	menu.options[menu.options.length]=[center-((("Tutorial").length/2)*11),50+(menu.options.length*50),"Tutorial",function () { 
+			main.playerTeam="blue";
+			tutorial = new Tutorial();
+			tutorial.Initialise();
+			main.mode=TUTORIAL;
+			sound.stopSong(sound.songNumbers["menu"]);
+			sound.playSong(sound.songNumbers["walking"]);
+			sound.playVoice(sound.voiceNumbers["start"]);}];
 	//menu.options[menu.options.length]=[20,5+(menu.options.length*25),"Character Customisation",function () { charCust= new CharCust();charCust.Initialise();main.mode=CHARCUST;}];
 	menu.options[menu.options.length]=[center-((("Options").length/2)*11),50+(menu.options.length*50),"Options",function () { main.mode=OPTIONS;}];
 	menu.options[menu.options.length]=[center-((("Character Customisation").length/2)*11),50+(menu.options.length*50),"Character Customisation",function () { main.mode=CHARCUST;}];

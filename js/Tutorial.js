@@ -21,6 +21,7 @@ Tutorial.prototype.Initialise=function ()
 	"s":false,
 	"d":false};
 	tutorial.player = new Player(96,96);
+	tutorial.AI = 0;
 	if(main.playerTeam=="blue")
 	{
 		tutorial.player.room=0;
@@ -41,6 +42,20 @@ Tutorial.prototype.Initialise=function ()
 	tutorial.bluePoints=0;
 	tutorial.players=[];
 	tutorial.bullets=[];
+	tutorial.room0door = false;
+	tutorial.room2door = false;
+	tutorial.hints=[];
+	tutorial.hints[tutorial.hints.length]=["hints:",0];
+	tutorial.hints[tutorial.hints.length]=["W,A,S,D to move",0];
+	tutorial.hints[tutorial.hints.length]=["right-click on walls",0];
+	tutorial.hints[tutorial.hints.length]=["create doors",0];
+	tutorial.hints[tutorial.hints.length]=["travel through doors", 0];
+	tutorial.hints[tutorial.hints.length]=["find the enemy base",0 ];
+	tutorial.hints[tutorial.hints.length]=["steal the enemy crystal", 0];
+	tutorial.hints[tutorial.hints.length]=["bring crystal to base",0 ];
+	tutorial.hints[tutorial.hints.length]=["left-click to shoot", 0];
+	tutorial.hints[tutorial.hints.length]=["kill enemies",0 ];
+	tutorial.hints[tutorial.hints.length]=["keep your crystal safe", 0];
 	//tutorial.fps=0;
 }
 Tutorial.prototype.dealloc=function()
@@ -96,9 +111,9 @@ Tutorial.prototype.CreateStartRooms=function()
 	tutorial.rooms[-1].addWall(new Wall(0,128,-1,20));
 	tutorial.rooms[-1].addWall(new Wall(0,160,-1,20));
 	tutorial.gravePositions[-1]=[];
-	CLIENT.calculateLocalDoors(96,96,-1);
+	tutorial.calculateLocalDoors(96,96,-1);
 		
-	for(var i = 0; i < 2; i++)
+	for(var i = 0; i < 3; i++)
 	{
 		tutorial.rooms[i] = new Room(i);
 		tutorial.rooms[i].addWall(new Wall(0,0,i,1));
@@ -129,7 +144,7 @@ Tutorial.prototype.CreateStartRooms=function()
 		tutorial.rooms[i].addWall(new Wall(0,128,i,10));
 		tutorial.rooms[i].addWall(new Wall(0,160,i,10));
 		tutorial.gravePositions[i]=[];
-		CLIENT.calculateLocalDoors(96,96,i);
+		tutorial.calculateLocalDoors(96,96,i);
 	}
 	tutorial.rooms[0].oriColor="blue";
 	tutorial.rooms[0].foundColor="blue";
@@ -146,9 +161,27 @@ Tutorial.prototype.initCanvas=function ()
 
 Tutorial.prototype.Loop = function () 
 {
-	var curTime=new Date();
+	curTime=new Date();
 	if(tutorial.state==tutorial.PLAYING)
 	{
+		if(tutorial.AI!=0)
+		{
+			if(tutorial.AI.dead)
+			{
+				tutorial.AI.respawnTimer-=curTime.getTime()-time.getTime();
+				if(tutorial.AI.respawnTimer<=0)
+				{
+					tutorial.AI.dead=false;
+					tutorial.AI.setPos(96,96);
+					tutorial.AI.room=1;
+					tutorial.AI.target=[92,92];
+				}
+			}
+			else
+			{
+				tutorial.AI.update();
+			}
+		}
 		//tutorial.fps=1/((curTime.getTime()-time.getTime())/1000);
 		if(tutorial.player.dead)
 		{
@@ -227,6 +260,10 @@ Tutorial.prototype.Loop = function ()
 			}
 			if(tutorial.keys["w"]||tutorial.keys["s"]||tutorial.keys["a"]||tutorial.keys["d"])
 			{
+				if(tutorial.hints[1][1]==0)
+				{
+					tutorial.hints[1][1]=1;
+				}
 				main.frameTime+=curTime-time;
 			}
 			else
@@ -271,6 +308,7 @@ Tutorial.prototype.Loop = function ()
 			var newPos = tutorial.rooms[tutorial.player.room].checkCollision(tutorial.player);
 			if(newPos.roomChange)
 			{
+				tutorial.hints[4][1]=1;
 				var flagBlueRoom = -1;
 				var flagRedRoom = -1;
 				var flagBluePos = [,];
@@ -279,10 +317,10 @@ Tutorial.prototype.Loop = function ()
 				{
 					for(var i =0; i < redTeam.length; i++)
 					{
-						if(playerGameData[redTeam[i]].flag)
+						if(playerTutorialData[redTeam[i]].flag)
 						{
-							flagBlueRoom = playerGameData[redTeam[i]].room;
-							flagBluePos = [(Math.floor((playerGameData[redTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[redTeam[i]].y+16)/32)*32)];
+							flagBlueRoom = playerTutorialData[redTeam[i]].room;
+							flagBluePos = [(Math.floor((playerTutorialData[redTeam[i]].x+16)/32)*32),(Math.floor((playerTutorialData[redTeam[i]].y+16)/32)*32)];
 						}
 					}
 				}
@@ -295,10 +333,10 @@ Tutorial.prototype.Loop = function ()
 				{
 					for(var i =0; i < blueTeam.length; i++)
 					{
-						if(playerGameData[blueTeam[i]].flag)
+						if(playerTutorialData[blueTeam[i]].flag)
 						{
-							flagRedRoom = playerGameData[blueTeam[i]].room;
-							flagRedPos = [(Math.floor((playerGameData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerGameData[blueTeam[i]].y+16)/32)*32)];
+							flagRedRoom = playerTutorialData[blueTeam[i]].room;
+							flagRedPos = [(Math.floor((playerTutorialData[blueTeam[i]].x+16)/32)*32),(Math.floor((playerTutorialData[blueTeam[i]].y+16)/32)*32)];
 						}
 					}
 				}
@@ -310,8 +348,8 @@ Tutorial.prototype.Loop = function ()
 				tutorial.distBlue=-1;
 				if(flagBlueRoom!=-1)
 				{
-					var doorsFlag = CLIENT.calculateLocalDoors(flagBluePos[0],flagBluePos[1],flagBlueRoom);
-					var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+					var doorsFlag = tutorial.calculateLocalDoors(flagBluePos[0],flagBluePos[1],flagBlueRoom);
+					var doorsPlayer = tutorial.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
 					var queue = new Queue();
 					var set = {};
 					for(var i = 0; i < doorsPlayer.length; i++)
@@ -366,8 +404,8 @@ Tutorial.prototype.Loop = function ()
 				tutorial.distRed=-1;
 				if(flagRedRoom!=-1)
 				{
-					var doorsFlag = CLIENT.calculateLocalDoors(flagRedPos[0],flagRedPos[1],flagRedRoom);
-					var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+					var doorsFlag = tutorial.calculateLocalDoors(flagRedPos[0],flagRedPos[1],flagRedRoom);
+					var doorsPlayer = tutorial.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
 					var queue = new Queue();
 					var set = {};
 					for(var i = 0; i < doorsPlayer.length; i++)
@@ -389,6 +427,7 @@ Tutorial.prototype.Loop = function ()
 						//if(door.connectsTo[0]==newPos.room)
 						if(foundSet[[door.x,door.y,door.room]])
 						{
+							tutorial.hints[5][1]=1;
 							found=true;
 						}
 						var doors = door.connectedDoors;
@@ -437,7 +476,7 @@ Tutorial.prototype.Loop = function ()
 				{
 					for(var i =0; i < redTeam.length; i++)
 					{
-						if(playerGameData[redTeam[i]].room == tutorial.player.room)
+						if(playerTutorialData[redTeam[i]].room == tutorial.player.room)
 						{
 							sound.playSong(sound.songNumbers["enemy"]);
 							sound.stopSong(sound.songNumbers["walking"]);
@@ -448,7 +487,7 @@ Tutorial.prototype.Loop = function ()
 				{
 					for(var i =0; i < blueTeam.length; i++)
 					{
-						if(playerGameData[blueTeam[i]].room == tutorial.player.room)
+						if(playerTutorialData[blueTeam[i]].room == tutorial.player.room)
 						{
 							sound.playSong(sound.songNumbers["enemy"]);
 							sound.stopSong(sound.songNumbers["walking"]);
@@ -470,6 +509,7 @@ Tutorial.prototype.Loop = function ()
 					&&tutorial.player.y<flag.y+flag.h)
 					if(!tutorial.redFlagCaptured)
 					{
+						tutorial.hints[6][1]=1;
 						tutorial.player.gotFlag = 1;
 						sound.playVoice(sound.voiceNumbers["yStolen"]);
 						tutorial.redFlagCaptured = true;
@@ -519,6 +559,17 @@ Tutorial.prototype.Loop = function ()
 									tutorial.redFlag.x=tutorial.redCapturePoint[0];
 									tutorial.redFlag.y=tutorial.redCapturePoint[1];
 									tutorial.redFlag.room=tutorial.redCapturePoint[2];
+									tutorial.hints[7][1]=1;
+									if(tutorial.AI == 0)
+									{
+										tutorial.AI = new AI(96,96);
+										tutorial.AI.room=1;
+									}
+									if(tutorial.bluePoints==3)
+									{
+										sound.playVoice(sound.voiceNumbers["victorious"]);
+										tutorial.state=tutorial.VICTORY;
+									}
 								}
 							}
 						}
@@ -592,6 +643,7 @@ Tutorial.prototype.Loop = function ()
 				}
 			}
 		}
+		
 		for( var i = 0; i < tutorial.bullets.length;i++)
 		{
 			if(tutorial.bullets[i] != null)
@@ -623,42 +675,23 @@ Tutorial.prototype.Loop = function ()
 						tutorial.bullets[i] = null;
 					}
 				}
-				if(tutorial.bullets[i] != null)
+				if(tutorial.AI != 0)
 				{
-					if(tutorial.bullets[i].team=="blue")
+					if(tutorial.bullets[i] != null)
 					{
-						for(var j = 0; j < redTeam.length;j++)
+						if(tutorial.bullets[i].team=="blue")
 						{
-							if(playerGameData[redTeam[j]]!=0&&tutorial.bullets[i] != null)
+							if(tutorial.bullets[i].room == tutorial.AI.room)
 							{
-								if(playerGameData[redTeam[j]].room==tutorial.bullets[i].room)
+								if(tutorial.AI.x+tutorial.AI.w>tutorial.bullets[i].x
+								&&tutorial.AI.x<tutorial.bullets[i].x+tutorial.bullets[i].w
+								&&tutorial.AI.y+tutorial.AI.h>tutorial.bullets[i].y
+								&&tutorial.AI.y<tutorial.bullets[i].y+tutorial.bullets[i].h)
 								{
-									if(playerGameData[redTeam[j]].x+tutorial.player.w>tutorial.bullets[i].x
-									&&playerGameData[redTeam[j]].x<tutorial.bullets[i].x+tutorial.bullets[i].w
-									&&playerGameData[redTeam[j]].y+tutorial.player.h>tutorial.bullets[i].y
-									&&playerGameData[redTeam[j]].y<tutorial.bullets[i].y+tutorial.bullets[i].h)
-									{
-										tutorial.bullets[i] = null;
-									}
-								}
-							}
-						}
-					}
-					else
-					{
-						for(var j = 0; j < blueTeam.length;j++)
-						{
-							if(playerGameData[blueTeam[j]]!=0&&tutorial.bullets[i] != null)
-							{
-								if(playerGameData[blueTeam[j]].room==tutorial.bullets[i].room)
-								{
-									if(playerGameData[blueTeam[j]].x+tutorial.player.w>tutorial.bullets[i].x
-									&&playerGameData[blueTeam[j]].x<tutorial.bullets[i].x+tutorial.bullets[i].w
-									&&playerGameData[blueTeam[j]].y+tutorial.player.h>tutorial.bullets[i].y
-									&&playerGameData[blueTeam[j]].y<tutorial.bullets[i].y+tutorial.bullets[i].h)
-									{
-										tutorial.bullets[i] = null;
-									}
+									tutorial.AI.health-=tutorial.bullets[i].damage;
+									tutorial.AI.poisoned+=tutorial.bullets[i].poisonDamage;
+									tutorial.AI.poisonTime=tutorial.AI.poisonMaxTime;
+									tutorial.bullets[i] = null;
 								}
 							}
 						}
@@ -733,23 +766,40 @@ Tutorial.prototype.onMouseClick = function(e)
 {
 	if(!tutorial.player.dead && tutorial.state==tutorial.PLAYING)
 	{
-		var offSetX = -tutorial.player.x-(tutorial.player.w/2)+(canvas.width/2);
-		var offSetY = -tutorial.player.y-(tutorial.player.h/2)+(canvas.height/2);
-		//var offSetX = -tutorial.player.x+(canvas.width/2);
-		//var offSetY = -tutorial.player.y+(canvas.height/2);
-		var inGamePos=[];
-		inGamePos["x"]=e.x-offSetX;
-		inGamePos["y"]=e.y-offSetY+16;
-		inGamePos.x/=32;
-		inGamePos.x=Math.floor(inGamePos.x);
-		inGamePos.y/=32;
-		inGamePos.y=Math.floor(inGamePos.y);
-		CLIENT.createDoor(inGamePos.x,inGamePos.y,tutorial.player.room);
+		if(tutorial.player.fireTime<=0)
+		{
+			tutorial.hints[8][1]=1;
+			var xDif = mousePos["x"]-(canvas.width/2);
+			var yDif = mousePos["y"]-(canvas.height/2);
+			var length = Math.sqrt((xDif*xDif)+(yDif*yDif));
+			xDif/=length;
+			yDif/=length;
+			var poisDmg=0;
+			if(main.playerPerk==2)
+			{
+				poisDmg=main.perkStrength[main.playerPerk];
+			}
+			if(main.playerGun==1)
+			{
+				tutorial.fireBullet({"x":tutorial.player.x+(tutorial.player.w/2)-2,"y":tutorial.player.y+(tutorial.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":tutorial.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+				tutorial.fireBullet({"x":tutorial.player.x+(tutorial.player.w/2)-2,"y":tutorial.player.y+(tutorial.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":tutorial.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+				tutorial.fireBullet({"x":tutorial.player.x+(tutorial.player.w/2)-2,"y":tutorial.player.y+(tutorial.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":tutorial.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+				tutorial.fireBullet({"x":tutorial.player.x+(tutorial.player.w/2)-2,"y":tutorial.player.y+(tutorial.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":tutorial.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+			}
+			else
+			{
+				tutorial.fireBullet({"x":tutorial.player.x+(tutorial.player.w/2)-2,"y":tutorial.player.y+(tutorial.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":tutorial.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+			}
+			tutorial.player.fireTime=main.gunReload[main.playerGun];
+		}
 	}
 	else
 	{
 		if(e.x>(canvas.width/2)-(270/2)&&e.x<(canvas.width/2)+(270/2)&&e.y>(canvas.height/2)-(77/2)&&e.y<(canvas.height/2)+(77/2)&&tutorial.state!=tutorial.PLAYING)
 		{
+			sound.stopSong(sound.songNumbers["enemy"]);
+			sound.stopSong(sound.songNumbers["walking"]);
+			sound.stopSong(sound.songNumbers["flag"]);
 			main.gameOver();
 		}
 	}
@@ -757,6 +807,21 @@ Tutorial.prototype.onMouseClick = function(e)
 
 Tutorial.prototype.onContextMenu = function(e)
 {
+	if(!tutorial.player.dead && tutorial.state==tutorial.PLAYING)
+	{
+		var offSetX = -tutorial.player.x-(tutorial.player.w/2)+(canvas.width/2);
+		var offSetY = -tutorial.player.y-(tutorial.player.h/2)+(canvas.height/2);
+		//var offSetX = -tutorial.player.x+(canvas.width/2);
+		//var offSetY = -tutorial.player.y+(canvas.height/2);
+		var inTutorialPos=[];
+		inTutorialPos["x"]=e.x-offSetX;
+		inTutorialPos["y"]=e.y-offSetY+16;
+		inTutorialPos.x/=32;
+		inTutorialPos.x=Math.floor(inTutorialPos.x);
+		inTutorialPos.y/=32;
+		inTutorialPos.y=Math.floor(inTutorialPos.y);
+		tutorial.createDoor(inTutorialPos.x,inTutorialPos.y,tutorial.player.room);
+	}
 }
 
 Tutorial.prototype.onKeyPress = function(e)
@@ -846,13 +911,13 @@ Tutorial.prototype.Draw = function()
 	{
 		if(blueTeam[i]!=CLIENT.uniqueID)
 		{
-			if(playerGameData[blueTeam[i]]!=0)
+			if(playerTutorialData[blueTeam[i]]!=0)
 			{
-				if(playerGameData[blueTeam[i]].room==tutorial.player.room)
+				if(playerTutorialData[blueTeam[i]].room==tutorial.player.room)
 				{
 					
 					ctx.fillStyle=rgb(0,0,0);
-					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x-1+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-11+offSetY),tutorial.player.w+2,7);
+					ctx.fillRect(Math.ceil(playerTutorialData[blueTeam[i]].x-1+offSetX),Math.ceil(playerTutorialData[blueTeam[i]].y-11+offSetY),tutorial.player.w+2,7);
 					if(main.playerTeam=="blue")
 					{
 						ctx.fillStyle=rgb(0,0,255);	
@@ -861,30 +926,30 @@ Tutorial.prototype.Draw = function()
 					{
 						ctx.fillStyle=rgb(255,0,0);	
 					}
-					ctx.fillRect(Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y-10+offSetY),tutorial.player.w*(playerGameData[blueTeam[i]].health/(main.playerMaxHealth*(playerOutfit[blueTeam[i]].playerHealthScaling/10))),5);
+					ctx.fillRect(Math.ceil(playerTutorialData[blueTeam[i]].x+offSetX),Math.ceil(playerTutorialData[blueTeam[i]].y-10+offSetY),tutorial.player.w*(playerTutorialData[blueTeam[i]].health/(main.playerMaxHealth*(playerOutfit[blueTeam[i]].playerHealthScaling/10))),5);
 					
-					//ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,tutorial.player.w,tutorial.player.h);
+					//ctx.fillRect(playerTutorialData[blueTeam[i]].x+offSetX,playerTutorialData[blueTeam[i]].y+offSetY,tutorial.player.w,tutorial.player.h);
 					
 					
-					ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+					ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[playerTutorialData[blueTeam[i]].frame]*32,playerTutorialData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[blueTeam[i]].x+offSetX),Math.ceil(playerTutorialData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					if(playerOutfit[blueTeam[i]].hair)
 					{
-						ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+						ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[playerTutorialData[blueTeam[i]].frame]*32,playerTutorialData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[blueTeam[i]].x+offSetX),Math.ceil(playerTutorialData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					}
 					if(playerOutfit[blueTeam[i]].beard)
 					{
-						ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+						ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[playerTutorialData[blueTeam[i]].frame]*32,playerTutorialData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[blueTeam[i]].x+offSetX),Math.ceil(playerTutorialData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					}
-					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[playerGameData[blueTeam[i]].frame]*32,playerGameData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[blueTeam[i]].x+offSetX),Math.ceil(playerGameData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+					ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[playerTutorialData[blueTeam[i]].frame]*32,playerTutorialData[blueTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[blueTeam[i]].x+offSetX),Math.ceil(playerTutorialData[blueTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					
 					
 					
-					if(playerGameData[blueTeam[i]].flag==1)
+					if(playerTutorialData[blueTeam[i]].flag==1)
 					{
-						ctx.drawImage(images.crystal[0][2],Math.ceil(playerGameData[blueTeam[i]].x+offSetX+8),Math.ceil(playerGameData[blueTeam[i]].y+offSetY));
+						ctx.drawImage(images.crystal[0][2],Math.ceil(playerTutorialData[blueTeam[i]].x+offSetX+8),Math.ceil(playerTutorialData[blueTeam[i]].y+offSetY));
 						/*ctx.fillStyle=rgb(255,0,0);
-						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,tutorial.player.w,10);	
-						ctx.fillRect(playerGameData[blueTeam[i]].x+offSetX,playerGameData[blueTeam[i]].y+offSetY,5,tutorial.player.h);	*/
+						ctx.fillRect(playerTutorialData[blueTeam[i]].x+offSetX,playerTutorialData[blueTeam[i]].y+offSetY,tutorial.player.w,10);	
+						ctx.fillRect(playerTutorialData[blueTeam[i]].x+offSetX,playerTutorialData[blueTeam[i]].y+offSetY,5,tutorial.player.h);	*/
 					}
 				}
 			}
@@ -895,12 +960,12 @@ Tutorial.prototype.Draw = function()
 	{
 		if(redTeam[i]!=CLIENT.uniqueID)
 		{
-			if(playerGameData[redTeam[i]]!=0)
+			if(playerTutorialData[redTeam[i]]!=0)
 			{
-				if(playerGameData[redTeam[i]].room==tutorial.player.room)
+				if(playerTutorialData[redTeam[i]].room==tutorial.player.room)
 				{
 					ctx.fillStyle=rgb(0,0,0);
-					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x-1+offSetX),Math.ceil(playerGameData[redTeam[i]].y-11+offSetY),tutorial.player.w+2,7);
+					ctx.fillRect(Math.ceil(playerTutorialData[redTeam[i]].x-1+offSetX),Math.ceil(playerTutorialData[redTeam[i]].y-11+offSetY),tutorial.player.w+2,7);
 					if(main.playerTeam=="red")
 					{
 						ctx.fillStyle=rgb(204,204,0);	
@@ -909,32 +974,39 @@ Tutorial.prototype.Draw = function()
 					{
 						ctx.fillStyle=rgb(255,0,0);	
 					}
-					ctx.fillRect(Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y-10+offSetY),tutorial.player.w*(playerGameData[redTeam[i]].health/(main.playerMaxHealth*(playerOutfit[redTeam[i]].playerHealthScaling/10))),5);
+					ctx.fillRect(Math.ceil(playerTutorialData[redTeam[i]].x+offSetX),Math.ceil(playerTutorialData[redTeam[i]].y-10+offSetY),tutorial.player.w*(playerTutorialData[redTeam[i]].health/(main.playerMaxHealth*(playerOutfit[redTeam[i]].playerHealthScaling/10))),5);
 					
-					//ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,tutorial.player.w,tutorial.player.h);
+					//ctx.fillRect(playerTutorialData[redTeam[i]].x+offSetX,playerTutorialData[redTeam[i]].y+offSetY,tutorial.player.w,tutorial.player.h);
 					
 					
-					ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+					ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[playerTutorialData[redTeam[i]].frame]*32,playerTutorialData[redTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[redTeam[i]].x+offSetX),Math.ceil(playerTutorialData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					if(playerOutfit[redTeam[i]].hair)
 					{
-						ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+						ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[playerTutorialData[redTeam[i]].frame]*32,playerTutorialData[redTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[redTeam[i]].x+offSetX),Math.ceil(playerTutorialData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					}
 					if(playerOutfit[redTeam[i]].beard)
 					{
-						ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+						ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[playerTutorialData[redTeam[i]].frame]*32,playerTutorialData[redTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[redTeam[i]].x+offSetX),Math.ceil(playerTutorialData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					}
-					ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[playerGameData[redTeam[i]].frame]*32,playerGameData[redTeam[i]].rotation*32,32,32,Math.ceil(playerGameData[redTeam[i]].x+offSetX),Math.ceil(playerGameData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
+					ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[playerTutorialData[redTeam[i]].frame]*32,playerTutorialData[redTeam[i]].rotation*32,32,32,Math.ceil(playerTutorialData[redTeam[i]].x+offSetX),Math.ceil(playerTutorialData[redTeam[i]].y+offSetY),tutorial.player.w,tutorial.player.h);
 					
 					
-					if(playerGameData[redTeam[i]].flag==1)
+					if(playerTutorialData[redTeam[i]].flag==1)
 					{
-						ctx.drawImage(images.crystal[1][2],Math.ceil(playerGameData[redTeam[i]].x+offSetX+8),Math.ceil(playerGameData[redTeam[i]].y+offSetY));
+						ctx.drawImage(images.crystal[1][2],Math.ceil(playerTutorialData[redTeam[i]].x+offSetX+8),Math.ceil(playerTutorialData[redTeam[i]].y+offSetY));
 						/*ctx.fillStyle=rgb(0,0,255);
-						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,tutorial.player.w,10);	
-						ctx.fillRect(playerGameData[redTeam[i]].x+offSetX,playerGameData[redTeam[i]].y+offSetY,5,tutorial.player.h);	*/
+						ctx.fillRect(playerTutorialData[redTeam[i]].x+offSetX,playerTutorialData[redTeam[i]].y+offSetY,tutorial.player.w,10);	
+						ctx.fillRect(playerTutorialData[redTeam[i]].x+offSetX,playerTutorialData[redTeam[i]].y+offSetY,5,tutorial.player.h);	*/
 					}
 				}
 			}
+		}
+	}
+	if(tutorial.AI!=0)
+	{
+		if(tutorial.AI.room == tutorial.player.room)
+		{
+			tutorial.AI.draw(offSetX,offSetY);
 		}
 	}
 	
@@ -1000,19 +1072,24 @@ Tutorial.prototype.Draw = function()
 		ctx.drawImage(images.crystal[1][2],710,34);
 	}
 	
-	ctx.fillStyle = rgb(0, 0, 0);
+	
+	
 	ctx.font="16px Lucida Console";
-	ctx.fillText("hints:", 700, 100);
-	ctx.fillText("click on walls", 700, 120);
-	ctx.fillText("create doors", 700, 140);
-	ctx.fillText("travel through doors", 700, 160);
-	ctx.fillText("find the enemy base", 700, 180);
-	ctx.fillText("steal the enemy crystal", 700, 200);
-	ctx.fillText("bring crystal to base", 700, 220);
-	ctx.fillText("space to shoot", 700, 240);
-	ctx.fillText("kill enemies", 700, 260);
-	ctx.fillText("keep your crystal safe", 700, 280);
+	var start = 100;
+	for(var i = 0; i < tutorial.hints.length; i++)
+	{
+		ctx.fillStyle = rgb(0, 0, 0);
+		ctx.fillText(tutorial.hints[i][0], 700, start+(i*20));
+		if(tutorial.hints[i][1])
+		{
+			ctx.fillStyle = rgb(0, 150, 0);
+			ctx.fillText("done!", 700+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
+		}
+	}
 	//ctx.fillText("fps: "+tutorial.fps, 700, 300);
+	
+	
+	
 	if(tutorial.state==tutorial.VICTORY)
 	{
 		ctx.drawImage(images.victory,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
@@ -1056,11 +1133,186 @@ Tutorial.prototype.fireBullet = function(data)
 	}
 }
 
+Tutorial.prototype.createDoor = function(x,y,room)
+{
+	if((room == 0 && tutorial.room0door==false)||(room == 2 && tutorial.room2door==false))
+	{
+		var walls = tutorial.rooms[room].walls;
+		for(var i = 0; i < walls.length; i++)
+		{
+			if(walls[i].imgNum==9||walls[i].imgNum==10)
+			{
+				if(walls[i].door=="false")
+				{
+					if(walls[i].x==x*32&&walls[i].y==y*32)
+					{
+						tutorial.hints[2][1]=1;
+						if(room==0)
+						{
+							walls[i].connectsTo=[2,96,160];
+							walls[i].door="true";
+							tutorial.rooms[2].walls[10].door="true";
+							if(x*32==0)
+							{
+								tutorial.rooms[2].walls[10].connectsTo=[0,32,y*32];
+							}
+							else if(x*32==192)
+							{
+								tutorial.rooms[2].walls[10].connectsTo=[0,160,y*32];
+							}
+							else if(y*32==0)
+							{
+								tutorial.rooms[2].walls[10].connectsTo=[0,x*32,32];
+							}
+							else if(y*32==192)
+							{
+								tutorial.rooms[2].walls[10].connectsTo=[0,x*32,160];
+							}
+							tutorial.rooms[2].walls[10].pair=walls[i];
+							walls[i].pair=tutorial.rooms[2].walls[10];
+							tutorial.connectingDoors(0);
+							tutorial.connectingDoors(2);
+							tutorial.room0door=true;
+							tutorial.hints[3][1]=1;
+						}
+						if(room==2)
+						{
+							walls[i].connectsTo=[1,96,160];
+							walls[i].door="true";
+							tutorial.rooms[1].walls[10].door="true";
+							if(x*32==0)
+							{
+								tutorial.rooms[1].walls[10].connectsTo=[2,32,y*32];
+							}
+							else if(x*32==192)
+							{
+								tutorial.rooms[1].walls[10].connectsTo=[2,160,y*32];
+							}
+							else if(y*32==0)
+							{
+								tutorial.rooms[1].walls[10].connectsTo=[2,x*32,32];
+							}
+							else if(y*32==192)
+							{
+								tutorial.rooms[1].walls[10].connectsTo=[2,x*32,160];
+							}
+							tutorial.rooms[1].walls[10].pair=walls[i];
+							walls[i].pair=tutorial.rooms[1].walls[10];
+							tutorial.connectingDoors(1);
+							tutorial.connectingDoors(2);
+							tutorial.room2door=true;
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 
+Tutorial.prototype.calculateLocalDoors = function(x,y,room)
+{
+	var queue = new Queue();
+	var set = {};
+	var wallSet = {};
+	var isWall = {};
+	var walls = tutorial.rooms[room].walls;
+	for(var i = 0; i < walls.length; i++)
+	{
+		wallSet[[walls[i].x,walls[i].y]]=walls[i];
+		isWall[[walls[i].x,walls[i].y]]=true;
+	}
+	queue.enqueue([x,y]);
+	var returnValue = [];
+	while(!queue.isEmpty())
+	{
+		var point = queue.dequeue();
+		set[point]=true;
+		var left=true,right=true,up=true,down=true;
+		if(isWall[[point[0]-32,point[1]]])
+		{
+			left=false;
+			if(wallSet[[point[0]-32,point[1]]].door=="true"&&!set[[point[0]-32,point[1]]])
+			{
+				set[[point[0]-32,point[1]]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0]-32,point[1]]];
+			}
+		}
+		if(isWall[[point[0]+32,point[1]]])
+		{
+			right=false;
+			if(wallSet[[point[0]+32,point[1]]].door=="true"&&!set[[point[0]+32,point[1]]])
+			{
+				set[[point[0]+32,point[1]]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0]+32,point[1]]];
+			}
+		}
+		if(isWall[[point[0],point[1]-32]])
+		{
+			down=false;
+			if(wallSet[[point[0],point[1]-32]].door=="true"&&!set[[point[0],point[1]-32]])
+			{
+				set[[point[0],point[1]-32]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0],point[1]-32]];
+			}
+		}
+		if(isWall[[point[0],point[1]+32]])
+		{
+			up=false;
+			if(wallSet[[point[0],point[1]+32]].door=="true"&&!set[[point[0],point[1]+32]])
+			{
+				set[[point[0],point[1]+32]]=true;
+				returnValue[returnValue.length] = wallSet[[point[0],point[1]+32]];
+			}
+		}
+		if(left&&!set[[point[0]-32,point[1]]])
+		{
+			queue.enqueue([point[0]-32,point[1]]);
+		}
+		if(right&&!set[[point[0]+32,point[1]]])
+		{
+			queue.enqueue([point[0]+32,point[1]]);
+		}
+		if(up&&!set[[point[0],point[1]+32]])
+		{
+			queue.enqueue([point[0],point[1]+32]);
+		}
+		if(down&&!set[[point[0],point[1]-32]])
+		{
+			queue.enqueue([point[0],point[1]-32]);
+		}
+		if(!tutorial.rooms[room].floorSet[point])
+		{
+			tutorial.rooms[room].floorSet[point]=true;
+			tutorial.rooms[room].floor[tutorial.rooms[room].floor.length]=point;
+		}
+	}
+	return returnValue;
+}
 
-
-
+Tutorial.prototype.connectingDoors = function(room)
+{
+	for(var wallNum =0; wallNum < tutorial.rooms[room].walls.length; wallNum++)
+	{
+		if(tutorial.rooms[room].walls[wallNum].door == "true")
+		{
+			var door = tutorial.rooms[room].walls[wallNum];
+			var pair = door.pair;
+			var doors = tutorial.calculateLocalDoors(pair.connectsTo[1],pair.connectsTo[2],pair.connectsTo[0]);
+			for(var i = 0; i < doors.length; i++)
+			{
+				if(doors[i]!=pair)
+				{
+					if(!pair.connectedDoorsSet[[doors[i].x,doors[i].y,doors[i].room]])
+					{
+						pair.connectedDoors[pair.connectedDoors.length]=doors[i];
+						pair.connectedDoorsSet[[doors[i].x,doors[i].y,doors[i].room]]=true;
+					}
+				}
+			}
+		}
+	}
+}
 
 /*
 
