@@ -41,7 +41,7 @@ Options.prototype.Loop = function ()
 Options.prototype.Draw = function()
 {
 	ctx.clearRect(0,0,canvas.width, canvas.height);
-	ctx.fillStyle = "rgba(160, 160, 160, 0.6)";
+	ctx.fillStyle = "rgba(160, 160, 160, 1)";
 	ctx.fillRect(0,0,canvas.width, canvas.height);
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
 	ctx.font="bold 20px Courier";
