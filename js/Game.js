@@ -169,6 +169,8 @@ Game.prototype.Loop = function ()
 				game.player.dead=false;
 				game.player.setPos(96,96);
 				game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
+				game.player.poisonTime=0
+				game.player.poisoned=0
 				if(main.playerTeam=="blue")
 				{
 					game.player.room=0;

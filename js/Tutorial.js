@@ -184,6 +184,8 @@ Tutorial.prototype.Loop = function ()
 					tutorial.AI.setPos(96,96);
 					tutorial.AI.room=1;
 					tutorial.AI.target=[92,92];
+					tutorial.AI.poisonTime=0;
+					tutorial.AI.poisoned=0;
 				}
 			}
 			else
@@ -207,6 +209,8 @@ Tutorial.prototype.Loop = function ()
 				{
 					tutorial.player.room=1;
 				}
+				tutorial.player.poisonTime=0;
+				tutorial.player.poisoned=0;
 			}
 		}
 		else
@@ -752,6 +756,8 @@ Tutorial.prototype.Loop = function ()
 			tutorial.player.respawnTimer=2000;
 			tutorial.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
 			tutorial.player.room=-1;
+			tutorial.player.poisonTime=0;
+			tutorial.player.poisoned=0;
 		}
 		if(main.playerPerk==0)
 		{
