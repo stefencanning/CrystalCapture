@@ -162,6 +162,14 @@ Tutorial.prototype.initCanvas=function ()
 
 Tutorial.prototype.Loop = function () 
 {
+	if(document.body.className=="hidden")
+	{
+		tutorial.keys["w"] = false;
+		tutorial.keys["s"] = false;
+		tutorial.keys["a"] = false;
+		tutorial.keys["d"] = false;
+		tutorial.keys["space"] = false;
+	}
 	curTime=new Date();
 	if(tutorial.state==tutorial.PLAYING)
 	{
@@ -1084,11 +1092,11 @@ Tutorial.prototype.Draw = function()
 	for(var i = 0; i < tutorial.hints.length; i++)
 	{
 		ctx.fillStyle = rgb(0, 0, 0);
-		main.fillText(tutorial.hints[i][0], 660, start+(i*20));
+		ctx.fillText(tutorial.hints[i][0], 660, start+(i*20));
 		if(tutorial.hints[i][1])
 		{
 			ctx.fillStyle = rgb(0, 150, 0);
-			main.fillText("done!", 660+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
+			ctx.fillText("done!", 660+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
 		}
 	}
 	//main.fillText("fps: "+tutorial.fps, 700, 300);
