@@ -180,6 +180,16 @@ Main.prototype.mainLoop = function ()
 }
 
 
+Main.prototype.fillText = function(text,x,y)
+{
+	var style = ctx.fillStyle;
+	ctx.fillText(text,x,y);
+	ctx.fillStyle=rgb(0,0,0);
+	ctx.fillText(text,x+1,y+1);
+	ctx.fillStyle=style;
+}
+
+
 function onMouseMove(e)
 {
 	mousePos["x"]=e.pageX-canvas.offsetLeft;

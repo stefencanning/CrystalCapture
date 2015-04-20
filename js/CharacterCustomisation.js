@@ -42,62 +42,62 @@ CharCust.prototype.Draw = function()
 	{
 		var x = charCust.options[i][0]+60;
 		x-=(charCust.options[i][2].length/2)*11;
-		ctx.fillText(charCust.options[i][2], x+35, charCust.options[i][1]);
-		ctx.fillText("<-",  charCust.options[i][0], charCust.options[i][1]);
-		ctx.fillText("->", charCust.options[i][0]+170, charCust.options[i][1]);
+		main.fillText(charCust.options[i][2], x+35, charCust.options[i][1]);
+		main.fillText("<-",  charCust.options[i][0], charCust.options[i][1]);
+		main.fillText("->", charCust.options[i][0]+170, charCust.options[i][1]);
 		if(charCust.options[i][5]=="gun")
 		{
-			ctx.fillText(main.guns[main.playerGun], charCust.options[i][0]+100-(((main.guns[main.playerGun]).length/2)*11), charCust.options[i][1]+25);
+			main.fillText(main.guns[main.playerGun], charCust.options[i][0]+100-(((main.guns[main.playerGun]).length/2)*11), charCust.options[i][1]+25);
 		}
 		else if(charCust.options[i][5]=="HS")
 		{
-			ctx.fillText((main.playerHealthScaling*10)+'%:'+(main.playerSpeedScaling*10)+'%', charCust.options[i][0]+100-((((main.playerHealthScaling*10)+'%:'+(main.playerSpeedScaling*10)+'%').length/2)*11), charCust.options[i][1]+25);
+			main.fillText((main.playerHealthScaling*10)+'%:'+(main.playerSpeedScaling*10)+'%', charCust.options[i][0]+100-((((main.playerHealthScaling*10)+'%:'+(main.playerSpeedScaling*10)+'%').length/2)*11), charCust.options[i][1]+25);
 		}
 		else if(charCust.options[i][5]=="perk")
 		{
-			ctx.fillText(main.perks[main.playerPerk], charCust.options[i][0]+100-(((main.perks[main.playerPerk]).length/2)*11), charCust.options[i][1]+25);
+			main.fillText(main.perks[main.playerPerk], charCust.options[i][0]+100-(((main.perks[main.playerPerk]).length/2)*11), charCust.options[i][1]+25);
 		}
 	}
-	ctx.fillText(String.fromCharCode(91),(canvas.width/2)-159,150);
-	ctx.fillText(String.fromCharCode(93),(canvas.width/2)-149,150);
+	main.fillText(String.fromCharCode(91),(canvas.width/2)-159,150);
+	main.fillText(String.fromCharCode(93),(canvas.width/2)-149,150);
 	if(main.playerShowHair)
 	{
-		ctx.fillText(String.fromCharCode(42),(canvas.width/2)-155,155);
+		main.fillText(String.fromCharCode(42),(canvas.width/2)-155,155);
 	}
-	ctx.fillText(String.fromCharCode(91),(canvas.width/2)-159,250);
-	ctx.fillText(String.fromCharCode(93),(canvas.width/2)-149,250);
+	main.fillText(String.fromCharCode(91),(canvas.width/2)-159,250);
+	main.fillText(String.fromCharCode(93),(canvas.width/2)-149,250);
 	if(main.playerShowBeard)
 	{
-		ctx.fillText(String.fromCharCode(42),(canvas.width/2)-154,255);
+		main.fillText(String.fromCharCode(42),(canvas.width/2)-154,255);
 	}
 	/*
-	ctx.fillText("skin colour", 50, 50);
-	ctx.fillText("<-", 5, 50);
-	ctx.fillText("->", 175, 50);
-	ctx.fillText("gender", 50, 100);
-	ctx.fillText("<-", 5, 100);
-	ctx.fillText("->", 175, 100);
-	ctx.fillText("hair", 50, 150);
-	ctx.fillText(String.fromCharCode(91),145,150);
-	ctx.fillText(String.fromCharCode(93),154,150);
+	main.fillText("skin colour", 50, 50);
+	main.fillText("<-", 5, 50);
+	main.fillText("->", 175, 50);
+	main.fillText("gender", 50, 100);
+	main.fillText("<-", 5, 100);
+	main.fillText("->", 175, 100);
+	main.fillText("hair", 50, 150);
+	main.fillText(String.fromCharCode(91),145,150);
+	main.fillText(String.fromCharCode(93),154,150);
 	if(main.playerShowHair)
 	{
-		ctx.fillText(String.fromCharCode(42),150,155);
+		main.fillText(String.fromCharCode(42),150,155);
 	}
-	ctx.fillText("<-", 5, 150);
-	ctx.fillText("->", 175, 150);
-	ctx.fillText("clothes", 50, 200);
-	ctx.fillText("<-", 5, 200);
-	ctx.fillText("->", 175, 200);
-	ctx.fillText("beard", 50, 250);
-	ctx.fillText(String.fromCharCode(91),145,250);
-	ctx.fillText(String.fromCharCode(93),154,250);
+	main.fillText("<-", 5, 150);
+	main.fillText("->", 175, 150);
+	main.fillText("clothes", 50, 200);
+	main.fillText("<-", 5, 200);
+	main.fillText("->", 175, 200);
+	main.fillText("beard", 50, 250);
+	main.fillText(String.fromCharCode(91),145,250);
+	main.fillText(String.fromCharCode(93),154,250);
 	if(main.playerShowBeard)
 	{
-		ctx.fillText(String.fromCharCode(42),150,255);
+		main.fillText(String.fromCharCode(42),150,255);
 	}
-	ctx.fillText("<-", 5, 250);
-	ctx.fillText("->", 175, 250);
+	main.fillText("<-", 5, 250);
+	main.fillText("->", 175, 250);
 	*/
 	for(i = 0; i < 4;i++)
 	{
@@ -265,9 +265,9 @@ CharCust.prototype.onMouseClick = function(e)
 		}
 	}
 	*/
-	//ctx.fillText(String.fromCharCode(91),145,150);
-	//ctx.fillText(String.fromCharCode(93),154,150);
-	//ctx.fillText(String.fromCharCode(42),150,155);canvas.width/2-16,50+(i*32)
+	//main.fillText(String.fromCharCode(91),145,150);
+	//main.fillText(String.fromCharCode(93),154,150);
+	//main.fillText(String.fromCharCode(42),150,155);canvas.width/2-16,50+(i*32)
 	if(e.x>canvas.width/2-16&&e.x<canvas.width/2+16&&e.y>50&&e.y<50+128)
 	{
 		//matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();

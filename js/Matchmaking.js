@@ -94,11 +94,11 @@ Matchmaking.prototype.Draw = function()
 	if(!matchmaking.ingame)
 	{
 		var text ="search for games   ('C' to create a lobby, 'R' to refresh game list)"; 
-		ctx.fillText(text, center-((text.length/2)*11), 23);
+		main.fillText(text, center-((text.length/2)*11), 23);
 		/*for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
-			ctx.fillText(matchmaking.gameList[i].hostName, 20, 45+i*25);
-			ctx.fillText(matchmaking.gameList[i].count, 30+(matchmaking.gameList[i].host.toString().length*20), 45+i*25);
+			main.fillText(matchmaking.gameList[i].hostName, 20, 45+i*25);
+			main.fillText(matchmaking.gameList[i].count, 30+(matchmaking.gameList[i].host.toString().length*20), 45+i*25);
 		}*/
 		for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
@@ -108,8 +108,8 @@ Matchmaking.prototype.Draw = function()
 			ctx.strokeStyle=gradient;
 			ctx.fillStyle = gradient;
 			ctx.strokeRect(center-200,31+(i*25),400,20);
-			ctx.fillText(matchmaking.gameList[i].hostName, center-199, 48+(i*25));
-			ctx.fillText(matchmaking.gameList[i].count, center+194-((matchmaking.gameList[i].count.toString().length/2)*11), 48+(i*25));
+			main.fillText(matchmaking.gameList[i].hostName, center-199, 48+(i*25));
+			main.fillText(matchmaking.gameList[i].count, center+194-((matchmaking.gameList[i].count.toString().length/2)*11), 48+(i*25));
 			gradient=0;
 		}
 	}
@@ -120,18 +120,18 @@ Matchmaking.prototype.Draw = function()
 		{
 			 str ="game lobby   ('S' to start game)";
 		}
-		ctx.fillText(str, center-((str.length/2)*11), 23);
+		main.fillText(str, center-((str.length/2)*11), 23);
 		ctx.fillStyle = rgb(0, 0, 255);
-		ctx.fillText("Blue Team", center-259-((("Blue Team").length/2)*11), 48);
+		main.fillText("Blue Team", center-259-((("Blue Team").length/2)*11), 48);
 		for(var i = 0; i < blueTeam.length;i++)
 		{
-			ctx.fillText(currentSession[blueTeam[i]], center-259-(((currentSession[blueTeam[i]]).length/2)*11), 73+i*25);
+			main.fillText(currentSession[blueTeam[i]], center-259-(((currentSession[blueTeam[i]]).length/2)*11), 73+i*25);
 		}
 		ctx.fillStyle = rgb(255,165,0);
-		ctx.fillText("Yellow Team", center+254-((("Yellow Team").length/2)*11), 48);
+		main.fillText("Yellow Team", center+254-((("Yellow Team").length/2)*11), 48);
 		for(var i = 0; i < redTeam.length;i++)
 		{
-			ctx.fillText(currentSession[redTeam[i]], center+254-(((currentSession[redTeam[i]]).length/2)*11), 73+i*25);
+			main.fillText(currentSession[redTeam[i]], center+254-(((currentSession[redTeam[i]]).length/2)*11), 73+i*25);
 		}
 	}
 	ctx.lineWidth=2;

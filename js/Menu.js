@@ -41,22 +41,22 @@ Menu.prototype.Draw = function()
 		ctx.strokeStyle=gradient;
 		ctx.fillStyle = gradient;
 		ctx.strokeRect(temp[0],temp[1],temp[2].length*12+5,20);
-		ctx.fillText(temp[2], temp[0]+2, temp[1]+18);
+		main.fillText(temp[2], temp[0]+2, temp[1]+18);
 		gradient=0;
 	}
 	ctx.lineWidth=2;
 	ctx.strokeStyle=rgb(0,0,0);
 	ctx.strokeRect(0,0,canvas.width, canvas.height);
 	/*ctx.strokeRect(20,5,"Matchmaking".length*12+5,20);
-	ctx.fillText("Matchmaking", 22, 23);
+	main.fillText("Matchmaking", 22, 23);
 	
 	ctx.font="20px Lucida Console";
 	ctx.strokeRect(20,30,"Character Customisation".length*12+5,20);
-	ctx.fillText("Character Customisation", 22, 48);
+	main.fillText("Character Customisation", 22, 48);
 	
 	ctx.font="20px Lucida Console";
 	ctx.strokeRect(20,55,"Quit".length*12+5,20);
-	ctx.fillText("Quit", 22, 73);*/
+	main.fillText("Quit", 22, 73);*/
 }
 
 

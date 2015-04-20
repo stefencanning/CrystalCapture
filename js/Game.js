@@ -1030,23 +1030,23 @@ Game.prototype.Draw = function()
 	if(game.distBlue!=-1)
 	{
 		ctx.fillStyle = rgb(0, 0, 255);
-		ctx.fillText("blue crystal: "+game.distBlue, 100, 80);
+		main.fillText("blue crystal: "+game.distBlue, 100, 80);
 	}
 	if(game.distRed!=-1)
 	{
 		ctx.fillStyle = rgb(255,165,0);
-		ctx.fillText("yellow crystal: "+game.distRed, 700, 80);
+		main.fillText("yellow crystal: "+game.distRed, 700, 80);
 	}
 	
 	ctx.fillStyle = rgb(255,165,0);
-	ctx.fillText(game.redPoints+"/3", 760, 50);
+	main.fillText(game.redPoints+"/3", 760, 50);
 	if(game.redFlagCaptured)
 	{
 		ctx.drawImage(images.crystal[0][2],250,34);
 	}
 	
 	ctx.fillStyle = rgb(0,0,255);
-	ctx.fillText(game.bluePoints+"/3", 200, 50);
+	main.fillText(game.bluePoints+"/3", 200, 50);
 	if(game.blueFlagCaptured)
 	{
 		ctx.drawImage(images.crystal[1][2],710,34);
@@ -1054,17 +1054,17 @@ Game.prototype.Draw = function()
 	/*
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="16px Lucida Console";
-	ctx.fillText("hints:", 700, 100);
-	ctx.fillText("click on walls", 700, 120);
-	ctx.fillText("create doors", 700, 140);
-	ctx.fillText("travel through doors", 700, 160);
-	ctx.fillText("find the enemy base", 700, 180);
-	ctx.fillText("steal the enemy crystal", 700, 200);
-	ctx.fillText("bring crystal to base", 700, 220);
-	ctx.fillText("space to shoot", 700, 240);
-	ctx.fillText("kill enemies", 700, 260);
-	ctx.fillText("keep your crystal safe", 700, 280);
-	//ctx.fillText("fps: "+game.fps, 700, 300);
+	main.fillText("hints:", 700, 100);
+	main.fillText("click on walls", 700, 120);
+	main.fillText("create doors", 700, 140);
+	main.fillText("travel through doors", 700, 160);
+	main.fillText("find the enemy base", 700, 180);
+	main.fillText("steal the enemy crystal", 700, 200);
+	main.fillText("bring crystal to base", 700, 220);
+	main.fillText("space to shoot", 700, 240);
+	main.fillText("kill enemies", 700, 260);
+	main.fillText("keep your crystal safe", 700, 280);
+	//main.fillText("fps: "+game.fps, 700, 300);
 	*/
 	
 	ctx.lineWidth=2;

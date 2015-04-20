@@ -53,7 +53,7 @@ Options.prototype.Draw = function()
 		gradient.addColorStop("1.0",rgb(255,165,0));
 		ctx.strokeStyle=gradient;
 		ctx.fillStyle = gradient;
-		ctx.fillText(temp[2], temp[0]+2, temp[1]+18);
+		main.fillText(temp[2], temp[0]+2, temp[1]+18);
 		
 		var gradient=ctx.createLinearGradient(options.barX,temp[1]+25,options.barX+options.width,temp[1]+45);
 		gradient.addColorStop("0",rgb(0, 0, 255));
@@ -78,7 +78,7 @@ Options.prototype.Draw = function()
 	ctx.strokeStyle=gradient;
 	ctx.fillStyle = gradient;
 	ctx.strokeRect(center-((("Back").length/2)*12),60+(options.options.length*50),("Back").length*12+5,20);
-	ctx.fillText("Back", center-((("Back").length/2)*12)+2, 60+(options.options.length*50)+18);
+	main.fillText("Back", center-((("Back").length/2)*12)+2, 60+(options.options.length*50)+18);
 	gradient=0;
 	
 	
@@ -98,7 +98,7 @@ Options.prototype.Overlay = function()
 		gradient.addColorStop("1.0",rgb(255,165,0));
 		ctx.strokeStyle=gradient;
 		ctx.fillStyle = gradient;
-		ctx.fillText(temp[2], temp[0]+2, temp[1]+18);
+		main.fillText(temp[2], temp[0]+2, temp[1]+18);
 		
 		var gradient=ctx.createLinearGradient(options.barX,temp[1]+25,options.barX+options.width,temp[1]+45);
 		gradient.addColorStop("0",rgb(0, 0, 255));
@@ -122,7 +122,7 @@ Options.prototype.Overlay = function()
 	ctx.strokeStyle=gradient;
 	ctx.fillStyle = gradient;
 	ctx.strokeRect(center-((("Back").length/2)*12),60+(options.options.length*50),("Back").length*12+5,20);
-	ctx.fillText("Back", center-((("Back").length/2)*12)+2, 60+(options.options.length*50)+18);
+	main.fillText("Back", center-((("Back").length/2)*12)+2, 60+(options.options.length*50)+18);
 	gradient=0;
 }
 

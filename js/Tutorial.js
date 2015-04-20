@@ -1055,23 +1055,23 @@ Tutorial.prototype.Draw = function()
 	if(tutorial.distBlue!=-1)
 	{
 		ctx.fillStyle = rgb(0, 0, 255);
-		ctx.fillText("blue crystal: "+tutorial.distBlue, 100, 80);
+		main.fillText("blue crystal: "+tutorial.distBlue, 100, 80);
 	}
 	if(tutorial.distRed!=-1)
 	{
 		ctx.fillStyle = rgb(204, 204, 0);
-		ctx.fillText("yellow crystal: "+tutorial.distRed, 700, 80);
+		main.fillText("yellow crystal: "+tutorial.distRed, 700, 80);
 	}
 	
 	ctx.fillStyle = rgb(204,204,0);
-	ctx.fillText(tutorial.redPoints+"/3", 760, 50);
+	main.fillText(tutorial.redPoints+"/3", 760, 50);
 	if(tutorial.redFlagCaptured)
 	{
 		ctx.drawImage(images.crystal[0][2],250,34);
 	}
 	
 	ctx.fillStyle = rgb(0,0,255);
-	ctx.fillText(tutorial.bluePoints+"/3", 200, 50);
+	main.fillText(tutorial.bluePoints+"/3", 200, 50);
 	if(tutorial.blueFlagCaptured)
 	{
 		ctx.drawImage(images.crystal[1][2],710,34);
@@ -1084,14 +1084,14 @@ Tutorial.prototype.Draw = function()
 	for(var i = 0; i < tutorial.hints.length; i++)
 	{
 		ctx.fillStyle = rgb(0, 0, 0);
-		ctx.fillText(tutorial.hints[i][0], 660, start+(i*20));
+		main.fillText(tutorial.hints[i][0], 660, start+(i*20));
 		if(tutorial.hints[i][1])
 		{
 			ctx.fillStyle = rgb(0, 150, 0);
-			ctx.fillText("done!", 660+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
+			main.fillText("done!", 660+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
 		}
 	}
-	//ctx.fillText("fps: "+tutorial.fps, 700, 300);
+	//main.fillText("fps: "+tutorial.fps, 700, 300);
 	
 	
 	
