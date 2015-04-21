@@ -31,7 +31,7 @@ Matchmaking.prototype.onMouseClick = function(e)
 		if(matchmaking.ingame==true)
 		{
 			matchmaking.ingame=false;
-			var messageObject = {"type":"leave","uniqueID":this.uniqueID};
+			var messageObject = {"type":"leave","uniqueID":CLIENT.uniqueID};
 			var message = JSON.stringify(messageObject);
 			CLIENT.SendMessage(message);
 		}

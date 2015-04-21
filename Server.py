@@ -41,7 +41,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		try:
 			for uniqueid,socket in playerConnections.items():
 				if socket == self:
-					if uniqueid in playerSession:
+					if uniqueid in playerSession.keys():
 						s=playerSession[uniqueid]
 						if s.gameState == Session.WAITING_FOR_PLAYERS:
 							s.removePlayer(uniqueid)
@@ -85,7 +85,7 @@ class MessageHandler:
 			self.addToGame(data['uniqueID'],data['hostID'],data['outfit'])
 		elif type == "leave":
 			try:
-				if data['uniqueID'] in playerSession:
+				if data['uniqueID'] in playerSession.keys():
 					s=playerSession[data['uniqueID']]
 					if s.gameState == Session.WAITING_FOR_PLAYERS:
 						s.removePlayer(data['uniqueID'])
@@ -97,7 +97,7 @@ class MessageHandler:
 							for player in playerSession[data['uniqueID']].players:
 								messageHandler.sendMessage(player,"flagDropped",success)
 			except:
-				print("no session")
+				print("session not found")
 		elif type == "startGame":
 			started = playerSession[data['uniqueID']].startGame(data['uniqueID'])
 			if(started):
