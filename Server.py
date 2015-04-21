@@ -83,6 +83,21 @@ class MessageHandler:
 			self.addToConnectionList(socket, data)
 		elif type == "join":
 			self.addToGame(data['uniqueID'],data['hostID'],data['outfit'])
+		elif type == "leave":
+			try:
+				if uniqueid in playerSession:
+					s=playerSession[uniqueid]
+					if s.gameState == Session.WAITING_FOR_PLAYERS:
+						s.removePlayer(uniqueid)
+						for player in s.players:
+							messageHandler.getGamePlayers(player)
+					else:
+						success = playerSession[uniqueID].disconnectedPlayer(uniqueID)
+						if(success['success']):
+							for player in playerSession[uniqueID].players:
+								messageHandler.sendMessage(player,"flagDropped",success)
+			except:
+				print("no session")
 		elif type == "startGame":
 			started = playerSession[data['uniqueID']].startGame(data['uniqueID'])
 			if(started):

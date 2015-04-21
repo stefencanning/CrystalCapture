@@ -112,6 +112,17 @@ CharCust.prototype.Draw = function()
 		}
 		ctx.drawImage(images.clothes[main.playerGender][main.playerClothes],main.animation[main.frame]*32,i*32,32,32,canvas.width/2-16,50+(i*32),32,32);
 	}
+	var x = canvas.width/2 - (("create").length/2*12);
+	var gradient=ctx.createLinearGradient(x,50+(4*32),10+("create").length*12+5,30);
+	gradient.addColorStop("0",rgb(0, 0, 255));
+	gradient.addColorStop("1.0",rgb(255,165,0));
+	ctx.strokeStyle=gradient;
+	ctx.fillStyle = gradient;
+	ctx.strokeRect(x,50+(4*32),("create").length*12+5,20);
+	main.fillText("create", x+2, 50+(4*32)+18);
+	gradient=0;
+	
+	
 	ctx.lineWidth=2;
 	ctx.strokeStyle=rgb(0,0,0);
 	ctx.strokeRect(0,0,canvas.width, canvas.height);
@@ -268,7 +279,7 @@ CharCust.prototype.onMouseClick = function(e)
 	//main.fillText(String.fromCharCode(91),145,150);
 	//main.fillText(String.fromCharCode(93),154,150);
 	//main.fillText(String.fromCharCode(42),150,155);canvas.width/2-16,50+(i*32)
-	if(e.x>canvas.width/2-16&&e.x<canvas.width/2+16&&e.y>50&&e.y<50+128)
+	if(e.x>canvas.width/2-16&&e.x<canvas.width/2+16&&e.y>50&&e.y<50+158)
 	{
 		//matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();
 		main.mode = MENU;
