@@ -142,16 +142,16 @@ Matchmaking.prototype.Draw = function()
 			main.fillText(currentSession[blueTeam[i]], center-259-(((currentSession[blueTeam[i]]).length/2)*11), 80+i*32);
 			
 			var x = center+254+(((currentSession[blueTeam[i]]).length/2)*12);
-			ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+			ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			if(playerOutfit[blueTeam[i]].hair)
 			{
-				ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+				ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			}
 			if(playerOutfit[blueTeam[i]].beard)
 			{
-				ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+				ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			}
-			ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+			ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 		}
 		ctx.fillStyle = rgb(255,165,0);
 		main.fillText("Yellow Team", center+254-((("Yellow Team").length/2)*11), 48);
@@ -160,16 +160,16 @@ Matchmaking.prototype.Draw = function()
 			main.fillText(currentSession[redTeam[i]], center+254-(((currentSession[redTeam[i]]).length/2)*11), 80+i*32);
 			
 			var x = center+254+(((currentSession[redTeam[i]]).length/2)*12);
-			ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+			ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			if(playerOutfit[redTeam[i]].hair)
 			{
-				ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+				ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			}
 			if(playerOutfit[redTeam[i]].beard)
 			{
-				ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+				ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			}
-			ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[1]*32,0*32,32,32,x,65+i*32,32,32);
+			ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 		}
 	}
 	
