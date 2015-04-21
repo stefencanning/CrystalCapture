@@ -108,7 +108,7 @@ Matchmaking.prototype.Draw = function()
 	if(!matchmaking.ingame)
 	{
 		var text ="search for games   ('C' to create a lobby, 'R' to refresh game list)"; 
-		ctx.fillText(text, center-((text.length/2)*11), 23);
+		ctx.fillText(text, center-ctx.measureText(text).width/2, 23);
 		/*for(var i = 0; i < matchmaking.gameList.length;i++)
 		{
 			main.fillText(matchmaking.gameList[i].hostName, 20, 45+i*25);
@@ -123,7 +123,7 @@ Matchmaking.prototype.Draw = function()
 			ctx.fillStyle = gradient;
 			ctx.strokeRect(center-200,31+(i*25),400,20);
 			main.fillText(matchmaking.gameList[i].hostName, center-199, 48+(i*25));
-			main.fillText(matchmaking.gameList[i].count, center+194-((matchmaking.gameList[i].count.toString().length/2)*11), 48+(i*25));
+			main.fillText(matchmaking.gameList[i].count, center+194-((ctx.measureText(matchmaking.gameList[i].count.toString()).width/2)), 48+(i*25));
 			gradient=0;
 		}
 	}
@@ -139,9 +139,11 @@ Matchmaking.prototype.Draw = function()
 		main.fillText("Blue Team", center-259-((("Blue Team").length/2)*11), 48);
 		for(var i = 0; i < blueTeam.length;i++)
 		{
-			main.fillText(currentSession[blueTeam[i]], center-259-(((currentSession[blueTeam[i]]).length/2)*11), 80+i*32);
+			var text = currentSession[blueTeam[i]];
+			var width = ctx.measureText(text).width;
+			main.fillText(currentSession[blueTeam[i]], center-259-(width/2), 80+i*32);
 			
-			var x = center-259+(((currentSession[blueTeam[i]]).length/2)*12)+5;
+			var x = center-259+(width/2)+10;
 			ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			if(playerOutfit[blueTeam[i]].hair)
 			{
@@ -157,9 +159,12 @@ Matchmaking.prototype.Draw = function()
 		main.fillText("Yellow Team", center+254-((("Yellow Team").length/2)*11), 48);
 		for(var i = 0; i < redTeam.length;i++)
 		{
-			main.fillText(currentSession[redTeam[i]], center+254-(((currentSession[redTeam[i]]).length/2)*11), 80+i*32);
+			var text = currentSession[redTeam[i]];
+			var width = ctx.measureText(text).width;
+			main.fillText(currentSession[redTeam[i]], center+254-(width/2), 80+i*32);
 			
-			var x = center+254+(((currentSession[redTeam[i]]).length/2)*12)+5;
+			
+			var x = center+254+(width/2)+10;
 			ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			if(playerOutfit[redTeam[i]].hair)
 			{
