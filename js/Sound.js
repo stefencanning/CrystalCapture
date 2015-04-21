@@ -8,7 +8,7 @@ function Sound()
 
 Sound.prototype.Initialise = function()
 {
-	sound.voiceover=["bCaptured","bDropped","bReturned","bStolen","defeated","slain","start","victorious","yCaptured","yDropped","yReturned","yStolen"];
+	sound.voiceover=["bCaptured","bDropped","bReturned","bStolen","defeated","slain","start","victorious","yCaptured","yDropped","yReturned","yStolen","gun"];
 	sound.soundsToLoad=[];
 	sound.currentIndex=0;
 	sound.loadSongs();

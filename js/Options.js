@@ -27,7 +27,7 @@ Options.prototype.Loop = function ()
 		for(var i = 0; i < options.options.length;i++)
 		{
 			var temp = options.options[i];
-			if(mousePos.x>options.barX-5&&mousePos.x<options.barX+options.width+5&&mousePos.y>temp[1]+30&&mousePos.y<temp[1]+30+10)
+			if(mousePos.x>options.barX-5&&mousePos.x<options.barX+options.width+5&&mousePos.y>temp[1]+25&&mousePos.y<temp[1]+25+20)
 			{
 				var val = mousePos.x-options.barX;
 				val = val/options.width;

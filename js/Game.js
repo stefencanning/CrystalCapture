@@ -663,7 +663,7 @@ Game.prototype.Loop = function ()
 		{
 			sound.playVoice(sound.voiceNumbers["slain"]);
 			var len = game.gravePositions[game.player.room].length;
-			game.gravePositions[game.player.room][len]=[game.player.x-6,game.player.y-6];
+			game.gravePositions[game.player.room][len]=[game.player.x,game.player.y];
 			sound.stopSong(sound.songNumbers["enemy"]);
 			sound.stopSong(sound.songNumbers["walking"]);
 			sound.stopSong(sound.songNumbers["flag"]);
@@ -863,7 +863,7 @@ Game.prototype.Draw = function()
 	game.rooms[game.player.room].drawFirst(offSetX,offSetY);
 	for(var i = 0; i < game.gravePositions[game.player.room].length; i++)
 	{
-		ctx.drawImage(images.grave,game.gravePositions[game.player.room][i][0]+offSetX,game.gravePositions[game.player.room][i][1]+offSetY);
+		ctx.drawImage(images.grave,Math.ceil(game.gravePositions[game.player.room][i][0]+offSetX),Math.ceil(game.gravePositions[game.player.room][i][1]+offSetY));
 	}
 	if(game.player.room==game.redCapturePoint[2])
 	{
@@ -1012,7 +1012,7 @@ Game.prototype.Draw = function()
 		ctx.drawImage(images.defeat,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
 	}
 	
-	game.imageSave+=curTime.getTime()-time.getTime();
+	//game.imageSave+=curTime.getTime()-time.getTime();
 	if(game.imageSave>=5000)
 	{
 		//game.dlCanvas();

@@ -172,7 +172,7 @@ AI.prototype.update = function()
 							if(tutorial.redPoints==3)
 							{
 								sound.playVoice(sound.voiceNumbers["defeated"]);
-								tutorial.state=game.DEFEAT;
+								tutorial.state=tutorial.DEFEAT;
 							}
 						}
 					}

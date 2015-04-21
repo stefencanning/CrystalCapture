@@ -11,13 +11,17 @@ function Client()
 	console.log("assigned client");
 	//var host='149.153.102.40';
 	//var host='192.168.0.18';
-	var host='46.7.218.244';
-	//var host ='52.17.16.13';
+	//var host='46.7.218.244';
+	var host ='52.17.16.13';
 	var port=8080;
 	//this.me;
 	
 	CLIENT.connectToServer(host,port);
 
+	
+			
+	
+	
 	
 	/*
 	var connection = new ActiveXObject("ADODB.Connection") ;
@@ -48,6 +52,41 @@ function Client()
 	sound = new Sound();
 	sound.Initialise();
 	sound.loadSounds();
+	
+	
+	var textBox = document.getElementById('firstname');
+	
+	textBox.addEventListener("keypress", function(event) 
+	{
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if (keycode == 13)
+		{
+			if(document.getElementById('firstname').value!="")
+			{
+				if(images.Ready)
+				{
+					CLIENT.connect(document.getElementById('firstname').value);
+					main = new Main();
+					//ajaxGet("http://54.77.161.217:8000/getUsers");
+					sound.playSong(sound.songNumbers["menu"]);
+					//sound.playSong(sound.songNumbers["enemy"]);
+					elem = document.getElementById('label');
+					elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
+					elem.parentNode.removeChild(document.getElementById('firstname'));
+					elem.parentNode.removeChild(document.getElementById('button'));
+					//document.getElementById('button').value="sags";
+				}
+				else
+				{
+					CLIENT.connect(document.getElementById('firstname').value);
+					images.Ready=true;
+					elem = document.getElementById('label');
+					elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
+					elem.parentNode.removeChild(document.getElementById('firstname'));
+				}
+			}
+		}
+	});
 	/*
 	addEventListener("click", function(e)
 	{
@@ -557,7 +596,7 @@ Client.prototype.handleMessage = function(evt)
 			if(playerGameData[msg.data.uniqueID].room!=-1&&msg.data.update.room==-1)
 			{
 				var len = game.gravePositions[playerGameData[msg.data.uniqueID].room].length;
-				game.gravePositions[playerGameData[msg.data.uniqueID].room][len]=[playerGameData[msg.data.uniqueID].x-6,playerGameData[msg.data.uniqueID].y-6];
+				game.gravePositions[playerGameData[msg.data.uniqueID].room][len]=[playerGameData[msg.data.uniqueID].x,playerGameData[msg.data.uniqueID].y];
 			}
 			playerGameData[msg.data.uniqueID] = msg.data.update;
 		}
@@ -589,6 +628,10 @@ Client.prototype.handleMessage = function(evt)
 			game.bullets[num].ySpeed=msg.data.ySpeed;
 			game.bullets[num].poisonDamage=msg.data.poisonDamage;
 			game.bullets[num].damage=msg.data.damage;
+		}
+		if(msg.data.room==game.player.room)
+		{
+			sound.playVoice(sound.voiceNumbers["gun"]);
 		}
 	}
 	else if(msg.type == "flagDropped")

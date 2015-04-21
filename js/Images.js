@@ -82,7 +82,7 @@ Images.prototype.WallsImages = function()
 	images.doors[2]=new Image();
 	images.imagesToLoad[images.imagesToLoad.length]=[images.doors[2],"img/walls/doorTop5.png"];
 	images.grave=new Image();
-	images.imagesToLoad[images.imagesToLoad.length]=[images.grave,"img/walls/mossGrave.png"];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.grave,"img/walls/gravestone.png"];
 	/*
 	images.doors[2].src="img/walls/doorTop4.png";
 	while(!images.doors[2].complete){images.doors[2].src="img/walls/doorTop4.png";}
@@ -249,29 +249,39 @@ Images.prototype.loadImages = function()
 	{
 		images.bar.style.backgroundColor="green";
 		document.getElementById('div').removeChild(images.border);
-		p1Button = document.createElement('input');
-		p1Button.type="button";
-		p1Button.id="button";
-		p1Button.value="Submit";
-		document.getElementById('div').appendChild(document.createElement('br'));
-		p1Button.addEventListener('click', function()
-		{ 
-			if(document.getElementById('firstname').value!="")
-			{
-				this.style.background+='#00FF00';
-				CLIENT.connect(document.getElementById('firstname').value);
-				main = new Main();
-				//ajaxGet("http://54.77.161.217:8000/getUsers");
-				sound.playSong(sound.songNumbers["menu"]);
-				//sound.playSong(sound.songNumbers["enemy"]);
-				elem = document.getElementById('label');
-				elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
-				elem.parentNode.removeChild(document.getElementById('firstname'));
-				elem.parentNode.removeChild(document.getElementById('button'));
-				//document.getElementById('button').value="sags";
-			}
-		}, false);
-		document.getElementById('div').appendChild(p1Button);
+		if(images.Ready)
+		{
+			main = new Main();
+			document.getElementById('div').appendChild(document.createElement('br'));
+			sound.playSong(sound.songNumbers["menu"]);
+		}
+		else
+		{
+			images.Ready=true;
+			p1Button = document.createElement('input');
+			p1Button.type="button";
+			p1Button.id="button";
+			p1Button.value="Submit";
+			document.getElementById('div').appendChild(document.createElement('br'));
+			p1Button.addEventListener('click', function()
+			{ 
+				if(document.getElementById('firstname').value!="")
+				{
+					this.style.background+='#00FF00';
+					CLIENT.connect(document.getElementById('firstname').value);
+					main = new Main();
+					//ajaxGet("http://54.77.161.217:8000/getUsers");
+					sound.playSong(sound.songNumbers["menu"]);
+					//sound.playSong(sound.songNumbers["enemy"]);
+					elem = document.getElementById('label');
+					elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
+					elem.parentNode.removeChild(document.getElementById('firstname'));
+					elem.parentNode.removeChild(document.getElementById('button'));
+					//document.getElementById('button').value="sags";
+				}
+			}, false);
+			document.getElementById('div').appendChild(p1Button);
+		}
 		return false;
 	}
 	// your top code

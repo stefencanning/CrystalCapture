@@ -28,10 +28,14 @@ CharCust.prototype.Draw = function()
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 	ctx.fillStyle = "rgba(160, 160, 160, 1)";
 	ctx.fillRect(0,0,canvas.width, canvas.height);
+	
+	
 	//ctx.drawImage(dancerImg[game.waitingImage],40,40);
-	ctx.fillStyle = rgb(0, 0, 0);
+	
+	
 	ctx.font="bold 20px Courier";
-	ctx.strokeStyle=rgb(0,0,255);
+	
+	
 	var gradient=ctx.createLinearGradient(center-25,50,center+25,200);
 	gradient.addColorStop("0",rgb(0, 0, 255));
 	gradient.addColorStop("1.0",rgb(255,165,0));
@@ -58,47 +62,19 @@ CharCust.prototype.Draw = function()
 			main.fillText(main.perks[main.playerPerk], charCust.options[i][0]+100-(((main.perks[main.playerPerk]).length/2)*11), charCust.options[i][1]+25);
 		}
 	}
-	main.fillText(String.fromCharCode(91),(canvas.width/2)-159,150);
-	main.fillText(String.fromCharCode(93),(canvas.width/2)-149,150);
+	main.fillText("[",(canvas.width/2)-159,150);
+	main.fillText("]",(canvas.width/2)-149,150);
 	if(main.playerShowHair)
 	{
-		main.fillText(String.fromCharCode(42),(canvas.width/2)-155,155);
+		main.fillText("*",(canvas.width/2)-154,155);
 	}
-	main.fillText(String.fromCharCode(91),(canvas.width/2)-159,250);
-	main.fillText(String.fromCharCode(93),(canvas.width/2)-149,250);
+	main.fillText("[",(canvas.width/2)-159,250);
+	main.fillText("]",(canvas.width/2)-149,250);
 	if(main.playerShowBeard)
 	{
-		main.fillText(String.fromCharCode(42),(canvas.width/2)-154,255);
+		main.fillText("*",(canvas.width/2)-154,255);
 	}
-	/*
-	main.fillText("skin colour", 50, 50);
-	main.fillText("<-", 5, 50);
-	main.fillText("->", 175, 50);
-	main.fillText("gender", 50, 100);
-	main.fillText("<-", 5, 100);
-	main.fillText("->", 175, 100);
-	main.fillText("hair", 50, 150);
-	main.fillText(String.fromCharCode(91),145,150);
-	main.fillText(String.fromCharCode(93),154,150);
-	if(main.playerShowHair)
-	{
-		main.fillText(String.fromCharCode(42),150,155);
-	}
-	main.fillText("<-", 5, 150);
-	main.fillText("->", 175, 150);
-	main.fillText("clothes", 50, 200);
-	main.fillText("<-", 5, 200);
-	main.fillText("->", 175, 200);
-	main.fillText("beard", 50, 250);
-	main.fillText(String.fromCharCode(91),145,250);
-	main.fillText(String.fromCharCode(93),154,250);
-	if(main.playerShowBeard)
-	{
-		main.fillText(String.fromCharCode(42),150,255);
-	}
-	main.fillText("<-", 5, 250);
-	main.fillText("->", 175, 250);
-	*/
+	
 	for(i = 0; i < 4;i++)
 	{
 		ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,i*32,32,32,canvas.width/2-16,50+(i*32),32,32);
@@ -274,7 +250,9 @@ CharCust.prototype.onMouseClick = function(e)
 	//main.fillText(String.fromCharCode(91),145,150);
 	//main.fillText(String.fromCharCode(93),154,150);
 	//main.fillText(String.fromCharCode(42),150,155);canvas.width/2-16,50+(i*32)
-	if(e.x>canvas.width/2-16&&e.x<canvas.width/2+16&&e.y>50&&e.y<50+158)
+	var x = canvas.width/2 - (("create").length/2*12);
+	ctx.strokeRect(x,50+(4*32),("create").length*12+5,20);
+	if(e.x>canvas.width/2 - (("create").length/2*12)&&e.x<canvas.width/2 + (("create").length/2*12)+5&&e.y>50&&e.y<50+158)
 	{
 		//matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();
 		main.mode = MENU;

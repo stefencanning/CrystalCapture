@@ -916,7 +916,7 @@ Tutorial.prototype.Draw = function()
 	tutorial.rooms[tutorial.player.room].drawFirst(offSetX,offSetY);
 	for(var i = 0; i < tutorial.gravePositions[tutorial.player.room].length; i++)
 	{
-		ctx.drawImage(images.grave,tutorial.gravePositions[tutorial.player.room][i][0]+offSetX,tutorial.gravePositions[tutorial.player.room][i][1]+offSetY);
+		ctx.drawImage(images.grave,Math.ceil(tutorial.gravePositions[tutorial.player.room][i][0]+offSetX),Math.ceil(tutorial.gravePositions[tutorial.player.room][i][1]+offSetY));
 	}
 	if(tutorial.player.room==tutorial.redCapturePoint[2])
 	{
@@ -1091,6 +1091,15 @@ Tutorial.prototype.Draw = function()
 		ctx.drawImage(images.crystal[1][2],710,34);
 	}
 	
+	if(tutorial.state==tutorial.VICTORY)
+	{
+		ctx.drawImage(images.victory,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
+	}
+	
+	if(tutorial.state==tutorial.DEFEAT)
+	{
+		ctx.drawImage(images.defeat,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
+	}
 	
 	
 	ctx.font="16px Lucida Console";
@@ -1098,9 +1107,10 @@ Tutorial.prototype.Draw = function()
 	for(var i = 0; i < tutorial.hints.length; i++)
 	{
 		ctx.fillStyle = rgb(0, 0, 0);
-		ctx.fillText(tutorial.hints[i][0], 660, start+(i*20));
+		ctx.fillText(tutorial.hints[i][0], 650, start+(i*20));
 		if(tutorial.hints[i][1])
 		{
+			ctx.fillRect( 650, start-5+(i*20),ctx.measureText(tutorial.hints[i][0]).width,1);
 			ctx.fillStyle = rgb(0, 150, 0);
 			ctx.fillText("done!", 660+ctx.measureText(tutorial.hints[i][0]).width, start+(i*20));
 		}
@@ -1109,14 +1119,6 @@ Tutorial.prototype.Draw = function()
 	
 	
 	
-	if(tutorial.state==tutorial.VICTORY)
-	{
-		ctx.drawImage(images.victory,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
-	}
-	else if(tutorial.state==tutorial.DEFEAT)
-	{
-		ctx.drawImage(images.defeat,(canvas.width/2)-(270/2),(canvas.height/2)-(77/2));
-	}
 	
 }
 
@@ -1149,6 +1151,10 @@ Tutorial.prototype.fireBullet = function(data)
 		tutorial.bullets[num].ySpeed=data.ySpeed;
 		tutorial.bullets[num].poisonDamage=data.poisonDamage;
 		tutorial.bullets[num].damage=data.damage;
+	}
+	if(data.room==tutorial.player.room)
+	{
+		sound.playVoice(sound.voiceNumbers["gun"]);
 	}
 }
 
