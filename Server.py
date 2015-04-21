@@ -85,16 +85,16 @@ class MessageHandler:
 			self.addToGame(data['uniqueID'],data['hostID'],data['outfit'])
 		elif type == "leave":
 			try:
-				if uniqueid in playerSession:
-					s=playerSession[uniqueid]
+				if data['uniqueID'] in playerSession:
+					s=playerSession[data['uniqueID']]
 					if s.gameState == Session.WAITING_FOR_PLAYERS:
-						s.removePlayer(uniqueid)
+						s.removePlayer(data['uniqueID'])
 						for player in s.players:
 							messageHandler.getGamePlayers(player)
 					else:
-						success = playerSession[uniqueID].disconnectedPlayer(uniqueID)
+						success = playerSession[data['uniqueID']].disconnectedPlayer(data['uniqueID'])
 						if(success['success']):
-							for player in playerSession[uniqueID].players:
+							for player in playerSession[data['uniqueID']].players:
 								messageHandler.sendMessage(player,"flagDropped",success)
 			except:
 				print("no session")
