@@ -113,11 +113,6 @@ CharCust.prototype.Draw = function()
 		ctx.drawImage(images.clothes[main.playerGender][main.playerClothes],main.animation[main.frame]*32,i*32,32,32,canvas.width/2-16,50+(i*32),32,32);
 	}
 	var x = canvas.width/2 - (("create").length/2*12);
-	var gradient=ctx.createLinearGradient(x,50+(4*32),10+("create").length*12+5,30);
-	gradient.addColorStop("0",rgb(0, 0, 255));
-	gradient.addColorStop("1.0",rgb(255,165,0));
-	ctx.strokeStyle=gradient;
-	ctx.fillStyle = gradient;
 	ctx.strokeRect(x,50+(4*32),("create").length*12+5,20);
 	main.fillText("create", x+2, 50+(4*32)+18);
 	gradient=0;
