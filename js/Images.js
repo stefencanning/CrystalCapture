@@ -275,6 +275,7 @@ Images.prototype.loadImages = function()
 					//sound.playSong(sound.songNumbers["enemy"]);
 					elem = document.getElementById('label');
 					elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
+					setCookie("name",CLIENT.me,365);
 					elem.parentNode.removeChild(document.getElementById('firstname'));
 					elem.parentNode.removeChild(document.getElementById('button'));
 					//document.getElementById('button').value="sags";

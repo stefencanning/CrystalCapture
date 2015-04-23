@@ -4,6 +4,62 @@ function CharCust()
 
 CharCust.prototype.Initialise = function()
 {
+	
+	
+	var col = getCookie("skin colour");
+	if(col!="")
+	{
+		main.playerColour=col;
+	}
+	var gender = getCookie("gender");
+	if(gender!="")
+	{
+		main.playerGender=gender;
+	}
+	var hair = getCookie("hair");
+	if(hair!="")
+	{
+		main.playerHair=hair;
+	}
+	var clothes = getCookie("clothes");
+	if(clothes!="")
+	{
+		main.playerClothes=clothes;
+	}
+	var beard = getCookie("beard");
+	if(beard!="")
+	{
+		main.playerBeard=beard;
+	}
+	var gun = getCookie("gun type");
+	if(gun!="")
+	{
+		main.playerGun=gun;
+	}
+	var scaling = getCookie("HP:speed");
+	if(scaling!="")
+	{
+		main.playerHealthScaling=scaling;
+	}
+	var perk = getCookie("perk");
+	if(perk!="")
+	{
+		main.playerPerk=perk;
+	}
+	var showHair = getCookie("showHair");
+	if(showHair!="")
+	{
+		main.playerShowHair=showHair;
+	}
+	var showBeard = getCookie("showBeard");
+	if(showBeard!="")
+	{
+		main.playerShowBeard=showBeard;
+	}
+	
+	
+	
+	
 	var center = canvas.width/2;
 	charCust.options =[];
 	charCust.options[charCust.options.length]=[center-295,50+(charCust.options.length*50),"skin colour",function (){ main.playerColour-=1;if(main.playerColour<0){main.playerColour=4;}},function () { main.playerColour+=1;if(main.playerColour>4){main.playerColour=0;}},""];
@@ -15,6 +71,25 @@ CharCust.prototype.Initialise = function()
 	charCust.options[charCust.options.length]=[center+100,50+((charCust.options.length-num)*50),"gun type",function () { main.playerGun-=1;if(main.playerGun<0){main.playerGun=main.guns.length-1;}},function () { main.playerGun+=1;if(main.playerGun>main.guns.length-1){main.playerGun=0;}},"gun"];
 	charCust.options[charCust.options.length]=[center+100,50+((charCust.options.length-num)*50),"HP:speed",function () { if(main.playerHealthScaling<20){if(main.playerHealthScaling>=10){main.playerHealthScaling+=1;}main.playerHealthScaling=main.playerHealthScaling+1;if(main.playerSpeedScaling>10){main.playerSpeedScaling-=1;}main.playerSpeedScaling=main.playerSpeedScaling-1;}},function () {if(main.playerHealthScaling>5){if(main.playerHealthScaling>10){main.playerHealthScaling-=1;}main.playerHealthScaling=main.playerHealthScaling-1;if(main.playerSpeedScaling>=10){main.playerSpeedScaling+=1;}main.playerSpeedScaling=main.playerSpeedScaling+1;}},"HS"];
 	charCust.options[charCust.options.length]=[center+100,50+((charCust.options.length-num)*50),"perk",function () { main.playerPerk-=1;if(main.playerPerk<0){main.playerPerk=main.perks.length-1;}},function () { main.playerPerk+=1;if(main.playerPerk>main.perks.length-1){main.playerPerk=0;}},"perk"];
+}
+
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
 }
 
 CharCust.prototype.Loop = function () 
@@ -143,118 +218,21 @@ CharCust.prototype.onMouseClick = function(e)
 			main.playerShowBeard=0;
 		}
 	}
-	/*
-	if(e.x>5&&e.x<50&&e.y>20&&e.y<50)
-	{
-		main.playerColour-=1;
-		if(main.playerColour<0)
-		{
-			main.playerColour=4;
-		}
-	}
-	if(e.x>175&&e.x<210&&e.y>20&&e.y<50)
-	{
-		main.playerColour+=1;
-		if(main.playerColour>4)
-		{
-			main.playerColour=0;
-		}
-	}
-	if(e.x>5&&e.x<50&&e.y>70&&e.y<100)
-	{
-		main.playerGender-=1;
-		if(main.playerGender<0)
-		{
-			main.playerGender=1;
-		}
-	}
-	if(e.x>175&&e.x<210&&e.y>70&&e.y<100)
-	{
-		main.playerGender+=1;
-		if(main.playerGender>1)
-		{
-			main.playerGender=0;
-		}
-	}
-	if(e.x>5&&e.x<50&&e.y>120&&e.y<150)
-	{
-		main.playerHair-=1;
-		if(main.playerHair<0)
-		{
-			main.playerHair=19;
-		}
-	}
-	if(e.x>175&&e.x<210&&e.y>120&&e.y<150)
-	{
-		main.playerHair+=1;
-		if(main.playerHair>19)
-		{
-			main.playerHair=0;
-		}
-	}
-	if(e.x>145&&e.x<160&&e.y>120&&e.y<152)
-	{
-		if(main.playerShowHair==0)
-		{
-			main.playerShowHair=1;
-		}
-		else
-		{
-			main.playerShowHair=0;
-		}
-	}
-	if(e.x>5&&e.x<50&&e.y>170&&e.y<200)
-	{
-		main.playerClothes-=1;
-		if(main.playerClothes<0)
-		{
-			main.playerClothes=19;
-		}
-	}
-	if(e.x>175&&e.x<210&&e.y>170&&e.y<200)
-	{
-		main.playerClothes+=1;
-		if(main.playerClothes>19)
-		{
-			main.playerClothes=0;
-		}
-	}
-	if(e.x>5&&e.x<50&&e.y>220&&e.y<250)
-	{
-		main.playerBeard-=1;
-		if(main.playerBeard<0)
-		{
-			main.playerBeard=19;
-		}
-	}
-	if(e.x>175&&e.x<210&&e.y>220&&e.y<250)
-	{
-		main.playerBeard+=1;
-		if(main.playerBeard>19)
-		{
-			main.playerBeard=0;
-		}
-	}
-	if(e.x>145&&e.x<160&&e.y>220&&e.y<252)
-	{
-		if(main.playerShowBeard==0)
-		{
-			main.playerShowBeard=1;
-		}
-		else
-		{
-			main.playerShowBeard=0;
-		}
-	}
-	*/
-	//main.fillText(String.fromCharCode(91),145,150);
-	//main.fillText(String.fromCharCode(93),154,150);
-	//main.fillText(String.fromCharCode(42),150,155);canvas.width/2-16,50+(i*32)
 	var x = canvas.width/2 - (("create").length/2*12);
 	ctx.strokeRect(x,50+(4*32),("create").length*12+5,20);
 	if(e.x>canvas.width/2 - (("create").length/2*12)&&e.x<canvas.width/2 + (("create").length/2*12)+5&&e.y>50&&e.y<50+158)
 	{
 		//matchmaking= new Matchmaking();matchmaking.Initialise();main.mode=GAMESELECT;CLIENT.getGames();
+		setCookie("skin colour",main.playerColour,365);
+		setCookie("gender",main.playerGender,365);
+		setCookie("hair",main.playerHair,365);
+		setCookie("clothes",main.playerClothes,365);
+		setCookie("beard",main.playerBeard,365);
+		setCookie("gun type",main.playerGun,365);
+		setCookie("HP:speed",main.playerHealthScaling,365);
+		setCookie("perk",main.playerPerk,365);
+		setCookie("showHair",main.playerShowHair,365);
+		setCookie("showBeard",main.playerShowBeard,365);
 		main.mode = MENU;
 	}
 }

@@ -19,7 +19,7 @@ function Client()
 	CLIENT.connectToServer(host,port);
 
 	
-			
+	
 	
 	
 	
@@ -55,7 +55,11 @@ function Client()
 	
 	
 	var textBox = document.getElementById('firstname');
-	
+	var name = getCookie("name");
+	if(name!="")
+	{
+		textBox.value=name;
+	}
 	textBox.addEventListener("keypress", function(event) 
 	{
 		var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -82,6 +86,7 @@ function Client()
 					images.Ready=true;
 					elem = document.getElementById('label');
 					elem.innerHTML = "Your Name: " + document.getElementById('firstname').value+".";
+					setCookie("name",CLIENT.me,365);
 					elem.parentNode.removeChild(document.getElementById('firstname'));
 				}
 			}
