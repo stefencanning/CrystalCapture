@@ -95,20 +95,20 @@ AI.prototype.update = function()
 		
 		var newPos = tutorial.rooms[this.room].checkCollision(this);
 		
+		this.x=newPos.x;
+		this.y=newPos.y;
 		if(newPos.roomChange)
 		{
 			this.room = newPos.room;
 			var doorsPlayer = tutorial.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
 			this.recalculateRoute(doorsPlayer);
 		}
-		this.x=newPos.x;
-		this.y=newPos.y;
-		
-		if(len<16)
+		else if(len<16)
 		{
 			var doorsPlayer = tutorial.calculateLocalDoors(32*Math.floor(this.x/32),32*Math.floor(this.y/32),this.room);
 			this.recalculateRoute(doorsPlayer);
 		}
+		
 		
 		
 		var flag = tutorial.blueFlag;
