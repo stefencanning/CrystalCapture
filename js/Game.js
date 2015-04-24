@@ -22,7 +22,7 @@ Game.prototype.Initialise=function ()
 	"d":false,
 	"space":false,
 	"tab":false};
-	game.player = new Player(96,96);
+	game.player = new Player(4*32,4*32);
 	if(main.playerTeam=="blue")
 	{
 		game.player.room=0;
@@ -33,12 +33,12 @@ Game.prototype.Initialise=function ()
 	}
 	game.blueFlagCapture=false;
 	game.redFlagCapture=false;
-	game.blueFlag=new Flag(96,96,"blue");
+	game.blueFlag=new Flag(4*32,4*32,"blue");
 	game.blueFlag.room=0;
-	game.redFlag=new Flag(96,96,"red");
+	game.redFlag=new Flag(4*32,4*32,"red");
 	game.redFlag.room=1;
-	game.redCapturePoint = [96,96,1];
-	game.blueCapturePoint = [96,96,0];
+	game.redCapturePoint = [4*32,4*32,1];
+	game.blueCapturePoint = [4*32,4*32,0];
 	game.redPoints=0;
 	game.bluePoints=0;
 	game.players=[];
@@ -122,33 +122,67 @@ Game.prototype.CreateStartRooms=function()
 	for(var i = 0; i < 2; i++)
 	{
 		game.rooms[i] = new Room(i);
-		game.rooms[i].addWall(new Wall(0,0,i,1));
-		game.rooms[i].addWall(new Wall(32,0,i,9));
-		game.rooms[i].addWall(new Wall(64,0,i,9));
-		game.rooms[i].addWall(new Wall(96,0,i,9));
-		game.rooms[i].addWall(new Wall(128,0,i,9));
-		game.rooms[i].addWall(new Wall(160,0,i,9));
-		game.rooms[i].addWall(new Wall(192,0,i,0));
+		game.rooms[i].addWall(new Wall(0*32,0,i,1));
+		game.rooms[i].addWall(new Wall(1*32,0,i,9));
+		game.rooms[i].addWall(new Wall(2*32,0,i,9));
+		game.rooms[i].addWall(new Wall(3*32,0,i,9));
+		game.rooms[i].addWall(new Wall(4*32,0,i,9));
+		game.rooms[i].addWall(new Wall(5*32,0,i,9));
+		game.rooms[i].addWall(new Wall(6*32,0,i,9));
+		game.rooms[i].addWall(new Wall(7*32,0,i,9));
+		game.rooms[i].addWall(new Wall(8*32,0,i,0));
 		
-		game.rooms[i].addWall(new Wall(0,192,i,2));
-		game.rooms[i].addWall(new Wall(32,192,i,9));
-		game.rooms[i].addWall(new Wall(64,192,i,9));
-		game.rooms[i].addWall(new Wall(96,192,i,9));
-		game.rooms[i].addWall(new Wall(128,192,i,9));
-		game.rooms[i].addWall(new Wall(160,192,i,9));
-		game.rooms[i].addWall(new Wall(192,192,i,3));
 		
-		game.rooms[i].addWall(new Wall(192,32,i,10));
-		game.rooms[i].addWall(new Wall(192,64,i,10));
-		game.rooms[i].addWall(new Wall(192,96,i,10));
-		game.rooms[i].addWall(new Wall(192,128,i,10));
-		game.rooms[i].addWall(new Wall(192,160,i,10));
+		game.rooms[i].addWall(new Wall(0*32,8*32,i,2));
+		game.rooms[i].addWall(new Wall(1*32,8*32,i,9));
+		game.rooms[i].addWall(new Wall(2*32,8*32,i,9));
+		game.rooms[i].addWall(new Wall(3*32,8*32,i,9));
+		game.rooms[i].addWall(new Wall(4*32,8*32,i,9));
+		game.rooms[i].addWall(new Wall(5*32,8*32,i,9));
+		game.rooms[i].addWall(new Wall(6*32,8*32,i,9));
+		game.rooms[i].addWall(new Wall(7*32,8*32,i,9));
+		game.rooms[i].addWall(new Wall(8*32,8*32,i,3));
 		
-		game.rooms[i].addWall(new Wall(0,32,i,10));
-		game.rooms[i].addWall(new Wall(0,64,i,10));
-		game.rooms[i].addWall(new Wall(0,96,i,10));
-		game.rooms[i].addWall(new Wall(0,128,i,10));
-		game.rooms[i].addWall(new Wall(0,160,i,10));
+		
+		game.rooms[i].addWall(new Wall(8*32,1*32,i,10));
+		game.rooms[i].addWall(new Wall(8*32,2*32,i,10));
+		game.rooms[i].addWall(new Wall(8*32,3*32,i,10));
+		game.rooms[i].addWall(new Wall(8*32,4*32,i,10));
+		game.rooms[i].addWall(new Wall(8*32,5*32,i,10));
+		game.rooms[i].addWall(new Wall(8*32,6*32,i,10));
+		game.rooms[i].addWall(new Wall(8*32,7*32,i,10));
+		
+		
+		game.rooms[i].addWall(new Wall(0*32,1*32,i,10));
+		game.rooms[i].addWall(new Wall(0*32,2*32,i,10));
+		game.rooms[i].addWall(new Wall(0*32,3*32,i,10));
+		game.rooms[i].addWall(new Wall(0*32,4*32,i,10));
+		game.rooms[i].addWall(new Wall(0*32,5*32,i,10));
+		game.rooms[i].addWall(new Wall(0*32,6*32,i,10));
+		game.rooms[i].addWall(new Wall(0*32,7*32,i,10));
+		
+		
+		game.rooms[i].addWall(new Wall(2*32,2*32,i,1));
+		game.rooms[i].addWall(new Wall(3*32,2*32,i,11));
+		game.rooms[i].addWall(new Wall(2*32,3*32,i,14));
+		
+		
+		game.rooms[i].addWall(new Wall(5*32,2*32,i,13));
+		game.rooms[i].addWall(new Wall(6*32,2*32,i,0));
+		game.rooms[i].addWall(new Wall(6*32,3*32,i,14));
+		
+		
+		game.rooms[i].addWall(new Wall(2*32,5*32,i,12));
+		game.rooms[i].addWall(new Wall(2*32,6*32,i,2));
+		game.rooms[i].addWall(new Wall(3*32,6*32,i,11));
+		
+		
+		game.rooms[i].addWall(new Wall(6*32,6*32,i,3));
+		game.rooms[i].addWall(new Wall(5*32,6*32,i,13));
+		game.rooms[i].addWall(new Wall(6*32,5*32,i,12));
+		
+		
+		
 		game.gravePositions[i]=[];
 		CLIENT.calculateLocalDoors(96,96,i);
 	}
@@ -740,6 +774,7 @@ Game.prototype.Loop = function ()
 		if(game.player.health<=0)
 		{
 			game.killDisplay.enqueue([game.player.lastHit,CLIENT.uniqueID,500]);
+			playerDeaths[CLIENT.uniqueID]+=1;
 			sound.playVoice(sound.voiceNumbers["slain"]);
 			var len = game.gravePositions[game.player.room].length;
 			game.gravePositions[game.player.room][len]=[game.player.x,game.player.y];

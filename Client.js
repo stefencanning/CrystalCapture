@@ -905,7 +905,7 @@ Client.prototype.connectingDoors = function(room)
 			var doors = CLIENT.calculateLocalDoors(pair.connectsTo[1],pair.connectsTo[2],pair.connectsTo[0]);
 			for(var i = 0; i < doors.length; i++)
 			{
-				if(doors[i]!=pair)
+				if(doors[i]!=pair&&doors[i]!=door)
 				{
 					if(!pair.connectedDoorsSet[[doors[i].x,doors[i].y,doors[i].room]])
 					{

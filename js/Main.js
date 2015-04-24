@@ -31,7 +31,7 @@ function Main()
 	//weapons
 	main.guns=["pistol","shotgun","sniper"];
 	main.gunReload=[500,750,1000];
-	main.gunSpeed=[6*60,6*60,12*60];
+	main.gunSpeed=[6*60,6*60,24*60];
 	main.gunDamage=[20,6.5,30];
 	
 	//perks
