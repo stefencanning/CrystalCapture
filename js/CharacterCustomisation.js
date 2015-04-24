@@ -156,6 +156,7 @@ CharCust.prototype.Draw = function()
 		else if(charCust.options[i][5]=="perk")
 		{
 			main.fillText(main.perks[main.playerPerk], charCust.options[i][0]+100-(((main.perks[main.playerPerk]).length/2)*11), charCust.options[i][1]+25);
+			main.fillText(main.perksDescr[main.playerPerk], charCust.options[i][0]+100-(((main.perksDescr[main.playerPerk]).length/2)*11), charCust.options[i][1]+50);
 		}
 	}
 	main.fillText("[",(canvas.width/2)-159,150);

@@ -36,6 +36,7 @@ function Main()
 	
 	//perks
 	main.perks=["HP regen","flag sprint","poison bullet","bombs"];
+	main.perksDescr=["heals over time","run faster with the flag","bullets apply a poison","'space bar' drops a bomb"];
 	main.perkStrength=[3,1.5,10,10000];
 	
 	//player stats
