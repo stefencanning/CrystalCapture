@@ -44,7 +44,7 @@ CharCust.prototype.Initialise = function()
 	var Speedscaling = getCookie("speed");
 	if(Speedscaling!="")
 	{
-		main.playerHealthScaling=Speedscaling;
+		main.playerSpeedScaling=Speedscaling;
 	}
 	var perk = getCookie("perk");
 	if(perk!="")
