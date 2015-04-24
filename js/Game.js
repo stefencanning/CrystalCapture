@@ -416,7 +416,7 @@ Game.prototype.Loop = function ()
 									game.distBlue=0;
 									doors[i].bluePath=true;
 									var pathDoor = doors[i];
-									while(pathDoor.leadingDoor!=null)
+									while(pathDoor.leadingDoor!=-1)
 									{
 										game.distBlue+=1;
 										pathDoor.leadingDoor.bluePath = true;
@@ -430,7 +430,7 @@ Game.prototype.Loop = function ()
 									game.distBlue=1;
 									doors[i].bluePath=true;
 									var pathDoor = doors[i];
-									while(pathDoor.leadingDoor!=null)
+									while(pathDoor.leadingDoor!=-1)
 									{
 										game.distBlue+=1;
 										pathDoor.leadingDoor.bluePath = true;
@@ -442,6 +442,15 @@ Game.prototype.Loop = function ()
 								set[[door.x,door.y,door.room]]=true;
 							}
 						}
+					}
+				}
+				else
+				{
+					var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+					for(var i = 0; i < doorsPlayer.length; i++)
+					{
+						doorsPlayer[i].bluePath = false;
+						doorsPlayer[i].leadingDoor=-1;
 					}
 				}
 				game.distRed=-1;
@@ -529,6 +538,15 @@ Game.prototype.Loop = function ()
 								set[[door.x,door.y,door.room]]=true;
 							}
 						}
+					}
+				}
+				else
+				{
+					var doorsPlayer = CLIENT.calculateLocalDoors(newPos.x,newPos.y,newPos.room);
+					for(var i = 0; i < doorsPlayer.length; i++)
+					{
+						doorsPlayer[i].redPath = false;
+						doorsPlayer[i].leadingDoor=-1;
 					}
 				}
 				game.player.room = newPos.room;
