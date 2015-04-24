@@ -853,7 +853,7 @@ Game.prototype.Loop = function ()
 		}
 		if(game.player.health<=0)
 		{
-			game.killDisplay.enqueue([game.player.lastHit,CLIENT.uniqueID,500]);
+			game.killDisplay.enqueue([game.player.lastHit,CLIENT.uniqueID,1000]);
 			playerDeaths[CLIENT.uniqueID]+=1;
 			playerKills[game.player.lastHit]+=1;
 			sound.playVoice(sound.voiceNumbers["slain"]);
