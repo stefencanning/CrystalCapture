@@ -385,6 +385,12 @@ Game.prototype.Loop = function ()
 						{
 							found=true;
 						}
+						if(foundSet[[door.pair.x,door.pair.y,door.pair.room]])
+						{
+							found=true;
+							game.distBlue=1;
+							door.bluePath=true;
+						}
 						var doors = door.connectedDoors;
 						for(var i = 0; i < doors.length; i++)
 						{
@@ -454,6 +460,12 @@ Game.prototype.Loop = function ()
 						if(foundSet[[door.x,door.y,door.room]])
 						{
 							found=true;
+						}
+						if(foundSet[[door.pair.x,door.pair.y,door.pair.room]])
+						{
+							found=true;
+							game.distRed=1;
+							door.redPath=true;
 						}
 						var doors = door.connectedDoors;
 						for(var i = 0; i < doors.length; i++)

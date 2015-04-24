@@ -92,6 +92,7 @@ function Client()
 			}
 		}
 	});
+	textBox.focus();
 	/*
 	addEventListener("click", function(e)
 	{
