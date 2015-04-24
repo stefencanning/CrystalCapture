@@ -220,7 +220,7 @@ Game.prototype.Loop = function ()
 			if(game.player.respawnTimer<=0)
 			{
 				game.player.dead=false;
-				game.player.setPos(96,96);
+				game.player.setPos(4*32,4*32);
 				game.player.health=(main.playerMaxHealth*(main.playerHealthScaling/10));
 				game.player.poisonTime=0
 				game.player.poisoned=0
