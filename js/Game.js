@@ -47,6 +47,7 @@ Game.prototype.Initialise=function ()
 	game.timeSinceLastUpdate=0;
 	game.imageSave=0;
 	game.imgNum=0;
+	game.killDisplay=new Queue();
 	//game.fps=0;
 }
 Game.prototype.dealloc=function()
@@ -72,6 +73,11 @@ Game.prototype.dealloc=function()
 		game.bombs[i]=0;
 	}
 	game.bombs=0;
+	while(!game.killDisplay.isEmpty())
+	{
+		game.killDisplay.dequeue();
+	}
+	game.killDisplay=0;
 }
 
 
@@ -1143,11 +1149,42 @@ Game.prototype.Draw = function()
 		ctx.drawImage(images.crystal[1][2],710,34);
 	}
 	
+	var center = canvas.width/2;
+	if(!game.killDisplay.isEmpty())
+	{
+		game.imageSave+=curTime.getTime()-time.getTime();
+		var data = game.killDisplay.peek();
+		if(blueTeam[data[0]])
+		{
+			ctx.fillStyle = rgb(0, 0, 0);
+		}
+		else if(redTeam[data[0]])
+		{
+			ctx.fillStyle = rgb(255,165,0);
+		}
+		main.fillText(currentSession[data[0]], center-32-(ctx.measureText(currentSession[data[0]]).width), 75);
+		if(blueTeam[data[1]])
+		{
+			ctx.fillStyle = rgb(0, 0, 0);
+		}
+		else if(redTeam[data[1]])
+		{
+			ctx.fillStyle = rgb(255,165,0);
+		}
+		main.fillText(currentSession[data[1]], center+32, 75);
+		
+		data[2]-=curTime.getTime()-time.getTime();
+		if(data[2]<=0)
+		{
+			game.killDisplay.dequeue();
+		}
+	}
+	
+	
 	if(game.keys["tab"])
 	{
 		ctx.fillStyle = "rgba(160, 160, 160, 0.6)";
 		ctx.fillRect(0,0,canvas.width, canvas.height);
-		var center = canvas.width/2;
 		var str = "Scoreboard";
 		var yStartPos=100;
 		ctx.fillStyle = rgb(0, 0, 0);
