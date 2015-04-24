@@ -1225,7 +1225,6 @@ Game.prototype.Draw = function()
 	}
 	
 	
-	main.perks=["HP regen","flag sprint","poison bullet","bombs"];
 	if(main.playerPerk==0)
 	{
 		if(game.player.health<(main.playerMaxHealth*(main.playerHealthScaling/10)))
