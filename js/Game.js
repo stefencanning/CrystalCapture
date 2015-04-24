@@ -739,6 +739,7 @@ Game.prototype.Loop = function ()
 		}
 		if(game.player.health<=0)
 		{
+			game.killDisplay.enqueue([game.player.lastHit,CLIENT.uniqueID,500]);
 			sound.playVoice(sound.voiceNumbers["slain"]);
 			var len = game.gravePositions[game.player.room].length;
 			game.gravePositions[game.player.room][len]=[game.player.x,game.player.y];

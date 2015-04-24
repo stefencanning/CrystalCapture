@@ -36,10 +36,15 @@ CharCust.prototype.Initialise = function()
 	{
 		main.playerGun=gun;
 	}
-	var scaling = getCookie("HP:speed");
-	if(scaling!="")
+	var HPscaling = getCookie("HP");
+	if(HPscaling!="")
 	{
-		main.playerHealthScaling=scaling;
+		main.playerHealthScaling=HPscaling;
+	}
+	var Speedscaling = getCookie("speed");
+	if(Speedscaling!="")
+	{
+		main.playerHealthScaling=Speedscaling;
 	}
 	var perk = getCookie("perk");
 	if(perk!="")
@@ -69,7 +74,23 @@ CharCust.prototype.Initialise = function()
 	charCust.options[charCust.options.length]=[center-295,50+(charCust.options.length*50),"beard",function () { main.playerBeard-=1;if(main.playerBeard<0){main.playerBeard=19;}},function () { main.playerBeard+=1;if(main.playerBeard>19){main.playerBeard=0;}},""];
 	var num = charCust.options.length;
 	charCust.options[charCust.options.length]=[center+100,50+((charCust.options.length-num)*50),"gun type",function () { main.playerGun-=1;if(main.playerGun<0){main.playerGun=main.guns.length-1;}},function () { main.playerGun+=1;if(main.playerGun>main.guns.length-1){main.playerGun=0;}},"gun"];
-	charCust.options[charCust.options.length]=[center+100,50+((charCust.options.length-num)*50),"HP:speed",function () { if(main.playerHealthScaling<20){if(main.playerHealthScaling>=10){main.playerHealthScaling+=1;}main.playerHealthScaling=main.playerHealthScaling+1;if(main.playerSpeedScaling>10){main.playerSpeedScaling-=1;}main.playerSpeedScaling=main.playerSpeedScaling-1;}},function () {if(main.playerHealthScaling>5){if(main.playerHealthScaling>10){main.playerHealthScaling-=1;}main.playerHealthScaling=main.playerHealthScaling-1;if(main.playerSpeedScaling>=10){main.playerSpeedScaling+=1;}main.playerSpeedScaling=main.playerSpeedScaling+1;}},"HS"];
+	charCust.options[charCust.options.length]=[center+100,50+((charCust.options.length-num)*50),"HP:speed",
+	function () 
+	{ 
+		if(main.playerHealthScaling<20)
+		{
+			if(main.playerHealthScaling>=10)
+			{
+				main.playerHealthScaling+=1;
+			}
+			main.playerHealthScaling=main.playerHealthScaling+1;
+			if(main.playerSpeedScaling>10)
+			{
+				main.playerSpeedScaling-=1;
+			}
+			main.playerSpeedScaling=main.playerSpeedScaling-1;
+		}
+	},function () {if(main.playerHealthScaling>5){if(main.playerHealthScaling>10){main.playerHealthScaling-=1;}main.playerHealthScaling=main.playerHealthScaling-1;if(main.playerSpeedScaling>=10){main.playerSpeedScaling+=1;}main.playerSpeedScaling=main.playerSpeedScaling+1;}},"HS"];
 	charCust.options[charCust.options.length]=[center+100,50+((charCust.options.length-num)*50),"perk",function () { main.playerPerk-=1;if(main.playerPerk<0){main.playerPerk=main.perks.length-1;}},function () { main.playerPerk+=1;if(main.playerPerk>main.perks.length-1){main.playerPerk=0;}},"perk"];
 }
 
@@ -139,13 +160,13 @@ CharCust.prototype.Draw = function()
 	}
 	main.fillText("[",(canvas.width/2)-159,150);
 	main.fillText("]",(canvas.width/2)-149,150);
-	if(main.playerShowHair)
+	if(main.playerShowHair==1)
 	{
 		main.fillText("*",(canvas.width/2)-154,155);
 	}
 	main.fillText("[",(canvas.width/2)-159,250);
 	main.fillText("]",(canvas.width/2)-149,250);
-	if(main.playerShowBeard)
+	if(main.playerShowBeard==1)
 	{
 		main.fillText("*",(canvas.width/2)-154,255);
 	}
@@ -153,11 +174,11 @@ CharCust.prototype.Draw = function()
 	for(i = 0; i < 4;i++)
 	{
 		ctx.drawImage(images.bodies[main.playerGender][main.playerBodyType][main.playerColour],main.animation[main.frame]*32,i*32,32,32,canvas.width/2-16,50+(i*32),32,32);
-		if(main.playerShowHair)
+		if(main.playerShowHair==1)
 		{
 			ctx.drawImage(images.hair[main.playerGender][main.playerHair],main.animation[main.frame]*32,i*32,32,32,canvas.width/2-16,50+(i*32),32,32);
 		}
-		if(main.playerShowBeard)
+		if(main.playerShowBeard==1)
 		{
 			ctx.drawImage(images.beard[main.playerBeard],main.animation[main.frame]*32,i*32,32,32,canvas.width/2-16,50+(i*32),32,32);
 		}
@@ -229,7 +250,8 @@ CharCust.prototype.onMouseClick = function(e)
 		setCookie("clothes",main.playerClothes,365);
 		setCookie("beard",main.playerBeard,365);
 		setCookie("gun type",main.playerGun,365);
-		setCookie("HP:speed",main.playerHealthScaling,365);
+		setCookie("HP",main.playerHealthScaling,365);
+		setCookie("speed",main.playerSpeedScaling,365);
 		setCookie("perk",main.playerPerk,365);
 		setCookie("showHair",main.playerShowHair,365);
 		setCookie("showBeard",main.playerShowBeard,365);
