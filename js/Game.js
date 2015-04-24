@@ -682,7 +682,7 @@ Game.prototype.Loop = function ()
 								game.bullets[k].xSpeed=xSpeed*main.gunSpeed[0];
 								game.bullets[k].ySpeed=ySpeed*main.gunSpeed[0];
 								game.bullets[k].poisonDamage=0;
-								game.bullets[k].damage=main.gunDamage[0]*3;
+								game.bullets[k].damage=main.gunDamage[0];
 								game.bullets[k].shotBy=game.bombs[i].shotBy;
 								created=true;
 							}
@@ -696,7 +696,7 @@ Game.prototype.Loop = function ()
 							game.bullets[num].xSpeed=xSpeed*main.gunSpeed[0];
 							game.bullets[num].ySpeed=ySpeed*main.gunSpeed[0];
 							game.bullets[num].poisonDamage=0;
-							game.bullets[num].damage=main.gunDamage[0]*3;
+							game.bullets[num].damage=main.gunDamage[0];
 							game.bullets[num].shotBy=game.bombs[i].shotBy;
 						}
 						if(game.bombs[i].room==game.player.room)
@@ -1126,6 +1126,51 @@ Game.prototype.Draw = function()
 		game.imageSave=0;
 	}
 	
+	
+	main.perks=["HP regen","flag sprint","poison bullet","bombs"];
+	if(main.playerPerk==0)
+	{
+		if(game.player.health<(main.playerMaxHealth*(main.playerHealthScaling/10)))
+		{
+			ctx.drawImage(images.healthPerk[1],10,10);
+		}
+		else
+		{
+			ctx.drawImage(images.healthPerk[0],10,10);
+		}
+	}
+	else if(main.playerPerk==1)
+	{
+		if(game.player.gotFlag==1)
+		{
+			ctx.drawImage(images.flagPerk[1],10,10);
+		}
+		else
+		{
+			ctx.drawImage(images.flagPerk[0],10,10);
+		}
+	}
+	else if(main.playerPerk==2)
+	{
+		ctx.drawImage(images.poisonPerk,10,10);
+	}
+	else
+	{
+		if(game.player.bombTime<=0)
+		{
+			ctx.drawImage(images.bombPerk[1],10,10);
+		}
+		else
+		{
+			ctx.drawImage(images.bombPerk[0],10,10);
+			ctx.font="bold 32px Courier";
+			ctx.fillStyle = rgb(255, 255, 255);
+			ctx.fillText(Math.ceil(game.player.bombTime/1000), 42-(ctx.measureText(Math.ceil(game.player.bombTime/1000)).width/2), 42);
+		}
+	}
+	
+	
+	
 	ctx.fillStyle = rgb(0, 0, 0);
 	ctx.font="bold 20px Courier";
 	if(game.distBlue!=-1)
@@ -1167,6 +1212,9 @@ Game.prototype.Draw = function()
 			ctx.fillStyle = rgb(255,165,0);
 		}
 		main.fillText(currentSession[data[0]], center-32-(ctx.measureText(currentSession[data[0]]).width), 75);
+		
+		ctx.drawImage(images.skull,center-32,75-32);
+		
 		if(blueTeam[data[1]])
 		{
 			ctx.fillStyle = rgb(0, 0, 0);

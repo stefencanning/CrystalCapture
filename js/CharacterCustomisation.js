@@ -9,57 +9,57 @@ CharCust.prototype.Initialise = function()
 	var col = getCookie("skin colour");
 	if(col!="")
 	{
-		main.playerColour=col;
+		main.playerColour=parseInt(col);
 	}
 	var gender = getCookie("gender");
 	if(gender!="")
 	{
-		main.playerGender=gender;
+		main.playerGender=parseInt(gender);
 	}
 	var hair = getCookie("hair");
 	if(hair!="")
 	{
-		main.playerHair=hair;
+		main.playerHair=parseInt(hair);
 	}
 	var clothes = getCookie("clothes");
 	if(clothes!="")
 	{
-		main.playerClothes=clothes;
+		main.playerClothes=parseInt(clothes);
 	}
 	var beard = getCookie("beard");
 	if(beard!="")
 	{
-		main.playerBeard=beard;
+		main.playerBeard=parseInt(beard);
 	}
 	var gun = getCookie("gun type");
 	if(gun!="")
 	{
-		main.playerGun=gun;
+		main.playerGun=parseInt(gun);
 	}
 	var HPscaling = getCookie("HP");
 	if(HPscaling!="")
 	{
-		main.playerHealthScaling=HPscaling;
+		main.playerHealthScaling=parseInt(HPscaling);
 	}
 	var Speedscaling = getCookie("speed");
 	if(Speedscaling!="")
 	{
-		main.playerSpeedScaling=Speedscaling;
+		main.playerSpeedScaling=parseInt(Speedscaling);
 	}
 	var perk = getCookie("perk");
 	if(perk!="")
 	{
-		main.playerPerk=perk;
+		main.playerPerk=parseInt(perk);
 	}
 	var showHair = getCookie("showHair");
 	if(showHair!="")
 	{
-		main.playerShowHair=showHair;
+		main.playerShowHair=parseInt(showHair);
 	}
 	var showBeard = getCookie("showBeard");
 	if(showBeard!="")
 	{
-		main.playerShowBeard=showBeard;
+		main.playerShowBeard=parseInt(showBeard);
 	}
 	
 	

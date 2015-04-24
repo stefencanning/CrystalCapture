@@ -97,6 +97,21 @@ Images.prototype.WallsImages = function()
 	
 	images.bombRed=new Image();
 	images.imagesToLoad[images.imagesToLoad.length]=[images.bombRed,"img/walls/redbomb.png"];
+	
+	images.skull=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.skull,"img/perks/skull.png"];
+	
+	images.bombPerk=[new Image(),new Image()];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.bombPerk[0],"img/perks/bomb perk off.png"];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.bombPerk[1],"img/perks/bomb perk.png"];
+	images.flagPerk=[new Image(),new Image()];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.flagPerk[0],"img/perks/flag sprint perk off.png"];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.flagPerk[1],"img/perks/flag sprint perk.png"];
+	images.healthPerk=[new Image(),new Image()];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.healthPerk[0],"img/perks/health regen perk off.png"];
+	images.imagesToLoad[images.imagesToLoad.length]=[images.healthPerk[1],"img/perks/health regen perk.png"];
+	images.poisonPerk=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.poisonPerk,"img/perks/poison bullet perk.png"];
 }
 
 Images.prototype.BodyImages = function()
