@@ -620,7 +620,7 @@ Client.prototype.handleMessage = function(evt)
 		{
 			if(playerGameData[msg.data.uniqueID].room!=-1&&msg.data.update.room==-1)
 			{
-				game.killDisplay.enqueue([msg.data.lastDamage,msg.data.uniqueID,500]);
+				game.killDisplay.enqueue([msg.data.update.lastDamage,msg.data.uniqueID,500]);
 				playerKills[msg.data.lastDamage]+=1;
 				playerDeaths[msg.data.uniqueID]+=1;
 				var len = game.gravePositions[playerGameData[msg.data.uniqueID].room].length;
