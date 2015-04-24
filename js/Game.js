@@ -635,20 +635,23 @@ Game.prototype.Loop = function ()
 							}
 						}
 					}
-					if(game.bullets[i].team!="blue")
+					if(game.bullets[i] != null)
 					{
-						for(var j = 0; j < blueTeam.length;j++)
+						if(game.bullets[i].team!="blue")
 						{
-							if(playerGameData[blueTeam[j]]!=0&&game.bullets[i] != null)
+							for(var j = 0; j < blueTeam.length;j++)
 							{
-								if(playerGameData[blueTeam[j]].room==game.bullets[i].room)
+								if(playerGameData[blueTeam[j]]!=0&&game.bullets[i] != null)
 								{
-									if(playerGameData[blueTeam[j]].x+game.player.w>game.bullets[i].x
-									&&playerGameData[blueTeam[j]].x<game.bullets[i].x+game.bullets[i].w
-									&&playerGameData[blueTeam[j]].y+game.player.h>game.bullets[i].y
-									&&playerGameData[blueTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+									if(playerGameData[blueTeam[j]].room==game.bullets[i].room)
 									{
-										game.bullets[i] = null;
+										if(playerGameData[blueTeam[j]].x+game.player.w>game.bullets[i].x
+										&&playerGameData[blueTeam[j]].x<game.bullets[i].x+game.bullets[i].w
+										&&playerGameData[blueTeam[j]].y+game.player.h>game.bullets[i].y
+										&&playerGameData[blueTeam[j]].y<game.bullets[i].y+game.bullets[i].h)
+										{
+											game.bullets[i] = null;
+										}
 									}
 								}
 							}
