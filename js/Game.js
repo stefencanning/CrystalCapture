@@ -403,7 +403,7 @@ Game.prototype.Loop = function ()
 							door.bluePath=true;
 						}
 						var doors = door.connectedDoors;
-						for(var i = 0; i < doors.length; i++)
+						for(var i = 0; i < doors.length&&!found; i++)
 						{
 							if(!set[[doors[i].x,doors[i].y,doors[i].room]])
 							{
@@ -490,7 +490,7 @@ Game.prototype.Loop = function ()
 							door.redPath=true;
 						}
 						var doors = door.connectedDoors;
-						for(var i = 0; i < doors.length; i++)
+						for(var i = 0; i < doors.length&&!found; i++)
 						{
 							if(!set[[doors[i].x,doors[i].y,doors[i].room]])
 							{
