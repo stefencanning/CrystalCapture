@@ -392,11 +392,25 @@ Game.prototype.Loop = function ()
 							{
 								doors[i].bluePath = false;
 								doors[i].leadingDoor=door;
-								//if(doors[i].connectsTo[0]==newPos.room)
-								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]]||foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]])
+								//if(doors[i].connectsTo[0]==newPos.room)||foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]]
+								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
 								{
 									found=true;
 									game.distBlue=0;
+									doors[i].bluePath=true;
+									var pathDoor = doors[i];
+									while(pathDoor.leadingDoor!=null)
+									{
+										game.distBlue+=1;
+										pathDoor.leadingDoor.bluePath = true;
+										pathDoor = pathDoor.leadingDoor;
+									}
+									break;
+								}
+								if(foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]])
+								{
+									found=true;
+									game.distBlue=1;
 									doors[i].bluePath=true;
 									var pathDoor = doors[i];
 									while(pathDoor.leadingDoor!=null)
@@ -448,11 +462,25 @@ Game.prototype.Loop = function ()
 							{
 								doors[i].redPath = false;
 								doors[i].leadingDoor=door;
-								//if(doors[i].connectsTo[0]==newPos.room)
-								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]]||foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]])
+								//if(doors[i].connectsTo[0]==newPos.room)||foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]]
+								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
 								{
 									found=true;
 									game.distRed=0;
+									doors[i].redPath=true;
+									var pathDoor = doors[i];
+									while(pathDoor.leadingDoor!=-1)
+									{
+										game.distRed+=1;
+										pathDoor.leadingDoor.redPath = true;
+										pathDoor = pathDoor.leadingDoor;
+									}
+									break;
+								}
+								if(foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]])
+								{
+									found=true;
+									game.distRed=1;
 									doors[i].redPath=true;
 									var pathDoor = doors[i];
 									while(pathDoor.leadingDoor!=-1)
