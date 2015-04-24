@@ -393,7 +393,7 @@ Game.prototype.Loop = function ()
 								doors[i].bluePath = false;
 								doors[i].leadingDoor=door;
 								//if(doors[i].connectsTo[0]==newPos.room)
-								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
+								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]]||foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]])
 								{
 									found=true;
 									game.distBlue=0;
@@ -449,7 +449,7 @@ Game.prototype.Loop = function ()
 								doors[i].redPath = false;
 								doors[i].leadingDoor=door;
 								//if(doors[i].connectsTo[0]==newPos.room)
-								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]])
+								if(foundSet[[doors[i].x,doors[i].y,doors[i].room]]||foundSet[[doors[i].pair.x,doors[i].pair.y,doors[i].pair.room]])
 								{
 									found=true;
 									game.distRed=0;
@@ -775,6 +775,7 @@ Game.prototype.Loop = function ()
 		{
 			game.killDisplay.enqueue([game.player.lastHit,CLIENT.uniqueID,500]);
 			playerDeaths[CLIENT.uniqueID]+=1;
+			playerKills[game.player.lastHit]+=1;
 			sound.playVoice(sound.voiceNumbers["slain"]);
 			var len = game.gravePositions[game.player.room].length;
 			game.gravePositions[game.player.room][len]=[game.player.x,game.player.y];
