@@ -89,7 +89,14 @@ Images.prototype.WallsImages = function()
 	images.currentCount+=1;
 	images.bar.style.width=((images.currentCount/images.totalCount)*100)+'%';
 	*/
+	images.bombBlue=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.bombBlue,"img/walls/bluebomb.png"];
 	
+	images.bombYellow=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.bombYellow,"img/walls/yellowbomb.png"];
+	
+	images.bombRed=new Image();
+	images.imagesToLoad[images.imagesToLoad.length]=[images.bombRed,"img/walls/redbomb.png"];
 }
 
 Images.prototype.BodyImages = function()

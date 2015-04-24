@@ -143,7 +143,7 @@ Matchmaking.prototype.Draw = function()
 			var width = ctx.measureText(text).width;
 			main.fillText(currentSession[blueTeam[i]], center-259-(width/2), 80+i*32);
 			
-			var x = center-259+(width/2)+10;
+			var x = center-259-(width/2)-35;
 			ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			if(playerOutfit[blueTeam[i]].hair)
 			{
@@ -164,7 +164,7 @@ Matchmaking.prototype.Draw = function()
 			main.fillText(currentSession[redTeam[i]], center+254-(width/2), 80+i*32);
 			
 			
-			var x = center+254+(width/2)+10;
+			var x = center+254-(width/2)-35;
 			ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,60+i*32,32,32);
 			if(playerOutfit[redTeam[i]].hair)
 			{

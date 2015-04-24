@@ -19,7 +19,9 @@ Game.prototype.Initialise=function ()
 	game.keys = {"w":false,
 	"a":false,
 	"s":false,
-	"d":false};
+	"d":false,
+	"space":false,
+	"tab":false};
 	game.player = new Player(96,96);
 	if(main.playerTeam=="blue")
 	{
@@ -41,6 +43,7 @@ Game.prototype.Initialise=function ()
 	game.bluePoints=0;
 	game.players=[];
 	game.bullets=[];
+	game.bombs=[];
 	game.timeSinceLastUpdate=0;
 	game.imageSave=0;
 	game.imgNum=0;
@@ -59,7 +62,16 @@ Game.prototype.dealloc=function()
 	game.blueFlag=0;
 	game.redFlag=0;
 	game.players=0;
+	for(var i = 0; i < game.bullets.length; i++)
+	{
+		game.bullets[i]=0;
+	}
 	game.bullets=0;
+	for(var i = 0; i < game.bombs.length; i++)
+	{
+		game.bombs[i]=0;
+	}
+	game.bombs=0;
 }
 
 
@@ -156,6 +168,7 @@ Game.prototype.Loop = function ()
 		game.keys["a"] = false;
 		game.keys["d"] = false;
 		game.keys["space"] = false;
+		game.keys["tab"] = false;
 	}
 	curTime=new Date();
 	if(game.state==game.PLAYING)
@@ -252,33 +265,14 @@ Game.prototype.Loop = function ()
 			}
 			if(game.keys["space"])
 			{
-				/*
-				if(game.player.fireTime<=0)
+				if(main.playerPerk==3)
 				{
-					var xDif = mousePos["x"]-(canvas.width/2);
-					var yDif = mousePos["y"]-(canvas.height/2);
-					var length = Math.sqrt((xDif*xDif)+(yDif*yDif));
-					xDif/=length;
-					yDif/=length;
-					var poisDmg=0;
-					if(main.playerPerk==2)
+					if(game.player.bombTime<=0)
 					{
-						poisDmg=main.perkStrength[main.playerPerk];
+						CLIENT.dropBomb({"x":game.player.x,"y":game.player.y,"room":game.player.room,"team":main.playerTeam,"uniqueID":CLIENT.uniqueID,"rotation":Math.floor(Math.random()*30)});
+						game.player.bombTime=main.perkStrength[main.playerPerk];
 					}
-					if(main.playerGun==1)
-					{
-						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-					}
-					else
-					{
-						CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
-					}
-					game.player.fireTime=main.gunReload[main.playerGun];
 				}
-				*/
 			}
 			if(game.player.doorTime>0)
 				game.player.doorTime-=curTime.getTime()-time.getTime();
@@ -595,8 +589,13 @@ Game.prototype.Loop = function ()
 							&&game.player.y<game.bullets[i].y+game.bullets[i].h)
 							{
 								game.player.health-=game.bullets[i].damage;
-								game.player.poisoned+=game.bullets[i].poisonDamage;
-								game.player.poisonTime=game.player.poisonMaxTime;
+								game.player.lastHit=game.bullets[i].shotBy;
+								if(game.bullets[i].poisonDamage>0)
+								{
+									game.player.poisoned+=game.bullets[i].poisonDamage;
+									game.player.poisonTime=game.player.poisonMaxTime;
+									game.player.poisonedBy=game.bullets[i].shotBy;
+								}
 								game.bullets[i] = null;
 							}
 						}
@@ -611,7 +610,7 @@ Game.prototype.Loop = function ()
 				}
 				if(game.bullets[i] != null)
 				{
-					if(game.bullets[i].team=="blue")
+					if(game.bullets[i].team!="red")
 					{
 						for(var j = 0; j < redTeam.length;j++)
 						{
@@ -630,7 +629,7 @@ Game.prototype.Loop = function ()
 							}
 						}
 					}
-					else
+					if(game.bullets[i].team!="blue")
 					{
 						for(var j = 0; j < blueTeam.length;j++)
 						{
@@ -652,10 +651,80 @@ Game.prototype.Loop = function ()
 				}
 			}
 		}
+		for( var i = 0; i < game.bombs.length;i++)
+		{
+			if(game.bombs[i]!=null)
+			{
+				game.bombs[i].update(curTime.getTime()-time.getTime());
+				if(game.bombs[i].timer<=0||(game.bombs[i].timer<=500&&game.bombs[i].fireTwo==false)||(game.bombs[i].timer<=1000&&game.bombs[i].fireOne==false))
+				{
+					for(var j = 0; j < 12; j++)
+					{
+						var created = false;
+						var xSpeed = Math.cos((game.bombs[i].rotation+(j*30))*Math.PI/180);
+						var ySpeed = Math.sin((game.bombs[i].rotation+(j*30))*Math.PI/180);
+						for(var k = 0; k < game.bullets.length&&!created;k++)
+						{
+							if(game.bullets[k]==null)
+							{
+								game.bullets[k]= new Bullet(game.bombs[i].x+(game.bombs[i].w/2)-4,game.bombs[i].y+(game.bombs[i].h/2)-4);
+								game.bullets[k].team=game.bombs[i].team;
+								game.bullets[k].room=game.bombs[i].room;
+								game.bullets[k].xSpeed=xSpeed*main.gunSpeed[0];
+								game.bullets[k].ySpeed=ySpeed*main.gunSpeed[0];
+								game.bullets[k].poisonDamage=0;
+								game.bullets[k].damage=main.gunDamage[0]*3;
+								game.bullets[k].shotBy=game.bombs[i].shotBy;
+								created=true;
+							}
+						}
+						if(!created)
+						{
+							var num = game.bullets.length;
+							game.bullets[num]= new Bullet(game.bombs[i].x+(game.bombs[i].w/2)-4,game.bombs[i].y+(game.bombs[i].h/2)-4);
+							game.bullets[num].team=game.bombs[i].team;
+							game.bullets[num].room=game.bombs[i].room;
+							game.bullets[num].xSpeed=xSpeed*main.gunSpeed[0];
+							game.bullets[num].ySpeed=ySpeed*main.gunSpeed[0];
+							game.bullets[num].poisonDamage=0;
+							game.bullets[num].damage=main.gunDamage[0]*3;
+							game.bullets[num].shotBy=game.bombs[i].shotBy;
+						}
+						if(game.bombs[i].room==game.player.room)
+						{
+							sound.playVoice(sound.voiceNumbers["gun"]);
+						}
+					}
+					if(!game.bombs[i].fireOne)
+					{
+						game.bombs[i].fireOne=true;
+					}
+					else if(!game.bombs[i].fireTwo)
+					{
+						game.bombs[i].fireTwo=true;
+					}
+					else
+					{
+						game.bombs[i]=null;
+					}
+				}
+			}
+		}
+		if(main.playerPerk==3)
+		{
+			if(game.player.bombTime>0)
+			{
+				game.player.bombTime-=curTime.getTime()-time.getTime();
+			}
+		}
 		if(game.player.poisonTime>0)
 		{
 			game.player.poisonTime-=curTime.getTime()-time.getTime();
 			damage=(game.player.poisoned/game.player.poisonMaxTime)*Math.min((curTime.getTime()-time.getTime()),game.player.poisonTime);
+			if(game.player.health>0)
+			{
+				game.player.lastHit=game.player.poisonedBy;
+			}
 			game.player.health-=Math.max(damage,(damage/100)*game.player.health);
 			game.player.poisoned-=damage;
 		}
@@ -690,7 +759,7 @@ Game.prototype.Loop = function ()
 		if(game.timeSinceLastUpdate>1000/30)
 		{
 			game.timeSinceLastUpdate=0;
-			var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room,"frame":main.frame};
+			var msg = {"x":game.player.x,"y":game.player.y,"health":game.player.health,"rotation":game.player.rotation,"flag":game.player.gotFlag,"room":game.player.room,"frame":main.frame,"lastDamage":game.player.lastHit};
 			CLIENT.updatePlayer(msg);
 		}
 	}
@@ -732,14 +801,14 @@ Game.prototype.onMouseClick = function(e)
 			}
 			if(main.playerGun==1)
 			{
-				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun]});
-				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun]});
-				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun]});
-				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun]});
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)-yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)+xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun],"uniqueID":CLIENT.uniqueID});
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*7)+yDif)/8)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*7)-xDif)/8)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun],"uniqueID":CLIENT.uniqueID});
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)-yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)+xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun],"uniqueID":CLIENT.uniqueID});
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":(((xDif*2)+yDif)/3)*main.gunSpeed[main.playerGun],"ySpeed":(((yDif*2)-xDif)/3)*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":(poisDmg/3),"damage":main.gunDamage[main.playerGun],"uniqueID":CLIENT.uniqueID});
 			}
 			else
 			{
-				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun]});
+				CLIENT.fireBullet({"x":game.player.x+(game.player.w/2)-2,"y":game.player.y+(game.player.h/2)-2,"xSpeed":xDif*main.gunSpeed[main.playerGun],"ySpeed":yDif*main.gunSpeed[main.playerGun],"room":game.player.room,"team":main.playerTeam,"poisonDamage":poisDmg,"damage":main.gunDamage[main.playerGun],"uniqueID":CLIENT.uniqueID});
 			}
 			game.player.fireTime=main.gunReload[main.playerGun];
 		}
@@ -816,6 +885,11 @@ Game.prototype.onKeyPress = function(e)
 	{
 		game.keys["space"] = true;
 	}
+	//TAB
+	if(e.keyCode == 9)
+	{
+		game.keys["tab"] = true;
+	}
 }
 Game.prototype.onKeyUp = function(e)
 {
@@ -844,6 +918,11 @@ Game.prototype.onKeyUp = function(e)
 	{
 		game.keys["space"] = false;
 	}
+	//TAB
+	if(e.keyCode == 9)
+	{
+		game.keys["tab"] = false;
+	}
 }
 
 Game.prototype.Draw = function()
@@ -864,6 +943,16 @@ Game.prototype.Draw = function()
 	for(var i = 0; i < game.gravePositions[game.player.room].length; i++)
 	{
 		ctx.drawImage(images.grave,Math.ceil(game.gravePositions[game.player.room][i][0]+offSetX),Math.ceil(game.gravePositions[game.player.room][i][1]+offSetY));
+	}
+	for(var i = 0; i < game.bombs.length; i++)
+	{
+		if(game.bombs[i]!=null)
+		{
+			if(game.bombs[i].room==game.player.room)
+			{
+				game.bombs[i].draw(offSetX,offSetY);
+			}
+		}
 	}
 	if(game.player.room==game.redCapturePoint[2])
 	{
@@ -1052,6 +1141,61 @@ Game.prototype.Draw = function()
 	if(game.blueFlagCaptured)
 	{
 		ctx.drawImage(images.crystal[1][2],710,34);
+	}
+	
+	if(game.keys["tab"])
+	{
+		ctx.fillStyle = "rgba(160, 160, 160, 0.6)";
+		ctx.fillRect(0,0,canvas.width, canvas.height);
+		var center = canvas.width/2;
+		var str = "Scoreboard";
+		var yStartPos=100;
+		ctx.fillStyle = rgb(0, 0, 0);
+		ctx.fillText(str, center-(ctx.measureText(str).width/2), yStartPos+23);
+		ctx.fillStyle = rgb(0, 0, 255);
+		main.fillText("Blue Team kills:deaths", center-259-(ctx.measureText("Blue Team kills:deaths").width/2), yStartPos+48);
+		for(var i = 0; i < blueTeam.length;i++)
+		{
+			var text = currentSession[blueTeam[i]];
+			var width = ctx.measureText(text).width;
+			main.fillText(currentSession[blueTeam[i]], center-259-(width/2), yStartPos+80+i*32);
+			
+			main.fillText(playerKills[blueTeam[i]]+":"+playerDeaths[blueTeam[i]], center-259+(width/2)+10, yStartPos+80+i*32);
+			
+			var x = center-259-(width/2)-35;
+			ctx.drawImage(images.bodies[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].body][playerOutfit[blueTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+			if(playerOutfit[blueTeam[i]].hair)
+			{
+				ctx.drawImage(images.hair[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].hairStyle],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+			}
+			if(playerOutfit[blueTeam[i]].beard)
+			{
+				ctx.drawImage(images.beard[playerOutfit[blueTeam[i]].beardStyle],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+			}
+			ctx.drawImage(images.clothes[playerOutfit[blueTeam[i]].gender][playerOutfit[blueTeam[i]].clothes],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+		}
+		ctx.fillStyle = rgb(255,165,0);
+		main.fillText("Yellow Team kills:deaths", center+254-(ctx.measureText("Yellow Team kills:deaths").width/2), yStartPos+48);
+		for(var i = 0; i < redTeam.length;i++)
+		{
+			var text = currentSession[redTeam[i]];
+			var width = ctx.measureText(text).width;
+			main.fillText(currentSession[redTeam[i]], center+254-(width/2),yStartPos+ 80+i*32);
+			
+			main.fillText(playerKills[redTeam[i]]+":"+playerDeaths[redTeam[i]], center+254+(width/2)+10, yStartPos+80+i*32);
+			
+			var x = center+254-(width/2)-35;
+			ctx.drawImage(images.bodies[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].body][playerOutfit[redTeam[i]].colour],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+			if(playerOutfit[redTeam[i]].hair)
+			{
+				ctx.drawImage(images.hair[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].hairStyle],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+			}
+			if(playerOutfit[redTeam[i]].beard)
+			{
+				ctx.drawImage(images.beard[playerOutfit[redTeam[i]].beardStyle],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+			}
+			ctx.drawImage(images.clothes[playerOutfit[redTeam[i]].gender][playerOutfit[redTeam[i]].clothes],main.animation[1]*32,0*32,32,32,x,yStartPos+60+i*32,32,32);
+		}
 	}
 	/*
 	ctx.fillStyle = rgb(0, 0, 0);

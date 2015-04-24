@@ -362,6 +362,14 @@ Client.prototype.fireBullet = function(data)
 	this.SendMessage(message);
 }
 
+Client.prototype.dropBomb = function(data)
+{
+	var messageObject = {"type":"bombDropped","uniqueID":this.uniqueID,"data":data};
+	var message = JSON.stringify(messageObject);
+	this.SendMessage(message);
+}
+
+
 Client.prototype.playerDied = function()
 {
 	var messageObject = {"type":"playerDied","uniqueID":this.uniqueID,"x":game.player.x,"y":game.player.y,"room":game.player.room,"team":main.playerTeam};
@@ -518,6 +526,8 @@ Client.prototype.handleMessage = function(evt)
 			currentSession[redTeam[i]] = 0;
 			playerGameData[redTeam[i]]=0;
 			playerOutfit[redTeam[i]]=0;
+			playerKills[redTeam[i]] = 0;
+			playerDeaths[redTeam[i]] = 0;
 			redTeam[i] = 0;
 		}
 		for(var i = 0; i < blueTeam.length; i++)
@@ -525,6 +535,8 @@ Client.prototype.handleMessage = function(evt)
 			currentSession[blueTeam[i]] = 0;
 			playerGameData[blueTeam[i]]=0;
 			playerOutfit[blueTeam[i]]=0;
+			playerKills[blueTeam[i]] = 0;
+			playerDeaths[blueTeam[i]] = 0;
 			blueTeam[i] = 0;
 		}
 		
@@ -533,12 +545,16 @@ Client.prototype.handleMessage = function(evt)
 		playerOutfit=0;
 		redTeam = 0;
 		blueTeam = 0;
+		playerKills = 0;
+		playerDeaths = 0;
 		
 		currentSession=[];
 		redTeam = [];
 		blueTeam = [];
 		playerGameData = [];
 		playerOutfit = [];
+		playerKills = [];
+		playerDeaths = [];
 		
 		for(var i = 0; i < msg.data.length;i++)
 		{
@@ -551,6 +567,8 @@ Client.prototype.handleMessage = function(evt)
 				redTeam[redTeam.length] = msg.data[i].uniqueID;
 				currentSession[msg.data[i].uniqueID] = msg.data[i].name
 				playerGameData[msg.data[i].uniqueID]=0;
+				playerKills[msg.data[i].uniqueID]=0;
+				playerDeaths[msg.data[i].uniqueID]=0;
 				playerOutfit[msg.data[i].uniqueID]=msg.data[i].outfit;
 			}
 			else if(msg.data[i].team == "blue")
@@ -562,6 +580,8 @@ Client.prototype.handleMessage = function(evt)
 				blueTeam[blueTeam.length] = msg.data[i].uniqueID;
 				currentSession[msg.data[i].uniqueID] = msg.data[i].name
 				playerGameData[msg.data[i].uniqueID]=0;
+				playerKills[msg.data[i].uniqueID]=0;
+				playerDeaths[msg.data[i].uniqueID]=0;
 				playerOutfit[msg.data[i].uniqueID]=msg.data[i].outfit;
 			}
 		}
@@ -600,6 +620,8 @@ Client.prototype.handleMessage = function(evt)
 		{
 			if(playerGameData[msg.data.uniqueID].room!=-1&&msg.data.update.room==-1)
 			{
+				playerKills[msg.data.lastDamage]+=1;
+				playerDeaths[msg.data.uniqueID]+=1;
 				var len = game.gravePositions[playerGameData[msg.data.uniqueID].room].length;
 				game.gravePositions[playerGameData[msg.data.uniqueID].room][len]=[playerGameData[msg.data.uniqueID].x,playerGameData[msg.data.uniqueID].y];
 			}
@@ -620,7 +642,8 @@ Client.prototype.handleMessage = function(evt)
 				game.bullets[i].ySpeed=msg.data.ySpeed;
 				game.bullets[i].poisonDamage=msg.data.poisonDamage;
 				game.bullets[i].damage=msg.data.damage;
-				created=true
+				game.bullets[i].shotBy=msg.data.uniqueID;
+				created=true;
 			}
 		}
 		if(!created)
@@ -633,10 +656,36 @@ Client.prototype.handleMessage = function(evt)
 			game.bullets[num].ySpeed=msg.data.ySpeed;
 			game.bullets[num].poisonDamage=msg.data.poisonDamage;
 			game.bullets[num].damage=msg.data.damage;
+			game.bullets[num].shotBy=msg.data.uniqueID;
 		}
 		if(msg.data.room==game.player.room)
 		{
 			sound.playVoice(sound.voiceNumbers["gun"]);
+		}
+	}
+	else if(msg.type == "bombDropped")
+	{
+		var created = false;
+		for(var i = 0; i < game.bombs.length&&!created;i++)
+		{
+			if(game.bombs[i]==null)
+			{
+				game.bombs[i]= new Bomb(msg.data.x,msg.data.y);
+				game.bombs[i].team=msg.data.team;
+				game.bombs[i].room=msg.data.room;
+				game.bombs[i].shotBy=msg.data.uniqueID;
+				game.bombs[i].rotation=msg.data.rotation;
+				created=true;
+			}
+		}
+		if(!created)
+		{
+			var num = game.bombs.length;
+			game.bombs[num]= new Bomb(msg.data.x,msg.data.y);
+			game.bombs[num].team=msg.data.team;
+			game.bombs[num].room=msg.data.room;
+			game.bombs[num].shotBy=msg.data.uniqueID;
+			game.bombs[num].rotation=msg.data.rotation;
 		}
 	}
 	else if(msg.type == "flagDropped")

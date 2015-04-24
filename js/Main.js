@@ -5,6 +5,8 @@ var redTeam = [];
 var blueTeam = [];
 var playerGameData = [];
 var playerOutfit = [];
+var playerKills = [];
+var playerDeaths = [];
 var mousePos = [];
 var BulletDirections={"left":0,"up":1,"right":2,"down":3};
 var time=0;
@@ -33,8 +35,8 @@ function Main()
 	main.gunDamage=[20,6.5,30];
 	
 	//perks
-	main.perks=["HP regen","flag sprint","poison bullet"];
-	main.perkStrength=[3,1.5,10];
+	main.perks=["HP regen","flag sprint","poison bullet","bombs"];
+	main.perkStrength=[3,1.5,10,10000];
 	
 	//player stats
 	main.playerGun=0;
@@ -336,6 +338,9 @@ function onContextMenu(e)
 
 function onKeyPress(e)
 {
+	if (e.which == 9) {
+        e.preventDefault();
+    }
 	if(main.mode == GAMESELECT)
 	{
 		matchmaking.onKeyPress(e);

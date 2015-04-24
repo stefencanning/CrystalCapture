@@ -11,10 +11,13 @@ function Player(x, y)
 	this.doorTime=0;
 	this.fireTime=0;
 	this.dead=false;
+	this.lastHit="";
+	this.poisonedBy="";
 	this.respawnTimer=0;
 	this.poisoned=0;
 	this.poisonTime=0;
 	this.poisonMaxTime=5000;
+	this.bombTime=0;
 }
 
 Player.prototype.getX = function()

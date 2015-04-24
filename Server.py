@@ -127,6 +127,8 @@ class MessageHandler:
 			self.createDoor(data)
 		elif type == "bulletFired":
 			self.fireBullet(data)
+		elif type == "bombDropped":
+			self.dropBomb(data)
 		elif type == "playerDied":
 			self.playerDied(data)
 		elif type == "flagReturned":
@@ -158,6 +160,10 @@ class MessageHandler:
 	def fireBullet(self,data):
 		for player in playerSession[data['uniqueID']].players:
 			self.sendMessage(player,"bulletFired",data['data'])
+			
+	def dropBomb(self,data):
+		for player in playerSession[data['uniqueID']].players:
+			self.sendMessage(player,"bombDropped",data['data'])
 			
 	def flagReturned(self,data):
 		for player in playerSession[data['uniqueID']].players:
