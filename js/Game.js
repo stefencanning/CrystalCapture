@@ -366,10 +366,21 @@ Game.prototype.Loop = function ()
 					var set = {};
 					for(var i = 0; i < doorsPlayer.length; i++)
 					{
+						if(doorsPlayer[i].bluePath)
+						{
+							queue.enqueue(doorsPlayer[i]);
+							set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+						}
+					}
+					for(var i = 0; i < doorsPlayer.length; i++)
+					{
 						doorsPlayer[i].bluePath = false;
-						doorsPlayer[i].leadingDoor=null;
-						queue.enqueue(doorsPlayer[i]);
-						set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+						doorsPlayer[i].leadingDoor=-1;
+						if(!set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]])
+						{
+							queue.enqueue(doorsPlayer[i]);
+							set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+						}
 					}
 					var foundSet={};
 					for(var i = 0; i < doorsFlag.length; i++)
@@ -442,10 +453,21 @@ Game.prototype.Loop = function ()
 					var set = {};
 					for(var i = 0; i < doorsPlayer.length; i++)
 					{
+						if(doorsPlayer[i].redPath)
+						{
+							queue.enqueue(doorsPlayer[i]);
+							set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+						}
+					}
+					for(var i = 0; i < doorsPlayer.length; i++)
+					{
 						doorsPlayer[i].redPath = false;
 						doorsPlayer[i].leadingDoor=-1;
-						queue.enqueue(doorsPlayer[i]);
-						set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+						if(!set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]])
+						{
+							queue.enqueue(doorsPlayer[i]);
+							set[[doorsPlayer[i].x,doorsPlayer[i].y,doorsPlayer[i].room]]=true;
+						}
 					}
 					var foundSet={};
 					for(var i = 0; i < doorsFlag.length; i++)
